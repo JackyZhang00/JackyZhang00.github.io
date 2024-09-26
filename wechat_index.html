@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>科普小白说</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            background-image: url('background.png'); /* 替换为你的背景图片路径 */
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .return-home {
+            position: absolute;
+            left: 10px;
+            top: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #fff;
+            background: #3498db;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+        .return-home:hover {
+            background: #2980b9;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #ffffff00;
+            border: 2px solid #00000030;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        a {
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #2980b9;
+        }
+        .content {
+            background: #ffffff50;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .content h2 {
+            color: #333;
+        }
+        .video-image {
+            width: 30%; /* 宽度100%，根据容器自适应 */
+            height: auto; /* 高度自动，保持图片比例 */
+            margin-top: 10px; /* 在标题和图片之间添加一些间距 */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 100px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 30%;
+        }
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="return-home">返回主页</a>
+            <h1>As 微信公众号</h1>
+            <h2>科普小白说</h2>
+            <h3>小白说，说给小白听。致力于做出最容易懂的科普！</h3>
+        </header>
+        <div class="content">
+            <h2>公众号</h2>
+            <p>账号：科普小白说</p>
+            <img src="wechat.png" alt="科普小白说" width="20%" height="auto">
+        </div>
+        <div class="content">
+            <h2>更新内容</h2>
+            <ul>
+                <li>数学与物理相关科普知识点</li>
+                <li>计算机相关软件介绍</li>
+                <li>一些奇奇怪怪的小知识</li>
+            </ul>
+        </div>
+        <div class="content">
+            <h2>最满意的公众号文章（点击文字即可跳转）</h2>
+            <h3>数学相关</h3>
+            <ul>
+                <li><a href="https://mp.weixin.qq.com/s?__biz=MzU2NTM0NjExOQ==&mid=2247486743&idx=1&sn=563953b48e1eddbb65ecc395f8ab381d&chksm=fcbc673fcbcbee290e9937a8f0c57a1489beae933e490a9b7680ac04ba8a6b803ab1cf1398d9&token=2134912155&lang=zh_CN#rd">从《狂赌之渊》到马尔可夫链（第1话/共3话）</a></li>
+                <li><a href="https://mp.weixin.qq.com/s?__biz=MzU2NTM0NjExOQ==&mid=2247486789&idx=1&sn=11bf391b136d4c8fe09a37d24b769b48&chksm=fcbc676dcbcbee7ba39d77cb67cda6ba4e4e7450ab3ae95fe469fe5cc332261b6110a94e8a96&token=2134912155&lang=zh_CN#rd">从《狂赌之渊》到马尔可夫链（第2话/共3话）</a></li>
+                <li><a href="https://mp.weixin.qq.com/s?__biz=MzU2NTM0NjExOQ==&mid=2247486799&idx=1&sn=e2d837da2a7745a643e0b4daee37e909&chksm=fcbc6767cbcbee7154a6b7a62fcbd31aab610631915f14a5f0ab7529ead95adf1ed062e8c264&token=2134912155&lang=zh_CN#rd">从《狂赌之渊》到马尔可夫链（第3话/共3话）</a></li>
+            </ul>
+            <h3>物理相关</h3>
+            <ul>
+                <li><a href="https://mp.weixin.qq.com/s?__biz=MzU2NTM0NjExOQ==&mid=2247486843&idx=1&sn=41edb0fc07d2cee97787a05a3c320234&chksm=fcbc6753cbcbee459caef4adb5c3e6e00aadd67b9ddd56977c0fd7f20a5f7ac87fdf45050d21&token=2134912155&lang=zh_CN#rd">不同乐器的音色，为什么不同？</a></li>
+            </ul>
+        </div>
+        
+        <div class="content">
+            <h2>联系我们</h2>
+            <ul>
+                <li>
+                    <a href="#" id="tougao">公众号投稿</a>
+                </li>
+                <li>
+                    <a href="#" id="liuyan">留言反馈</a>
+                </li>
+                <li>
+                    <a href="#" id="join">加入我们</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 公众号投稿弹出窗口 -->
+    <div id="tougao-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>公众号投稿</h1>
+            <p>请根据你的兴趣，提交一篇（或一系列）科普作品，以word文件的格式，以压缩包保存并发送至邮箱Sevenhz_kp@163.com</p>
+            <p>如果有配套文档，请一并放置到压缩包内。</p>
+            <p>邮件标题以“【投稿】+稿件名”格式，同时请在稿件中注明你的笔名。</p>
+            <p>我们将会定期选择合适的稿件进行发布（通常每月1日会对邮箱进行查阅），一经选用，将给出10元/篇稿酬。对于有修改意见的稿件，我们将打回至发送邮箱以便修改；对于未通过稿件，我们将打回并做“拒稿”处理；对于通过的稿件，将以邮件形式联系作者并告知稿件发布时间（依据先来后到原则）</p>
+        </div>
+    </div>
+
+    <!-- 留言反馈弹出窗口 -->
+    <div id="liuyan-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>留言反馈</h1>
+            <p>如果你有任何疑问或建议，请发送邮件到zhangjq_sd@163.com</p>
+            <p>请注明相关信息（例如相关文章，问题等），请勿将一个话题分成多个邮件发送。</p>
+            <p>邮件标题务必清楚明白。</p>
+        </div>
+    </div>
+
+    <!-- 加入我们弹出窗口 -->
+    <div id="join-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h1>加入我们</h1>
+            <p>注意：公众号目前为“为爱发电”状况，没有盈利。因此加入团队没有收益。如果你确实热爱这一方向且不考虑利益，希望以此得到锻炼（无论是写作方面的锻炼还是热爱传播知识），欢迎加入我们。</p>
+            <p>如果你想加入我们，请将你的研究兴趣与方向（你所感兴趣或擅长的领域），发送邮件到zhangjq_sd@163.com（标题标明目的为“加入团队”），同时以附件形式提交一篇你所创作的科普题材作品（文字、音频、视频、漫画等形式不限，创作内容主题不限，只要是你所擅长或感兴趣的内容即可）要求为科普作品（即通俗易懂且不能有明显错误）</p>
+            <p>若通过，将以邮件形式联系你（没通过可能就不联系了）</p>
+        </div>
+    </div>
+
+    <script>
+        // 获取所有弹出窗口元素
+        var modals = document.querySelectorAll(".modal");
+        var modalLinks = document.querySelectorAll("a[href='#']");
+
+        // 打开弹出窗口的函数
+        function openModal(event) {
+            event.preventDefault();
+            var modalId = this.id + "-modal";
+            var modal = document.getElementById(modalId);
+            modal.style.display = "block";
+        }
+
+        // 关闭弹出窗口的函数
+        function closeModal(modalId) {
+            var modal = document.getElementById(modalId);
+            modal.style.display = "none";
+        }
+
+        // 为每个链接注册点击事件
+        modalLinks.forEach(function(link) {
+            link.addEventListener("click", openModal);
+        });
+
+        // 获取所有关闭按钮
+        var closes = document.querySelectorAll(".close");
+
+        // 点击关闭按钮时关闭弹出窗口
+        closes.forEach(function(close) {
+            close.addEventListener("click", function() {
+                closeModal(this.closest(".modal").id);
+            });
+        });
+
+        // 点击窗口之外的区域也可以关闭弹出窗口
+        window.addEventListener("click", function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeModal(event.target.id);
+            }
+        });
+    </script>
+</body>
+</html>

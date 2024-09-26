@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>教程</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            background-image: url('background.png'); /* 替换为你的背景图片路径 */
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            position: relative; /* 新增：为按钮定位 */
+        }
+        .return-home {
+            position: absolute; /* 新增：绝对定位按钮 */
+            left: 10px; /* 新增：距离左侧的距离 */
+            top: 20px; /* 新增：距离顶部的距离 */
+            padding: 10px 20px; /* 新增：按钮的内边距 */
+            text-decoration: none; /* 新增：去掉下划线 */
+            color: #fff; /* 新增：文字颜色 */
+            background: #3498db; /* 新增：背景颜色 */
+            border: none; /* 新增：去掉边框 */
+            border-radius: 5px; /* 新增：圆角边框 */
+            transition: background 0.3s ease; /* 新增：过渡效果 */
+        }
+        .return-home:hover {
+            background: #2980b9; /* 新增：鼠标悬停时的背景颜色 */
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #ffffff90;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        a {
+            text-decoration: none;
+            color: #3498db;
+            transition: color 0.3s ease;
+        }
+        a:hover {
+            color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="index.html" class="return-home">返回主页</a> <!-- 返回主页按钮 -->
+            <h1>教程</h1>
+        </header>
+
+        <h2>目前已经完成或正在编写的教程有：</h2>
+        <ul>
+            <li>
+                <h2>【完成】数值分析</h2>
+                <a href="https://github.com/JackyZhang00/numerical-analysis-notes">GitHub链接</a>
+                <a href="https://github.com/JackyZhang00/numerical-analysis-notes/releases/download/v1.1/Python.pdf" download="https://github.com/JackyZhang00/numerical-analysis-notes/releases/download/v1.1/Python.pdf">下载PDF文件</a>
+            </li>
+            <li>
+                <h2>【正在编写】材料计算教程</h2>
+                <a href="material_tutorial.html">在线阅读</a>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

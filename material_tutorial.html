@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Content Display</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+    <style>
+        body {
+          background-image: url('background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">返回主页</a>
+        <button onclick="showSection('linux')">Linux基础</button>
+        <button onclick="showSection('vasp')">VASP教程</button>
+        <button onclick="showSection('ml')">机器学习</button>
+    </nav>
+    <div class="sidebar">
+        <div id="linux" class="section">
+            <button class="toggle" onclick="toggleChapters('linux')">章节目录</button>
+            <div class="chapters" id="linuxChapters" style="display: none;">
+                <div class="chapter" onclick="toggleSubChapters('linuxCommandLine')">
+                    <h3>1. Linux命令行操作</h3>
+                    <ul id="linuxCommandLineSubChapters" style="display: none;">
+                        <li onclick="showContent('linuxDirectory')">1.1 认识Linux目录</li>
+                        <li onclick="showContent('linuxDirectoryOperation')">1.2 目录操作</li>
+                        <li onclick="showContent('linuxFileOperation')">1.3 文件操作</li>
+                        <li onclick="showContent('linuxViewFile')">1.4 查看文件</li>
+                        <li onclick="showContent('linuxCompress')">1.5 压缩与解压缩</li>
+                        <li onclick="showContent('linuxFilePermission')">1.6 文件权限管理</li>
+                    </ul>
+                </div>
+                <div class="chapter" onclick="toggleSubChapters('linuxTextEditor')">
+                    <h3>2. 文本编辑工具vi和vim</h3>
+                    <ul id="linuxTextEditorSubChapters" style="display: none;">
+                        <li onclick="showContent('linuxNano')">2.1 使用nano简单创建文件</li>
+                        <li onclick="showContent('linuxViVim')">2.2 使用vi,vim创建文件</li>
+                        <li onclick="showContent('linuxFindReplace')">2.3 查找与替换</li>
+                        <li onclick="showContent('linuxRegex')">2.4 初窥正则表达式</li>
+                    </ul>
+                </div>
+                <div class="chapter" onclick="toggleSubChapters('linuxAdvancedCommands')">
+                    <h3>3. 高级Linux命令</h3>
+                    <ul id="linuxAdvancedCommandsSubChapters" style="display: none;">
+                        <li onclick="showContent('linuxWildcards')">3.1 通配符</li>
+                        <li onclick="showContent('linuxGrep')">3.2 grep匹配字符串</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="vasp" class="section">
+            <button class="toggle" onclick="toggleChapters('vasp')">章节目录</button>
+            <div class="chapters" id="vaspChapters" style="display: none;">
+                <div class="chapter" onclick="toggleSubChapters('phonons')">
+                    <h3>声子谱计算</h3>
+                    <ul id="phononsSubChapters" style="display: none;">
+                        <li onclick="showContent('sec:什么是声子、声子谱')">什么是声子、声子谱</li>
+                        <li onclick="showContent('sec:计算方法简介')">计算方法简介</li>
+                        <li onclick="showContent('sec:计算软件PHONOPY')">计算软件PHONOPY</li>
+                        <li onclick="showContent('sec:具体计算步骤')">具体计算步骤</li>
+                        <li onclick="showContent('sec:声子谱分析')">声子谱分析</li>
+                        <li onclick="showContent('sec:错误处理')">错误处理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="ml" class="section">
+            <button class="toggle" onclick="toggleChapters('ml')">Chapters</button>
+            <div class="chapters" id="mlChapters" style="display: none;">
+                <!-- 机器学习章节内容 -->
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div id="linuxDirectory" class="chapter-content" style="display: none;">
+            <h2>1.1 认识Linux目录</h2>
+            <!-- <h1 id="sec:认识Linux目录">认识Linux目录</h1> -->
+            <p><strong>作者：</strong>Jiaqi Z.</p>
+            <h3>知识点</h3>
+            <ul>
+                <li>Linux命令格式</li>
+                <li>如何在Linux当中表示目录</li>
+                <li>绝对路径和相对路径</li>
+                <li>如何快速表示当前目录和上一级目录</li>
+            </ul>
+        
+            <h3 id="subsec:认识Linux目录-命令格式">命令格式</h3>
+            <p>与Windows使用可视化界面不同，Linux大多时候使用命令行（shell）进行操作。因此，在Linux的学习过程中，一个最重要的任务，就是掌握一些常见的Linux命令。对于大多数科研课题组而言，Linux系统都是在远程云端服务器上，因此在本地往往只需要一个终端程序即可连接到服务器。一些常见的终端软件包括Xshell、MobaXterm、甚至VS Code<sup>1</sup>等。</p>
+            <div class="attention">
+                <p>如果你熟悉其他操作系统，可能听闻过类似于Windows Server，或者Linux的Ubuntu这样的操作系统。明明也可以使用可视化界面，为什么在科研过程中从来不会用到它们呢？（更严谨地说，在远程服务器上）。实际上，当使用可视化界面进行远程连接时，所产生的网络资源消耗是巨大的，通常需要更大的带宽，而使用命令行就可以提高数据传输效率。此外，更重要的一点是，使用命令行可以很容易实现批量处理，这在后续的章节会介绍到。</p>
+            </div>
+        
+            <p>在Linux当中，输入命令通常采用的格式是<code>命令 [-选项] [参数]</code>，其中中括号表示这个部分是<em>可选的</em>，即可以没有的。例如，当我们希望列出当前目录下所有文件时，可以使用<code>ls</code>直接输出，也可以使用<code>ls -l</code>以列表格式输出。</p>
+            <div class="attention">
+                <p>在后面可能会看到选项有多个的情况，此时为了简化，可以将选项合并在一起。例如，<code>ls -l -a</code>可以简化为<code>ls -la</code>。</p>
+                <p>命令与选项、参数之间是以空格进行分割，且这个空格不能省略。</p>
+            </div>
+        
+            <h3 id="subsec:认识Linux目录-目录表示方法">目录表示方法</h3>
+            <p>在Linux当中，所有目录都是以根目录<code>/</code>为起点，任何目录都是根目录的子目录。根目录下存在一些固定的目录（这些目录通常有特定的含义），例如，在根目录下有一个叫做<code>bin</code>的目录（通常写作<code>/bin</code>），它存放的都是<em>二进制文件</em>，也就是系统可以执行的程序文件。</p>
+            <div class="attention">
+                <p>在Linux当中，任何命令实际上都是可执行程序。你可以在<code>/bin</code>目录下看到后面所学的所有Linux终端命令。</p>
+            </div>
+        
+            <p>另一个比较重要的位置是家目录<code>/home</code>，它存放的是用户个人文件。在这一目录下，你可以看到系统所注册的所有用户名。但是，这些文件夹大多数是无法查看的<sup>2</sup>。对于用户自己的家目录，通常也可以表示为<code>~</code>。通常来说，当你使用终端等连接登录时，默认的所在目录就是家目录<code>~</code></p>
+        
+            <h3 id="subsec:认识Linux目录-绝对路径和相对路径">绝对路径和相对路径</h3>
+            <p>任何目录在操作时都具有两种表示方式，<em>绝对路径</em>和<em>相对路径</em>。正如<em>目录表示方法</em>所介绍的那样，任何目录都是从根目录开始的。因此在描述一个目录时，可以从根目录（即<code>/</code>）开始。例如，若你在你的家目录下有一个叫做<code>vasp</code>的目录，那么它的绝对路径就是<code>/home/&lt;你的用户名&gt;/vasp</code>。</p>
+            <div class="attention">
+                <p>在这种情况下，你可以将目录<code>vasp</code>理解为<code>&lt;当前所在目录&gt;/vasp</code>，即等价于<code>/home/&lt;你的用户名&gt;/vasp</code>。</p>
+                <p>千万不要写成<code>/vasp</code>，它表示根目录下的<code>vasp</code>目录。如果你希望特别强调当前目录，可以使用符号<code>.</code>（一个点）表示“当前目录”，即可以写成<code>./vasp</code></p>
+            </div>
+        
+            <p>然而，在这种情况下，回到<em>当前目录的上一级目录</em>是麻烦的，即在目前所学范围内，只能使用绝对路径。好在Linux提供了一个命令：<code>..</code>（两个点）表示<em>上一级目录</em>。因此，如果你当前处在目录<code>/home/&lt;你的用户名&gt;/vasp</code>当中，则<code>..</code>表示<code>/home/&lt;你的用户名&gt;</code></p>
+            <div class="attention">
+                <p>在终端当中，<code>..</code>（两个点）表示父目录（即上一级目录），而一个点<code>.</code>表示当前目录。</p>
+                <p>这些符号（指令）在后续关于目录操作中都是可以使用的。</p>
+            </div>
+        
+            <p>看到这里，可以思考下面的问题：如果在你的家目录下有两个目录<code>python</code>和<code>vasp</code>，此时你在<code>/home/&lt;你的用户名&gt;/vasp</code>目录下，如何可以快速表示<code>python</code>目录呢（不能使用绝对路径）？</p>
+            <p><strong>答案：</strong><code>../python</code>即可表示<code>/home/&lt;你的用户名&gt;/python</code>目录</p>
+        
+            <footer>
+                <p>注解：</p>
+                <ol>
+                    <li id="ftnt1">对于VS Code而言，可能需要扩展插件（例如Remote-SSH）的支持。</li>
+                    <li id="ftnt2">这涉及到Linux操作权限的问题，通常来说，权限分为三组，即所有者权限、所属组权限和其他用户权限。对于<code>/home</code>目录下而言，所有目录都是对所有者（即这个用户本身）提供全部权限，而其他人无法访问、修改。</li>
+                </ol>
+            </footer>
+        </div>
+        <div id="linuxDirectoryOperation" class="chapter-content" style="display: none;">
+            <h2>1.2 目录操作</h2>
+            <p><strong>作者：</strong>Jiaqi Z.</p>
+    
+    <h3>知识点</h3>
+    <ul>
+        <li>如何显示当前目录下所有文件</li>
+        <li>如何创建目录</li>
+        <li>如何切换至其他目录</li>
+    </ul>
+
+    <h3 id="subsec:目录操作-显示目录文件">显示目录文件 <code>ls</code></h3>
+    <p>在这一节以及下一节，我们将讨论如何对目录和文件做基本的操作。无论是哪一种，一个最基本的前提是<strong>知道当前目录有哪些文件和目录</strong>，从而才能进行后续操作（例如编辑、删除、移动、进入目录等）。</p>
+
+    <p>在Linux当中，列出一个目录下所有文件使用的是<code>ls</code>命令。在没有任何参数与选项的前提下，它输出的结果就是<strong>当前所在目录下的所有文件和目录</strong>。以<a href="#subsec:认识Linux目录-绝对路径和相对路径">绝对路径和相对路径</a>一节最后的例子为例，家目录下有<code>vasp</code>和<code>python</code>两个目录，当在家目录下执行<code>ls</code>命令时，结果如下：</p>
+
+    <pre><code class="bash">$ ls
+vasp  python
+</code></pre>
+
+    <p>同时，<code>ls</code>支持在后面添加一个参数表示要输出的目录。例如，在这一例子下，若在家目录当中执行命令<code>ls vasp</code>，将会输出<code>vasp</code>目录下的所有文件和目录。利用<code>..</code>表示上一级目录的用法，若当前处在<code>~/vasp</code>目录下，使用<code>ls ..</code>便可得到上一级目录（即家目录）下的所有文件和目录。</p>
+
+    <h4><code>ls -l</code></h4>
+    <p>下面介绍两个常见的<code>ls</code>选项，首先是<code>-l</code>选项，它表示<strong>以列表形式输出结果</strong>。例如，还是上面的例子，使用这一命令的结果为：</p>
+
+    <pre><code class="bash">$ ls -l
+total 0
+drwxrwxr-x 2 zjq zjq 6 Aug 12 16:35 python
+drwxrwxr-x 2 zjq zjq 6 Aug 12 16:35 vasp
+</code></pre>
+
+    <div class="extend">
+        <p>每一个文件的输出结果可以分为9个部分，分别是：权限、文件硬链接数或目录子目录数、拥有者用户名、拥有者所在组、文件大小、文件修改月份、日期、时间、文件名。</p>
+        <p>关于权限，可以将其分成四部分：第一部分（一个字符）表示文件类型（这里的<code>d</code>表示目录），第二部分（三个字符）表示拥有者权限（<code>rwx</code>表示可读可写可执行），第三部分（三个字符）表示组用户权限，第四部分（三个字符）表示其他用户权限（<code>r-x</code>）表示可读，可执行但不可编辑。</p>
+        <p>对于文件硬链接数和目标子目录数，对于初始创建的文件而言，通常为1，而对于目录而言，默认为2（因为有两个子目录<code>.</code>和<code>..</code>）</p>
+    </div>
+
+    <p>有时，也可以使用<code>ll</code>代替指令<code>ls -l</code>，其二者是完全等价的。</p>
+
+    <h4><code>ls -a</code></h4>
+    <p><code>-a</code>选项表示<strong>列出所有文件，包括隐藏文件</strong>。例如，在<code>~/vasp</code>目录下，使用<code>ls -a</code>命令，结果为：</p>
+
+    <pre><code class="bash">$ ls -a
+.  ..
+</code></pre>
+
+    <div class="extend">
+        <p>正如前面所介绍的那样，任何一个空目录都会默认有两个隐藏目录--自身和它的上一级目录。而这也解释了<a href="#subsec:认识Linux目录-绝对路径和相对路径">绝对路径和相对路径</a>一节所介绍的<code>.</code>和<code>..</code>的本质，它们实际上就是任何当前目录下的两个子目录。</p>
+    </div>
+
+    <div class="attention">
+        <p>前面所介绍的<code>-l</code>选项和<code>-a</code>选项是可以合并使用的，此时可以将两个选项之间以空格分割，如<code>ls -l -a</code>，或者将两个选项写在一起<code>ls -la</code>。</p>
+        <p>当选项写在一起时，选项的排列顺序不重要。</p>
+        <p>与最开始介绍<code>ls</code>后面加参数表示目录一样，带有选项的<code>ls</code>同样可以在后面添加参数，例如，<code>ls -a vasp</code>表示列出当前目录下的<code>vasp</code>子目录下的所有文件和目录（包括隐藏文件）。</p>
+    </div>
+
+    <h3 id="subsec:目录操作-关于隐藏文件">关于隐藏文件</h3>
+    <div class="extend">
+        <p>隐藏文件是指在文件名前面加上<code>.</code>的，例如<code>.bashrc</code>。</p>
+        <p>隐藏文件在Linux当中的常见用途有：</p>
+        <ul>
+            <li>配置文件</li>
+            <li>临时文件</li>
+            <li>缓存文件</li>
+            <li>等</li>
+        </ul>
+        <p>总而言之，隐藏文件是为了防止误操作而存在的。（这可能与一些人认为的“隐藏文件是避免别人看到”不同）事实上，哪怕在Windows操作系统中，隐藏文件也是存在且方便查看的。</p>
+    </div>
+
+    <h3 id="subsec:目录操作-创建目录">创建目录 <code>mkdir</code></h3>
+    <p>如果所有操作都在家目录下进行，那文件管理就太复杂了。试想一下，在科研里面算了好几年的结果，全部“一股脑”堆在一起，既难找，也容易忘记当时是做了什么。因此，一个好的目录管理至关重要。而前提，就是知道如何创建目录。</p>
+
+    <p>在Linux当中，创建目录的方法是使用<code>mkdir</code>命令。与前面介绍的<code>ls</code>，以及后面要介绍的<code>cd</code>不同的是，<code>mkdir</code>必须带有一个参数，表示<strong>创建的目录路径</strong>。对于刚开始接触的初学者，一个最简单的命令格式是：<code>mkdir &lt;目录名&gt;</code>，其中表示在当前目录下创建一个名为<code>&lt;目录名&gt;</code>的目录。例如，希望在当前目录下创建一个名为<code>ML</code>的目录，则可以使用命令<code>mkdir ML</code>。</p>
+
+    <div class="attention">
+<p>你所写的路径名，应当是你所要创建的目录。这句话似乎有点绕，举个例子，如果你希望在<code>/home/zjq/vasp</code>下创建一个名为<code>lattice</code>的目录，则你需要运行的命令是<code>mkdir /home/zjq/vasp/lattice</code>。注意到，后面的路径实际上就是你要创建的目录。</p>
+</div>
+
+<h3 id="subsec:目录操作-切换目录">切换目录 <code>cd</code></h3>
+<p>在Linux当中，切换目录使用的命令是<code>cd</code>，通常来说，后面需要配合一个参数，表示<strong>要切换到哪里</strong>。例如，使用命令<code>cd /home</code>则是将当前目录切换到<code>/home</code>目录下。配合以<code>..</code>，可以使用<code>cd ..</code>切换到上一级目录。</p>
+<p><strong>思考：</strong>如果使用<code>cd .</code>，会得到什么结果？</p>
+<p><strong>答案：</strong>这个命令的含义是<strong>切换到当前目录</strong>，最终效果就是什么也不发生。</p>
+<p>特殊的，对于家目录而言，除了可以使用<code>cd ~</code>外，Linux也支持直接使用<code>cd</code>，不添加任何参数实现这一功能，即二者是等价的。</p>
+
+<h3 id="subsec:目录操作-错误处理">错误处理</h3>
+<h4>-bash: cd: &lt;目录名&gt;: Not a directory</h4>
+<p><code>cd</code>后面的参数必须是目录，不能是文件。如果参数是文件，则会报该错误。</p>
+<p>如果不知道哪个是目录，哪个是文件，可以使用<code>ls -l</code>查看第一个字符（文件类型），如果第一个字符是<code>d</code>，则表示目录，如果是<code>-</code>，则表示文件。</p>
+<pre><code class="bash">$ ls -l
+total 4
+-rw-rw-r-- 1 zjq zjq 4 Aug 12 17:12 INCAR
+drwxrwxr-x 2 zjq zjq 6 Aug 12 16:35 python
+drwxrwxr-x 2 zjq zjq 6 Aug 12 16:35 vasp
+</code></pre>
+<p>表示<code>INCAR</code>是文件，而<code>vasp</code>和<code>python</code>是目录。如果执行了<code>cd INCAR</code>，则会报错。</p>
+
+<h4>-bash: cd: &lt;目录名&gt;: Permission denied</h4>
+<p>这表明你尝试进入一个你没有权限的目录。例如，在<code>/home</code>目录下，有<code>ljk</code>和<code>zjq</code>两个目录，分别表示两个用户。如果执行<code>ls -l</code>则会发现：</p>
+<pre><code class="bash">$ ls -l
+total 32
+drwx------  13 ljk    ljk    4096 Aug  5 17:34 ljk
+drwx------  75 zjq    zjq    4096 Aug 12 17:12 zjq
+</code></pre>
+<p>很显然，每个目录只有目录拥有者自己可以访问。例如，作为用户<code>zjq</code>，当尝试执行<code>cd ljk</code>时，则会报错。</p>
+
+<div class="extend">
+    <p>这种情况有一个特例：root用户。对于root用户而言，可以进入任何目录。但通常来说，root用户是由服务器管理者所持有的，作为一般用户而言，不需要也不应该进入没有权限的目录，或者执行没有权限的操作。</p>
+</div>
+
+<h4>mkdir: cannot create directory &lt;目录名&gt;: No such file or directory</h4>
+<p>虽然我们说可以用绝对路径或相对路径在更远的层级关系下创建目录。但这一操作的前提是，<strong>这个目录的上一级目录需要存在</strong>。例如，当你执行<code>mkdir vasp/lattice/Fe</code>时，首先需要确保目录<code>vasp</code>和<code>vasp/lattice</code>存在，才会创建<code>vasp/lattice/Fe</code>。如果你要创建的目录其上一级目录不存在，则会报错。</p>
+<p>一个很自然的解决方法是：<strong>一层一层创建</strong>。这种方法虽然麻烦，但可以确保目录是清晰的。</p>
+<div class="extend">
+    <p>如果你确实想要一个快捷的方法，可以使用选项<code>-p</code>。这一选项可以在遇到没有的目录时自动为你创建。例如，上面的例子也可以直接使用<code>mkdir -p vasp/lattice/Fe</code>，但这一操作需要保证输入内容是正确的。一旦有内容输错，则极有可能造成目录结构混乱。</p>
+</div>
+
+<h4>mkdir: missing operand</h4>
+<p>很显然，你在使用<code>mkdir</code>时没有给任何参数。正如<a href="#subsec:目录操作-创建目录">创建目录</a>所说的那样，在调用<code>mkdir</code>时<strong>必须提供一个参数表示要创建的目录路径</strong>。</p>
+        </div>
+        <div id="linuxFileOperation" class="chapter-content" style="display: none;">
+            <h2>1.3 文件操作</h2>
+            <p><strong>作者：</strong>Jiaqi Z.</p>
+    
+    <h3>知识点</h3>
+    <ul>
+        <li>如何移动文件（目录），如何给文件（目录）重命名</li>
+        <li>如何删除文件（目录）</li>
+        <li>如何复制文件（目录）</li>
+    </ul>
+
+    <p>这一节，我们专注于文件的相关操作。类似于Windows的基本操作，Linux的文件操作也无外乎就是<strong>移动、删除、复制</strong>。同时，这一节的许多命令对于文件和目录都是适用的，但可能会有一个注意事项，这往往会出错。</p>
+
+    <h3 id="subsec:文件操作-移动文件">移动文件 <code>mv</code></h3>
+    <p>在Linux当中，移动文件使用的命令是<code>mv</code>。其基本用法是<code>mv &lt;源文件路径&gt; &lt;目标文件路径&gt;</code>。例如，我们在<code>vasp</code>目录下，希望将里面的<code>OUTCAR</code>移动至上一级目录，可以使用<code>mv OUTCAR ..</code>。类似地，对于更复杂的文件移动，只不过在描述路径时稍微复杂一点，其他的步骤没有什么不同。</p>
+    <p>如果你足够敏感，也许会发现一点问题：<strong>为什么前面的命令，<code>OUTCAR</code>是文件，而<code>..</code>是目录</strong>？两个难道不应该统一吗？</p>
+    <p>对于这个问题，可以分两个部分讨论：如果前面是文件，后面也是文件，例如<code>mv OUTCAR ../OUTCAR</code>，这个命令与前面的命令效果是完全等价的。但是，有趣的地方在于，如果你试着执行<code>mv OUTCAR ../INCAR</code>的话，你会发现，Linux将<code>OUTCAR</code>移动到<code>..</code>的同时，还将其改名为<code>INCAR</code>。</p>
+    <p>进一步想一下，如果我们现在直接写成<code>mv OUTCAR INCAR</code>的话，可以将其看作把当前目录下的<code>OUTCAR</code>移动至当前目录，同时改名为<code>INCAR</code>，总的效果就是，文件被重命名为<code>INCAR</code>。</p>
+    <div class="attention">
+        <p>正如你所见到的那样，Linux没有单独的重命名文件命令，而是通过<code>mv</code>命令来完成。</p>
+    </div>
+    <p>进一步，如果前后两个参数都是目录会发生什么呢？很简单，<strong>就是将前面的目录移动至后面的目录</strong>，从效果上看，近似于将第一个参数的目录看作文件。</p>
+    <div class="attention">
+        <p>与文件移动类似的操作，如重命名，对目录的移动同样成立。</p>
+    </div>
+
+    <h3 id="subsec:文件操作-如何删除文件">如何删除文件 <code>rm</code></h3>
+    <p>相比于移动文件需要两个参数，删除文件的命令<code>rm</code>只需要一个参数即可，也许你也能猜到这个参数的含义，即<code>rm &lt;删除的文件路径&gt;</code>。例如，要删除当前目录下的<code>INCAR</code>文件，只需要执行<code>rm INCAR</code>即可。同样的，你也可以使用更复杂的绝对路径或相对路径，例如，删除上一级目录下的<code>OUTCAR</code>文件，可以使用<code>rm ../OUTCAR</code>。</p>
+    <div class="extend">
+        <p>与Windows不同，Linux删除文件通常是直接删除，而不是放在所谓的<strong>回收站</strong>内。因此，在删除文件时务必小心。</p>
+        <p>在有些版本的Linux（例如Ubuntu）当中，删除的文件被移动至<code>/home/&lt;用户名&gt;/.local/share/Trash/files</code>当中，这个目录起到的临时的<strong>回收站</strong>功能，但你不应该寄希望于这个功能，而是仔细检查删除文件的正确性，并做好合适的备份。</p>
+    </div>
+    <p>对于删除目录而言，情况有点特殊，需要使用<code>rm -r</code>命令删除一个目录，此时后面所接参数为目录的路径，例如，删除当前目录下的<code>vasp</code>目录，则可以使用<code>rm -r vasp</code>。</p>
+    <div class="attention">
+        <p><code>-r</code>选项通常表示<strong>递归</strong>，例如，在<code>rm -r</code>当中，表示<strong>递归删除</strong>，从而达到删除一个目录的效果。在删除目录时会连同里面的所有内容都删除掉，因此需要特别小心。</p>
+        <p>如果担心删除错误的文件，可以在选项中使用<code>-i</code>。<code>rm -i</code>表示<strong>在删除时</strong>询问是否删除。</p>
+        <p>对于空目录而言，Linux还提供了一个命令<code>rmdir</code>，其用法为<code>rmdir &lt;目录路径名&gt;</code>，可以删除一个<strong>空目录</strong>。</p>
+    </div>
+
+    <h3 id="subsec:文件操作-如何复制文件">如何复制文件 <code>cp</code></h3>
+    <p>复制文件的命令为<code>cp</code>，其用法与移动文件<code>mv</code>几乎完全一样，无非就是将<strong>移动</strong>改为<strong>复制</strong>。简单来说，语法就是<code>cp &lt;源文件路径&gt; &lt;目标文件路径&gt;</code>，类似于<a href="#subsec:文件操作-移动文件">移动文件</a>当中所介绍的重命名方法，使用<code>cp</code>命令同样可以做到复制的同时重命名。例如，<code>cp vasp/OUTCAR ../INCAR</code>表示将<code>vasp</code>目录下的<code>OUTCAR</code>文件复制到上一层目录，并重命名为<code>INCAR</code></p>
+    <p>如果想要复制一个目录，也需要使用选项<code>cp -r</code>。例如，<code>cp -r vasp/ python/</code>表示将<code>vasp</code>目录复制到当前目录并重命名为<code>python</code>。</p>
+    <div class="attention">
+        <p>我们在上面的命令当中使用<code>vasp/</code>和<code>python/</code>表示两个目录。其中使用了符号<code>/</code>作为结尾，这个符号通常强调该路径是个目录。对于Linux本身而言，有没有这个符号并没有区别。例如，<code>cp -r vasp python</code>也可以表示上面的操作。我们这么写只是为了强调这两个路径是目录而不是文件。</p>
+    </div>
+
+    <h3 id="subsec:文件操作-一次性处理多个文件">一次性处理多个文件</h3>
+    <p>前面介绍的<code>rm</code>，<code>cp</code>，<code>mv</code>，以及在<a href="#sec:目录操作">目录操作</a>一节所介绍的<code>mkdir</code>，都是可以针对多个文件同时操作的。以<code>rm</code>为例，如果想同时删除多个文件，只需要在后面添加多个参数即可，其中参数之间以空格分割。例如，<code>rm INCAR KPOINTS</code>表示删除当前目录下的<code>INCAR</code>文件和<code>KPOINTS</code>文件。对于<code>mkdir</code>创建多个目录而言，也是一样的用法，例如，使用<code>mkdir vasp ML</code>表示在当前目录下创建<code>vasp</code>目录和<code>ML</code>目录。</p>
+<p>对于<code>cp</code>和<code>mv</code>而言，情况稍有不同。它们自身就需要两个参数，第一个是源路径，第二个是目标路径。如果有多个文件需要处理，Linux默认<strong>最后一个路径为目标路径，前面的所有参数都是源路径</strong>。例如，<code>cp INCAR KPOINTS POSCAR POTCAR ..</code>表示将<code>INCAR</code>，<code>KPOINTS</code>，<code>POSCAR</code>和<code>POTCAR</code>复制到上一级目录中。</p>
+<div class="attention">
+<p>对于<code>cp</code>和<code>mv</code>而言，若一次性移动多个文件，则最后一个参数必须是目录。这就意味着不能进行重命名操作。</p>
+</div>
+
+<h3 id="subsec:文件操作-错误处理">错误处理</h3>
+<h4>rmdir: failed to remove &lt;路径名&gt;: Directory not empty</h4>
+<p>使用<code>rmdir</code>命令时，<strong>只能用来删除空目录</strong>。当要删除的目录不是空目录时，执行该命令则会报错。使用<code>rm -r &lt;路径名&gt;</code>往往是删除非空目录的常见方法。</p>
+
+<h4>cp: -r not specified; omitting directory &lt;路径名&gt;</h4>
+<p>当使用<code>cp</code>复制目录时，需要添加<code>-r</code>选项。如果没有添加这一选项则会报错。</p>
+
+<h4>cp: target &lt;路径名&gt; is not a directory</h4>
+<p>这通常出现在尝试使用<code>cp</code>复制多个文件时，最后的参数<strong>必须是目录</strong>。如果此时不是目录，则会报错。</p>
+
+<h4>rm: cannot remove &lt;路径名&gt;: No such file or directory</h4>
+<p>表明你正在使用<code>rm</code>命令删除一个不存在的文件。请仔细检查你的文件路径名是否正确。</p>
+
+<h4>rm: cannot remove &lt;路径名&gt;: Is a directory</h4>
+<p>类似于<code>cp</code>复制目录，使用<code>rm</code>删除目录时，也需要添加<code>-r</code>选项。特别地，对于一次性删除多个文件，如果在删除文件的同时也存在把目录删除的情况，也需要添加这一选项。</p>
+
+<h4>rm: remove write-protected regular file &lt;文件名&gt;? </h4>
+<p>当你尝试对没有权限（不可写）的文件进行删除时，会提示该错误。关于权限的内容，将在<a href="#sec:文件权限管理">文件权限管理</a>一节详细讨论。在Linux当中，是有方法对文件权限进行修改的，但这并不是一个明智的方法。仔细检查文件操作，遵守这些权限，不要“越界”，可以保证你“安全”地使用操作系统（不会引起系统崩溃等严重问题）。</p>
+<p>如果你确实需要删除，则只需要输入<code>y</code>（表示“yes”）并回车即可；反之则输入<code>n</code>（表示“no”）。</p>
+        </div>
+        <div id="linuxViewFile" class="chapter-content" style="display: none;">
+            <h2>1.4 查看文件</h2>
+            <p><strong>作者：</strong>Jiaqi Z.</p>
+    
+    <h3>知识点</h3>
+    <ul>
+        <li>Linux文件类型</li>
+        <li>如何查看Linux文件</li>
+    </ul>
+
+    <p>这一节看似知识点不多，但命令还是挺多的。因此，一节只讲这一部分内容完全足够了。</p>
+
+    <h3 id="subsec:查看文件-Linux文件类型">Linux文件类型</h3>
+    <div class="extend">
+        <p>在<a href="#subsec:目录操作-显示目录文件">显示目录文件</a>当中，我们介绍了<code>ls -l</code>命令可以以列表形式查看文件。当时仅仅提到，第一个字符如果是<code>d</code>则表示<strong>目录</strong>，如果是<code>-</code>则表示<strong>普通文件</strong>。在这一部分，我们稍微详细介绍一下更多的文件类型。</p>
+        <ul>
+            <li>普通文件（<code>-</code>）：就是普通的文件，通常可以分为<strong>文本文件</strong>，<strong>可执行文件</strong>和<strong>压缩文件</strong>等；
+            <li>目录（<code>d</code>）：在Linux当中，目录也是一种文件，该文件下存放的是这一目录下的<strong>inode</strong>号（又名<strong>索引节点</strong>）和文件名等信息。当执行打开文件时，Linux实际上是通过inode号找到当前文件所在block（8个磁盘扇区组成一个block），从而执行文件；
+            <li>设备文件，又分为<strong>块设备文件</strong>（<code>b</code>）和<strong>字符设备文件</strong>（<code>c</code>）。其中前者可以以“块”为单位进行访问（例如硬盘，软盘等），而后者则是以“字节流”的方式访问（例如字符终端、键盘等）。一般来说，设备文件存放在<code>/dev/</code>目录下；
+            <li>链接文件（<code>l</code>）：一般情况下指的是符号链接（软链接），类似于Windows操作系统下的“快捷方式”。创建符号链接的方法是使用<code>ln</code>的<code>-s</code>选项<sup>1</sup>，例如，<code>ln -s INCAR INCAR_link</code>表示创建了一个指向<code>INCAR</code>文件的链接文件<code>INCAR_link</code>。当源文件删除时，符号链接文件也会删除；
+            <li>管道文件（<code>p</code>）：通常用于进程间的通信，创建方法是<code>mkfifo</code>命令<sup>2</sup>，即<code>mkfifo fifo_file</code>。
+            <li>套接字文件（<code>s</code>）：用于通信（尤其是网络上的通信）。简单来说，这是为了避免多个进程或多个TCP连接同时在一个TCP协议端口传输数据造成混淆。一般来说，套接字文件包含目的IP地址，传输层使用协议（TCP或UDP）和使用的端口号，利用套接字文件将三个参数组合起来，从而在传输过程中实现并发服务。
+        </ul>
+    </div>
+
+    <h3 id="subsec:查看文件-查看文件内容">查看文件内容 <code>cat</code>，<code>tac</code></h3>
+    <div class="attention">
+        <p>当然，从文件操作本身来说，第一件事应当是创建文件。但是，创建文件需要的内容较多（例如，需要一些<code>vi</code>编辑器的使用，可能还需要重定向命令，在后面的章节再详细介绍。</p>
+        <p>如果是初学者，希望可以尽快上手的话，你可以试着在Windows本地用记事本创建一个文本文件，并在里面随意输入一些你喜欢的文字（建议使用英文，对于中文等非ASCII字符而言，可能会出现乱码。），然后利用远程终端将文件发送至服务器（对于MobaXterm而言，在终端左侧有一个目录列表，你可以直接将文件拖拽至相应的目录中；对于其他终端软件，请参考其软件具体的操作方法）。后面对文件的查看操作，都可以对这个文本文件进行。</p>
+    </div>
+    <p>首先需要了解的是，如何查看完整的文件。在Linux当中，查看文件内容的命令是<code>cat</code>，其基本用法是<code>cat &lt;文件路径名&gt;</code>例如，对于位于当前目录下的<code>INCAR</code>文件，可以使用<code>cat INCAR</code>查看其内容。</p>
+    <p><code>cat</code>命令有一些常用选项，例如，可以使用<code>cat -n</code>或<code>cat -b</code>显示行号，二者的区别在于前者会显示所有行号，而后者只对有内容的行显示行号。如果文本中空行内容太多，可以使用<code>cat -s</code>对空行进行压缩，使其缩减为一个空行。</p>
+    <p>相对地，命令<code>tac</code>也是查看所有内容，只不过它是从最后一行倒着输出。可以看出，<code>tac</code>本身就是命令<code>cat</code>倒着写。例如，<code>tac INCAR</code>表示从最后一行开始输出<code>INCAR</code>文件。</p>
+    <div class="attention">
+        <p>命令<code>cat</code>并不是单词“猫”的意思，而是连接concatenate的缩写。正如单词所表示的那样，<code>cat</code>最原始的功能，是连接多个文件。例如，有一个文件叫<code>a</code>，另一个文件叫<code>b</code>，执行命令<code>cat a b</code>，则会将两个文件内容按照顺序连接起来并输出。</p>
+    </div>
+
+    <h3 id="subsec:查看文件-关于文件后缀名">关于文件后缀名</h3>
+    <p>对于熟悉Windows的用户而言，看到上面（包括之前的所有示例）也许都会有一个疑惑：在Linux当中，文件名为什么没有后缀？事实上，后缀名的重要性仅仅是Windows操作系统给你的一个“错觉”，让你误以为<strong>后缀名很重要</strong>。事实上，<strong>Windows操作系统的文件名后缀并不会影响这个文件本身</strong>。</p>
+    <div class="attention">
+        <p>虽然表示后缀名的<code>.</code>可以任意放置，但有一个地方比较特殊--文件名开头。对于以<code>.</code>开头的文件名而言，它表示的含义是隐藏文件（这在<a href="#subsec:目录操作-关于隐藏文件">关于隐藏文件</a>一节介绍过了）</p>
+    </div>
+    <p>对于Windows操作系统而言，使用后缀名往往是为了决定文件的打开方式（取决于Windows特有的<strong>注册表</strong>）；而Linux文件大多都是文本文件（甚至系统配置也是文本文件），因此在Linux当中，文件后缀名就变得不重要了。也正因如此，在Linux当中你可以类似于Windows后缀名的方式创建任何的后缀（<code>*.jpg</code>,<code>*.xyz</code>甚至<code>*.zjq</code>,<code>*.ykn</code>都是可以的），在Linux看来，它们仅仅是文件名的一部分。</p>
+    <p>甚至，在Linux当中，大多时候文件都是没有后缀名的。这也就是之前的<code>INCAR</code>和<code>OUTCAR</code>为什么没有后缀。对于从Windows创建的文本文件上传至服务器而言，可能还留有所谓的后缀名<code>*.txt</code>，你完全可以使用<code>mv</code>命令将后缀名删去，丝毫不影响文件本身和其他命令的运行。</p>
+
+    <h3 id="subsec:查看文件-按页查看文件">按页查看文件 <code>more</code>，<code>less</code></h3>
+<p>使用<code>cat</code>和<code>tac</code>查看文件，都是“一股脑”输出到终端里，对于比较短的文件而言，这种方法是可行的；如果这个文件很长，则要上下翻页就会比较繁杂。</p>
+<p>对于多页的文件而言，Linux可以使用<code>more</code>命令查看。基本用法是<code>more <文件路径名></code>。例如，使用<code>more ../band/OUTCAR</code>就可以查看上一级目录下的<code>band</code>目录下的<code>OUTCAR</code>文件。在查看过程中，可以<strong>使用空格进行翻页，使用回车进行下一行查看</strong>。</p>
+<div class="attention">
+<p>在查看过程中，可以随时使用<code>q</code>键退出。</p>
+<p>对于一些需要往回翻页查看的文件，可以使用<code>less</code>命令。基本调用格式与<code>more</code>类似，即<code>less <文件路径名></code>。与<code>more</code>不同的是，<code>less</code>命令可以向上翻页（使用<code>Page Up</code>键或者<code>b</code>键）<sup>3</sup>。</p>
+<p>除次之外，也可以使用<code>d</code>向后翻半页，使用<code>u</code>向前翻半页。</p>
+<p>对于<code>more</code>而言，实际上也可以通过<code>b</code>键实现向前翻一页的效果。但相比于<code>less</code>而言，<code>more</code>的自由性并不是太高。而且，使用<code>b</code>向前翻页的效果对于管道文件无法实现。</p>
+<p>此外，<code>less</code>还有更复杂的“搜索功能”，例如，可以使用符号<code>/<字符串></code>的方法实现向下搜索，使用符号<code>?<字符串></code>的方法实现向上搜索。同时，<code>less</code>的其他命令都是在显示文件后的操作，并不是类似于之前的“选项”（即使用<code>-</code>的形式），这种方法与vi的使用类似。</p>
+</div>
+<p>无论是<code>more</code>还是<code>less</code>，都可以使用<code>q</code>键退出显示文件。</p>
+
+<h3 id="subsec:查看文件-取头部和取尾部">取头部<code>head</code>和取尾部<code>tail</code></h3>
+<p>有时，可能会希望仅仅查看一个文件的开头或者结尾。此时可以使用Linux操作系统下的<code>head</code>和<code>tail</code>命令。这两个命令的基本调用方法都是一样的，即<code>head &lt;文件路径名&gt;</code>和<code>tail &lt;文件路径名&gt;</code>。例如，使用<code>head POSCAR</code>就可以查看当前目录下<code>POSCAR</code>文件开头几行，同理，使用<code>tail relax/OSZICAR</code>就可以查看<code>relax</code>目录下的<code>OSZICAR</code>文件结尾几行。</p>
+<div class="attention">
+    <p>通常情况下，直接调用<code>head</code>和<code>tail</code>得到的都是开头（或结尾）10行的内容。在有些时候，可能会希望输出更多行，或者少输出几行避免混乱。此时可以使用参数<code>-n</code>实现，其基本格式为<code>head -n &lt;行数&gt; &lt;文件路径名&gt;</code>和<code>tail -n &lt;行数&gt; &lt;文件路径名&gt;</code>，这一选项表示输出指定的行数。例如，<code>head -n 5 POSCAR</code>可以查看<code>POSCAR</code>文件开头5行。对于<code>tail</code>同理。</p>
+    <p>除此之外，<code>head</code>和<code>tail</code>还提供了选项<code>-c</code>，表示输出开头（或结尾）多少个字符的内容，格式与上面<code>-n</code>选项类似，即<code>head -c &lt;字符数&gt; &lt;文件路径名&gt;</code>和<code>tail -c &lt;字符数&gt; &lt;文件路径名&gt;</code>。</p>
+</div>
+
+<h3 id="subsec:查看文件-错误处理">错误处理</h3>
+<h4>cat: &lt;文件名&gt;: Is a directory</h4>
+<p><code>cat</code>命令仅限于查看文件内容，若后面所接内容为一个目录，例如，<code>cat vasp/</code>则会报错</p>
+
+<h4>输入<code>cat</code>命令后忘记输入文件名直接回车，输入文件名后结果只输出了文件名，并没有输出内容</h4>
+<p>当直接调用<code>cat</code>而没有接任何参数时，表示将终端标准输入所读取到的内容输出到终端。对于普通调用<code>cat &lt;文件路径名&gt;</code>而言，是将读取到的文件输出到终端。若没有任何参数，则会读取后面输入的内容。</p>
+<p>退出的方法则是使用<code>ctrl+d</code>键结束当前输入，或者使用<code>ctrl+c</code>键强制终止当前命令。</p>
+
+<h4>cat: &lt;文件名&gt;: No such file or directory</h4>
+<p>文件路径不存在，检查一下路径（尤其是当前工作路径）是否正确。</p>
+
+<h4>head（或tail）: invalid number of lines: &lt;文件名&gt;</h4>
+<p>当你使用<code>head -n</code>或<code>tail -n</code>时，后面的行数是必须提供的一个参数。若没有提供行数，则会报错。</p>
+
+<h4>head（或tail）: cannot open &lt;文件名&gt; for reading: No such file or directory</h4>
+<p>文件路径不存在，检查一下路径（尤其是当前工作路径）是否正确。</p>
+
+<h4>head（或tail）: error reading &lt;文件名&gt;: Is a directoryy</h4>
+<p>类似于使用<code>cat</code>打开目录，使用<code>head</code>或<code>tail</code>打开目录就会报这种错误。</p>
+
+<h4>使用<code>more</code>查看文件，输出*** &lt;文件名&gt;: directory ***</h4>
+<p>这是因为试着用<code>more</code>查看目录而不是文件。</p>
+
+<h4>使用<code>less</code>查看文件，输出许多奇怪的路径，不是想要的内容</h4>
+<p>如果你仔细看一下里面的内容就会发现，当你用<code>less</code>查看目录时，输出的是这个目录下所有的文件和目录（包括隐藏文件）。事实上，使用<code>less &lt;目录路径&gt;</code>得到的结果和使用<code>ls -l &lt;目录路径&gt;</code>是一样的。只不过前者是单独输出的，而后者是直接输出在终端里。</p>
+
+<h4>Missing filename ("less --help" for help)</h4>
+<p>在调用<code>less</code>时忘记提供文件路径了。</p>
+
+<h4>more: bad usage Try 'more --help' for more information.</h4>
+<p>与上面的错误类似，在调用<code>more</code>时忘记提供文件路径了。</p>
+
+<footer>
+    <ol>
+        <li id="ftnt1">相对地还有“硬链接”，直接使用<code>ln</code>即可。对于硬链接而言，二者本质上是一个文件（类似于做了备份），当其中一个删除时，另一个不会删除；当其中一个文件修改时，另一个也会同时修改。</li>
+        <li id="ftnt2">也许你会疑惑为什么是fifo而不是管道的单词pipe。事实上，FIFO是一种数据缓存器执行方法，即“先进先出”（First In First Out）。作为数据缓存器，其与普通存储器的区别是没有外部读写地址线，这样使用起来非常简单，但缺点就是只能顺序写入数据，顺序的读出数据。数据地址在内部由指针自动加1实现，而不能通过地址线寻找地址。而Linux进程间的通信大多就是采用这种通信方式，这种方式也是管道的特性。相对的，还有一种LIFO，即“后进先出”（Last In First Out），通常“堆栈”（Stack）就是采用这种方法。</li>
+<li>除次之外，也可以使用<code>d</code>向后翻半页，使用<code>u</code>向前翻半页。</li>
+</ol>
+</footer>
+        </div>
+        <div id="linuxCompress" class="chapter-content" style="display: none;">
+            <h2>1.5 压缩与解压缩</h2>
+            <p><strong>作者：</strong>Jiaqi Z.</p>
+    
+    <h3>知识点</h3>
+    <ul>
+        <li>如何压缩文件</li>
+        <li>如何解压缩文件</li>
+    </ul>
+
+    <h3 id="subsec:压缩与解压缩-备份和压缩">备份和压缩</h3>
+    <div class="extend">
+        <p>虽然在许多场合，会将Linux的一些使用<code>tar</code>的操作说成是压缩文件和解压缩文件，但这个表述实际上是不贴切的。事实上，<code>tar</code>的本意是tape archive，指的是“磁带存档”，是为将若干个文件归档到磁带上，从而方便备份而设计的。而压缩文件实际上在<code>tar</code>当中经历了另外的步骤，即gzip压缩，或者是bzip2压缩等。这些在命令上都是通过额外的选项实现的。</p>
+        <p>但是，由于现在大多数时候都是习惯于将两个步骤合二为一，包括使用gzip压缩后得到的<code>.gz</code>文件也可以在Windows操作系统下解压缩，从而极大方便了文件之间的跨系统传输。因此，在通常情况下，我们使用到的都是“压缩”。这里之所以给出两者的不同仅作为补充扩展用，在后续表述中，往往不做区分，一律表述为“压缩”和“解压缩”。</p>
+    </div>
+
+    <h3 id="subsec:压缩与解压缩-使用tar命令压缩文件">使用tar命令压缩文件</h3>
+    <p><code>tar</code>命令在使用时通常会配合许多选项，在官方文档中，选项就有50个左右甚至更多，因此，我们不可能在这里完全介绍完所有的选项。对于一般的科研工作而言，只需要掌握几个最基本的选项即可。</p>
+    <p>首先一个最基本的选项是<code>tar -c</code>，表示<strong>创建备份文件</strong>。通常仅有这一个参数是不够的，还需要配合以如<code>tar -f</code>参数，这一参数表示<strong>指定备份文件</strong>。结合这两个选项，可以得到一个备份文件的基本模式为：<code>tar -cf &lt;备份文件路径&gt; &lt;要备份的文件1路径&gt; &lt;要备份的文件2路径&gt; ...</code>。例如，<code>tar -cf vasp.tar INCAR KPOINTS POSCAR POTCAR</code>表示将当前目录下的<code>INCAR</code>,<code>KPOINTS</code>,<code>POTCAR</code>和<code>POSCAR</code>备份至当前目录的<code>vasp.tar</code>当中。</p>
+    <div class="attention">
+        <p><code>-cf</code>后面的参数，除第一个是备份文件路径外，后面所有参数都是要备份的文件路径。</p>
+    </div>
+    <p>正如<a href="#subsec:压缩与解压缩-备份和压缩">备份和压缩</a>所说的关于压缩和备份的区别一样，我们这里所做的仅仅是备份。对于真正的压缩，我们还需要添加一个压缩格式<sup>1</sup>。对于常见的gzip压缩格式而言，使用的选项是<code>tar -z</code>。因此，一个完整的压缩命令可以表示为<code>tar -czf &lt;压缩文件路径&gt; &lt;要压缩的文件1路径&gt; &lt;要压缩的文件2路径&gt; ...</code>。</p>
+    <div class="attention">
+        <p>一般情况下，使用gzip压缩的文件后缀名都是<code>.gz</code>。</p>
+    </div>
+    <p>对于上面所提到的备份例子，你能想到它的压缩命令是什么吗？</p>
+    <p><strong>答案：</strong><code>tar -czf vasp.tar.gz INCAR KPOINTS POSCAR POTCAR</code></p>
+
+    <h3 id="subsec:压缩与解压缩-解压缩">解压缩</h3>
+    <p>相对地，有了压缩过程，就一定会有<strong>解压缩</strong>过程。首先，先忽略掉压缩格式（即gzip等相关内容），仅仅从备份的角度，考虑它的逆过程，也就是<strong>还原文件</strong>。</p>
+    <p>在<code>tar</code>当中，可以使用选项<code>tar -x</code>实现备份文件的还原。例如，在开始的备份操作中，可以使用<code>tar -xf vasp.tar</code>实现对备份文件<code>vasp.tar</code>的还原。对于解压缩过程，选项完全类似，只需要使用<code>tar -xzf</code>即可。例如，对上面的<code>vasp.tar.gz</code>进行解压缩，可以使用<code>tar -xzf vasp.tar.gz</code>。</p>
+
+    <h3 id="subsec:压缩与解压缩-查看压缩文件">查看压缩文件</h3>
+    <p>这里所说的查看压缩文件，主要指的是查看<strong>压缩包内的文件</strong>，从更广义的角度看，就是查看所谓的“备份”文件。</p>
+    <p>首先，在<code>tar</code>里面有一个选项<code>tar -v</code>，可以在压缩（解压）过程中查看压缩（解压）的文件。例如，上面的压缩和解压命令，分别可以写成<code>tar -cvf vasp.tar INCAR KPOINTS POSCAR POTCAR</code>和<code>tar -xvf vasp.tar</code>。对于gzip格式的压缩和解压缩，只需要在参数里额外添加<code>-z</code>即可。</p>
+    <div class="attention">
+        <p>在使用<code>tar -t</code>时，往往需要配合以<code>-f</code>参数指定压缩文件名。其完整用法为<code>tar -tf &lt;压缩文件路径&gt;</code>。例如，使用<code>tar -tf vasp.tar</code>可以查看<code>vasp.tar</code>压缩文件中的文件列表。</p>
+        <p>无论是普通的备份文件，还是使用gzip压缩的文件，都是使用<code>tar -tf</code>查看（没有选项<code>-z</code>）。</p>
+        <p>使用<code>tar -tvf</code>同样可以得到文件列表，只是输出的内容更详细（类似于<code>ls -l</code>的输出结果）</p>
+    </div>
+    <p>除此之外，查看压缩文件还有一种方法，使用<code>less</code>命令。通过<code>less &lt;压缩文件路径&gt;</code>可以直接查看压缩文件内容，其形式上类似于<code>tar -tvf</code>和<code>ls -l</code>。</p>
+
+    <h3 id="subsec:压缩与解压缩-压缩文件的追加与合并">压缩文件的追加与合并</h3>
+    <p>虽然已经非常小心地创建了压缩文件，但有时还是会有遗漏。例如，当你将<code>INCAR</code>,<code>POSCAR</code>,<code>KPOINTS</code>和<code>POTCAR</code>已经添加到<code>vasp.tar</code>之后，突然发现还应当把<code>CONTCAR</code>添加进去。如果此时文件还保留着，当然，重新使用<code>tar -cf vasp.tar ...</code>也是可以的（其中...表示五个文件路径）。但是，如果之前的文件已经删除了呢？解压后再重新压缩也不是不可行，但总是麻烦一步。</p>
+    <p>在<code>tar</code>的选项中，提供了一个选项<code>tar -r</code>表示<strong>将文件追加到压缩文件内</strong>。例如，上面的例子，可以直接使用<code>tar -rf vasp.tar CONTCAR</code>即可将<code>CONTCAR</code>添加到<code>vasp.tar</code>中（哪怕原先的四个原始文件删除了也没关系）。</p>
+<p>上面的例子是将文件追加到压缩文件内，如果是<strong>将压缩文件内的所有文件全部追加到另一个压缩文件里呢</strong>？可以使用<code>tar -A</code>选项。其格式为<code>tar -Af <追加的目标压缩文件路径> <追加的压缩文件路径></code>。例如，我们已经有了包含<code>INCAR</code>,<code>KPOINTS</code>,<code>POSCAR</code>,<code>POTCAR</code>的压缩文件<code>vasp.tar</code>，此时又有一个压缩文件<code>result.tar</code>，里面包含有<code>OUTCAR</code>,<code>CONTCAR</code>，如何将其合并到共同的<code>vasp.tar</code>当中呢？可以使用<code>tar -Af vasp.tar result.tar</code>。</p>
+<div class="attention">
+<p>这里的选项<code>-A</code>是大写字母，千万不要写成小写字母。二者的含义不同，对于小写字母<code>tar -a</code>，表示根据后缀来决定压缩格式。例如，使用<code>tar -caf vasp.tar.gz INCAR</code>将会以gzip格式创建压缩文件。</p>
+<p>同时，使用<code>-A</code>合并压缩文件时，只能对两个文件进行合并。</p>
+</div>
+
+<h3 id="subsec:压缩与解压缩-错误处理">错误处理</h3>
+<h4>tar: &lt;压缩文件路径&gt;: Cannot stat: No such file or directory \\tar: Exiting with failure status due to previous errors</h4>
+<p>通常这是因为在调用<code>tar</code>时错误放置了压缩文件路径和被压缩的文件路径的位置。在使用<code>tar</code>进行压缩时，第一个参数是压缩文件路径，第二个参数是被压缩的文件路径。</p>
+<p>例如，对前面的例子，如果使用的是<code>tar -czvf INCAR KPOINTS POSCAR POTCAR vasp.tar.gz</code>，就会报错。</p>
+
+<h4>tar: Refusing to write archive contents to terminal (missing -f option?) \\tar: Error is not recoverable: exiting now</h4>
+<p>在使用<code>tar</code>进行压缩（或解压）时，需要给定选项<code>-f</code>并指定压缩文件名，例如<code>tar -cf vasp.tar INCAR</code>。如果没有选项<code>-f</code>则会报错。</p>
+
+<h4>tar: Cowardly refusing to create an empty archive</h4>
+<p>这意味着你在压缩文件时试图压缩空的文件。这通常是因为你没有指定压缩文件（例如，直接调用<code>tar -cf vasp.tar</code>就会报错）。</p>
+<p>还有一种可能是你错用了压缩选项<code>-c</code>和解压缩选项<code>-x</code>。例如，也许上面的命令你是想解压<code>vasp.tar</code>，那么你需要的命令是<code>tar -xf vasp.tar</code>。</p>
+
+<h4>tar: &lt;压缩文件路径&gt;: file is the archive; not dumped</h4>
+<p>这可能是因为你在压缩文件时<strong>对压缩文件本身进行压缩</strong>，这可能会造成<strong>递归</strong>压缩。例如，<code>tar -cf vasp.tar vasp.tar</code>时就会报错。</p>
+<p>但是，<strong>压缩文件本身是可以被压缩的</strong>。例如，<code>tar -cf vasp.tar result.tar</code>是允许的，这执行的操作是将<code>result.tar</code>文件压缩至压缩包<code>vasp.tar</code>当中。</p>
+
+<footer>
+    <ol>
+        <li id="ftnt1">所谓的<strong>压缩格式</strong>，在Windows系统下常见的如zip、rar等，而在Linux操作系统下，最常见的是gzip，当然也有如bzip、xz等。</li>
+    </ol>
+</footer>
+        </div>
+        <div id="linuxFilePermission" class="chapter-content" style="display: none;">
+            <h2>1.6 文件权限管理</h2>
+            <p><strong>作者：</strong>Jiaqi Z.</p>
+    
+    <h3>知识点</h3>
+    <ul>
+        <li>用户、用户组和其他用户</li>
+        <li>如何查看文件权限</li>
+        <li>如何修改文件权限</li>
+    </ul>
+
+    <h3 id="subsec:文件权限管理-用户和用户组">用户和用户组</h3>
+    <p>Linux是一个多用户操作系统，因此，如何管理不同用户就成为一个至关重要的话题。例如，在科研过程中，同一课题组的多个成员可能会使用同一个服务器，此时每一个成员就是Linux当中的<strong>用户</strong>。每一个用户通常都有一个主目录，通常为<code>/home/</code>下的目录<sup>1</sup>。</p>
+    <p>在<a href="#subsec:目录操作-显示目录文件">显示目录文件</a>当中介绍过如何使用<code>ls -l</code>查看一个文件的完整信息，其中提到了<strong>用户组</strong>的概念。顾名思义，用户组就是<strong>用户的组合</strong>。举一个例子：如果我们把你家庭的房子看作一个Linux操作系统的话，那么你的家人和你就组成一个用户组。而每一个人就是一个用户。对于家庭的共有物品而言（例如空调、冰箱等）是所有家人可以共同使用的，即对整个用户组可用；而相对地，你的房间，你的柜子可能只是你自己可以打开，此时我们说只对某一特定用户可用。</p>
+    <p>相对地，对于不是你家庭成员的其他人（比如你的邻居等），他们是属于其他用户组的用户，对于你家的所有东西都不可用。</p>
+    <div class="attention">
+        <p>上面的例子也许你还看得“一头雾水”，什么可用、不可用，到底有什么用。事实上，用户组的应用场景大多集中在关于权限的操作上。而这件事则是下一部分的内容。</p>
+        <p>同时，前面提到的所有用户中有一个特殊用户--<strong>root</strong>用户。对于他而言，拥有最高的权限和能力，即可以进入任何地方。也正如在前面多次提到的那样，对于一般科研工作而言，不需要了解root的相关内容。因此在这里，我们就将其略过去了。</p>
+    </div>
+
+    <h3 id="subsec:文件权限管理-文件权限">文件权限</h3>
+    <p>前面介绍<code>ls -l</code>命令时已经说明了一些关于文件权限的内容，现在来进一步介绍<strong>如何查看文件权限</strong>，以及<strong>如何理解文件权限的含义</strong>。</p>
+    <p>与前面所介绍的一样，文件权限可以利用<code>ls -l</code>或者<code>ll</code>查看。通常来说，每一个文件（包括目录）的第一组字符串表示了文件类型和参考文献。其中文件类型的相关内容已经在<a href="#subsec:查看文件-Linux文件类型">Linux文件类型</a>当中介绍过了，现在我们重点关注后面九个字符，即<strong>文件权限</strong>。</p>
+    <p>以<code>/bin</code>目录下的<code>cd</code>文件为例<sup>2</sup>，使用命令<code>ls -l /bin/cd</code>可以得到如下结果</p>
+    <pre><code class="bash">$ ls -l cd
+-rwxr-xr-x. 1 root root 26 Oct  9  2021 cd
+</code></pre>
+    <p>输出结果的第一个部分就是文件权限。其中第一个字符<code>-</code>表示这个文件是一个<strong>普通文件</strong>，后面的9个字符，每三个一组，分别表示<strong>拥有者</strong>，<strong>所属用户组</strong>和<strong>其他用户</strong>的权限。例如，对于<code>cd</code>文件为例，拥有者（即输出结果的第三部分<code>root</code>）的权限是<code>rwx</code>；而所属用户组（输出结果的第四部分<code>root</code>）具有<code>r</code>和<code>x</code>的权限；同样，对于其他用户来说，也是具有<code>r</code>和<code>x</code>权限。</p>
+    <div class="extend">
+        <p>在这里你见到了<code>ls -l</code>的新用法，即在后面添加一个文件的路径。即<code>ls -l &lt;文件路径&gt;</code>，可以查看该文件的属性。</p>
+        <p>同时，也许你注意到上面的第一部分输出结果还有一个<code>.</code>，这表明该文件是在SELinux模式下创建的。其中SELinux叫做安全增强型Linux（Security-Enhanced Linux），其目的在于最大限度地减小系统中服务进程可访问的资源<sup>3</sup>。对于使用SELinux模式创建的文件，在权限后面会有<code>.</code>作为标志（如同上面的<code>cd</code>命令一样）。</p>
+    </div>
+    <p>在文件权限中，每种用户又包含有<strong>可读权限</strong>（<code>r</code>），<strong>可写权限</strong>（<code>w</code>）和<strong>可执行权限</strong>（<code>x</code>）。可读权限表明用户可以读取文件内容，对于目录而言表示用户可以查看目录内文件；可写权限表明用户可以修改文件内容，对于目录表示用户可以移动、删除目录内文件；可执行文件表明用户可以执行文件（一般为脚本文件或其他程序），对于目录表明用户可以进入目录。</p>
+    <div class="attention">
+        <p>每种用户的权限一共就这三种，且数量和顺序都是固定的（即<code>rwx</code>）；对于没有的权限，使用短横线<code>-</code>表示无该权限。例如，<code>r-x</code>表示可读可执行，但不可写（如同上面的<code>/bin/cd</code>一样）。</p>
+    </div>
+    <p>考虑一个很简单的例子：如果一个文件的权限表示为<code>-rw-rw-r--</code>，对其他用户而言，含义是什么呢？</p>
+    <p><strong>答案：</strong>该文件对其他用户而言只读。</p>
+
+    <h3 id="subsec:文件权限管理-修改文件权限">修改文件权限 <code>chmod</code></h3>
+    <p>在Linux当中，可以使用<code>chmod</code>修改文件的权限。修改方式有2种，第一种是直接设定三种用户的所有权限（共9位）。但是，如果直接写类似于<code>rw-rw-r--</code>这样子的形式的话，就稍显繁琐。如果考虑到特定的位数，可以把这三个权限的开关看作二进制的“0”和“1”，其中拥有权限为“1”。这样子就可以通过1个十进制数字表示一种用户的权限。例如，对于<code>r--</code>，可以将其写作<code>100</code>也就是十进制的<code>4</code>；类似地，对于<code>r-x</code>，可以写作<code>101</code>也就是<code>5</code>。</p>
+    <div class="extend">
+        <p>关于进制转换，对于任意一个$p$进制数<math xmlns="http://www.w3.org/1998/Math/MathML"><mo>⋯</mo><msub><mi>a</mi><mn>2</mn></msub><msub><mi>a</mi><mn>1</mn></msub><msub><mi>a</mi><mn>0</mn></msub><mo>.</mo><msub><mi>a</mi><mrow><mo>−</mo><mn>1</mn></mrow></msub><mo>⋯</mo></math>，其中<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>a</mi><mi>n</mi></msub><mo>,</mo><mi>n</mi><mo>∈</mo><mrow><mi mathvariant="double-struck">Z</mi></mrow></math>表示在<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>0</mn><mo>∼</mo><mi>p</mi><mo>−</mo><mn>1</mn></math>范围内的数，将其转化为十进制的方法是</p>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><munder><mo data-mjx-texclass="OP">∑</mo><mi>i</mi></munder><msub><mi>a</mi><mi>i</mi></msub><msup><mi>p</mi><mi>i</mi></msup></math></p>
+        <p>例如，对于二进制数101，转化为十进制可以算作<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>1</mn><mo>×</mo><msup><mn>2</mn><mn>2</mn></msup><mo>+</mo><mn>0</mn><mo>×</mo><msup><mn>2</mn><mn>1</mn></msup><mo>+</mo><mn>1</mn><mo>×</mo><msup><mn>2</mn><mn>0</mn></msup><mo>=</mo><mn>5</mn></math>。对于十进制转二进制，可以使用<strong>短除法</strong>进行，具体可以参考网站<a href="https://blog.csdn.net/Mud_Bodhisattva/article/details/106837915">短除法</a>。</p>
+        <p>在有些专业教材中，可能会使用<code>0b</code>表示二进制数，例如<code>0b101</code>，其中<code>b</code>为二进制单词binary的缩写。</p>
+    </div>
+    <p>使用这种数字表示方法修改权限的格式为<code>chmod &lt;权限&gt; &lt;文件路径&gt;</code>。例如，对<code>supercell</code>文件执行<code>chmod 755 supercell</code>则表示最终的权限为<code>rwxr-xr-x</code>。</p>
+    <p>思考一下，如果想让一个目录只对所有者提供全部权限，而其他人无权限，用数字表示应当怎么写？</p>
+    <p><strong>答案：</strong>700表示<code>rwx------</code></p>
+    <p>虽然这种方法可以修改所有权限，但有时我们仅仅希望添加或删除某一特定的权限。例如，当我们编写了一个程序后，可能只希望给它添加一个对所有者的可执行权限，甚至不关心它对其他用户的权限如何，如果再一点点算，就有点麻烦。例如，原本的权限是<code>rw-r--r--</code>，诚然使用<code>chmod 744 &lt;文件路径名&gt;</code>可以实现这一功能，但有没有更简单的方法呢？</p>
+    <p>在<code>chmod</code>命令中，除了使用数字表示权限外，还可以利用如<code>+</code>, <code>-</code>和<code>=</code>这样的符号进行增添、删除或修改权限。其基本用法为<code>chmod [用户]&lt;操作符&gt;&lt;权限&gt; &lt;文件路径&gt;</code>。其中<code>[用户]</code>表示想给所有者（<code>u</code>），所属用户组（<code>g</code>）还是其他用户（<code>o</code>）修改权限。对于操作符而言，<code>+</code>, <code>-</code>和<code>=</code>分别表示增加权限、删除权限和更改权限。后面的<code>&lt;权限&gt;</code>使用<code>r</code>, <code>w</code>, <code>x</code>这种表示方法。</p>
+    <p>举个例子，如果我们希望给文件所有者添加一个可执行权限，则可以直接执行<code>chmod u+x &lt;文件路径&gt;</code>即可；如果希望给其他人删除可读权限，则使用<code>chmod o-r &lt;文件路径&gt;</code>。如果希望给所有者和所属组设置为可读写权限的话，可以用<code>chmod ug=rw &lt;文件路径&gt;</code>。</p>
+    <div class="attention">
+        <p>正如后面的例子所展示的那样，<code>[用户]</code>和<code>&lt;权限&gt;</code>都可以一次性写多个。当然，有时可能会希望一次性给所有用户设置权限，例如给所有人可读写权限，在<code>chmod</code>当中，对于<code>[用户]</code>还提供了一个选项<code>a</code>，表示<strong>所有人</strong>。例如，<code>chmod a=rw &lt;文件路径&gt;</code>表示设置为所有人可读写。</p>
+        <p>同时，利用这种方法也可以设置不同的权限，即一次性设置多个用户，其中用<code>,</code>分隔。例如，如果希望将权限设置为<code>rwxrw-r--</code>，则可以直接写作<code>chmod u=rwx,g=rw-,o=r-- &lt;文件路径&gt;</code></p>
+    </div>
+
+    <h3 id="subsec:文件权限管理-错误处理">错误处理</h3>
+    <h4>希望给文件所有者自己设置权限，使用数字之后为什么给其他用户设置权限了，而所有者没有权限</h4>
+    <p>在使用数字表示的时候，三位分别表示所有者、所属组和其他用户。对于不足三位的数字，其前面默认<strong>补零</strong>，例如，<code>chmod 7 &lt;文件路径&gt;</code>实际上等价于<code>chmod 007 &lt;文件路径&gt;</code></p>
+    <div class="extend">
+        <p>对于稍微了解计算机的读者来说，也许你已经有所察觉了。我们之前说这个数字是十进制数字，但严格来说，它是<strong>八进制</strong>数字。对于八进制而言，它的每一个数位上的数字，都与3位二进制对应。例如，八进制的7表示二进制的111，八进制的3表示二进制的011等。具体转换如表<a href="#tab:文件权限管理-十进制，二进制和八进制对应表">十进制，二进制和八进制对应表</a>所示。</p>
+        <table id="tab:文件权限管理-十进制，二进制和八进制对应表">
+            <tr>
+                <th>十进制</th>
+                <th>二进制</th>
+                <th>八进制</th>
+                <th>十进制</th>
+                <th>二进制</th>
+                <th>八进制</th>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>000</td>
+                <td>0</td>
+                <td>4</td>
+                <td>100</td>
+                <td>4</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>001</td>
+                <td>1</td>
+                <td>5</td>
+                <td>101</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>010</td>
+                <td>2</td>
+                <td>6</td>
+                <td>110</td>
+                <td>6</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>011</td>
+                <td>3</td>
+                <td>7</td>
+                <td>111</td>
+                <td>7</td>
+            </tr>
+        </table>
+        <p>在一些专业的计算机书籍或其他地方，八进制会用<code>0o</code>作为前缀（其中第一个是数字0，第二个是小写字母o）。例如，0o5=0b101=5。当然，因为八进制每一个数位的范围0到7小于十进制0到10的区间，因此对于7以内的数字而言，八进制和十进制是一样的。但随着数字增加，二者会出现差别，但八进制和二进制之间仍存在一一对应关系。例如，23=0b010111=0o27。</p>
+        <p>事实上，每三位二进制的对应关系产生了八进制，而目前更常用的是四位二进制对应关系所产生的十六进制（前缀为<code>0x</code>）。</p>
+    </div>
+        </div>
+        <div id="linuxNano" class="chapter-content" style="display: none;">
+            <h2>2.1 使用nano简单创建文件</h2>
+            <p><strong>作者：</strong> Jiaqi Z.<p>
+
+                <h3>知识点</h3>
+                <ul>
+                <li>如何使用<code>nano</code>创建并编辑文本文件</li>
+                </ul>
+                
+                <p>
+                在Linux命令行操作一章当中，已经了解了如何对Linux进行基本的操作，例如查看目录、移动或删除文件等，同时在文件权限管理一节讨论了如何给文件添加权限，例如，给脚本程序添加可执行权限。
+                </p>
+                
+                <p>
+                然而，我们在Linux的所有对文件的操作，目前只限于<strong>读取</strong>，对于编辑，目前所采用的方法是将其保存至Windows下，利用记事本等软件进行编辑，完成后再上传回Linux系统。然而，无论是使用Linux本地操作系统，还是在服务器上使用，如果可以在系统中直接编辑文件，显然更方便<sup>1</sup>。在本章，我们将详细介绍Linux下如何编辑文件。
+                </p>
+                
+                <p>
+                目前，Linux最常用的文本编辑器是vi和vim，而在这之前，我们先介绍一个更简单的文本编辑器--<code>nano</code>。相比于vi和vim，<code>nano</code>功能可能会更少，但是作为开始Linux文件编辑的第一步，也许是合适的。
+                </p>
+                
+                <div class="extend">
+                <p>
+                    在很多时候，我们会把vi和vim放在一起讨论。它们具有类似的界面，类似的工作模式，因此很多人容易将其混为一谈。实际上，vi是由Bill Joy在1976开发的一款Unix操作系统下的可视化编辑器（Linux是1991年诞生的）；而vim是Bram Moolenaar在1991年开发的vi改进版（Vi improved），其功能包含语法高亮、插件支持等。
+                </p>
+                <p>
+                    虽然我们经常在Linux当中使用vim，但它本身是可以跨平台运行的，如Windows本身也是可以安装支持vim。只不过由于Windows本身的文本编辑软件足够丰富，同时大多数Windows用户并不熟悉命令行操作本身。因此，很多人也是在接触Linux的时候第一次接触vim编辑器。
+                </p>
+                <p>
+                关于二者之间的更多区别，可以查看网址：<a href="https://blog.csdn.net/weixin_53269650/article/details/138137434">Linux中的vi与vim：编辑器的王者之争与深度探索</a>
+                </p>
+                </div>
+                <h3 id="subsec:使用nano简单创建文件-使用nano创建第一个文件">使用<code>nano</code>创建第一个文件</h3> 
+                <p>
+                使用<code>nano</code>命令非常简单，通常只需要使用<code>nano &lt;要打开的文件路径名&lt;</code>，对于不存在的文件，它会自动创建一个；而已经存在的文件则会将其打开。
+                </p>  
+                <p>
+                例如，在家目录下，我们直接创建一个名为<code>hello</code>的文件。使用命令<code>nano hello</code>，则会进入nano编辑器的模式。如果你用过老式操作系统，则会发现这个界面十分“复古”--上面是编辑区，下面是一些选项（类似于Windows软件的“菜单”）如图所示。
+                </p>
+                <img src="fig/nano界面.png" alt="nano界面" width="100%">
+                <p>
+                当打开时，软件默认就是<strong>编辑模式</strong>，你可以在里面随意输入一些内容，例如，输入“hello world”，屏幕上就是直接显示你的内容。对于删除和换行，其操作就如图在Windows下的记事本一样（使用键盘上下左右、删除键等）。重点是下面的菜单选项。难度本身也不大，只需要记住两个符号所表示的含义即可：^表示键盘上的<code>Ctrl</code>键，而<code>M-</code>表示键盘上的<code>Alt</code>键。因此，正如你所看到的那样，在nano当中，使用<code>Ctrl+X</code>退出；使用<code>Ctrl+O</code>保存。
+                </p>
+                <div class="attention">
+                <p>
+                    在<code>nano</code>当中，一个很特殊的地方在于它的复制、剪切和粘贴与我们所熟悉的快捷键不一样。根据下面的说明，可以看到，复制是<code>Alt+6</code>，剪切是<code>Ctrl+K</code>，而粘贴是<code>Ctrl+U</code>。
+                </p>
+                
+                <p>
+                    同时，无论是复制还是剪切，默认都是<strong>对行进行操作</strong>。也可以使用<code>Alt+A</code><sup>2</sup>，并用方向键选中文本，进行操作。
+                </p>
+                </div>
+                <p>
+                此外，<code>nano</code>也支持撤销（<code>Alt+U</code>）和恢复（<code>Alt+E</code>）。
+                </p>
+                
+                <h3>使用<code>nano</code>进行查找和替换</h3>
+
+                <p>几乎所有的文本编辑器，都需要有一些如<strong>查找</strong>查找和<strong>替换</strong>的功能方便我们进行编辑。在<code>nano</code>当中，查找的命令是<code>Ctrl+W</code>，此时下方会弹出一个输入框，输入要查找的内容，回车后光标便会定位在光标下方第一个匹配的开头位置。使用<code>Alt+↓</code>和<code>Alt+↑</code>可以切换到下一个匹配位置或上一个匹配位置。</p>
+
+                <div class="attention">
+                    <code>nano</code>在匹配查找时不区分大小写，例如，想查找<code>SIGMA</code>时，在输入查找内容时输入<code>sigma</code>同样可以。
+                </div>
+
+                <p> 对于替换功能，其命令为<code>Ctrl+\</code>，此时首先弹出对话框，输入要查找的内容的，之后弹出的对话框输入要替换的内容。之后光标会从当前位置开始向后搜索，当查找到一个后会定位到此处并询问是否替换。输入<code>y</code>表示确认，输入<code>n</code>表示不替换此处。如果确认要全部替换的话，可以直接输入<code>a</code>；相对地，如果发现有错（例如要查找的词语或要替换的词语拼写错了），可以输入<code>c</code>取消替换命令。
+                </p>
+
+                <p>除此之外，还有更多的命令（例如查看字数是<code>Alt+D</code>），可以直接使用<code>Ctrl+G</code>查看帮助文档。在帮助文档中还包含有一些命令的快捷方式，例如查看文档除了可以使用<code>Ctrl+G</code>外，也可以直接使用<code>F1</code>键。</p>
+
+                <div class="attention">
+                    <code>nano</code>的使用方法看似讲了很多，实际上只需要记住：^表示键盘上的<code>Ctrl</code>键，而<code>M-</code>表示键盘上的<code>Alt</code>键，其他的，都可以通过下方的说明，或者帮助文档找到。
+                </div>
+
+                <h3 id="subsec:使用nano简单创建文件-错误处理">错误处理</h3>
+
+                <h4>[ File <文件名> is unwritable ]</h4>
+
+                <p>这是因为你没有这个文件的可编辑权限。借助于<a href="#subsec:文件权限管理-修改文件权限">修改文件权限</a>一节所介绍的<code>chmod</code>命令可以添加可编辑权限。</p>
+
+                <div class="attention">
+                    大多数时候，之所以这个文件不可编辑，是因为这个文件含有重要内容（可能是你误打了一个系统文件的路径，虽说这个可能性很小）。因此，遵守这个权限，不要修改是最好的。如果确实需要修改，仔细检查。
+                </div>
+
+                <h4>[ Error reading <文件名>: Permission denied ]</h4>
+
+                <p>这是因为你没有这个文件的可读权限，解决方法与上一个错误一样（使用<code>chmod</code>命令）</p>
+                <p>与前面的注意内容一样，遵守这个权限往往是最正确的选择。</p>
+
+                <footer>
+                    <p>注解：</p>
+                    <ol>
+                    <li id="ftnt1">虽然在VS Code当中，也许可以如同本地文件一般编辑服务器上的文件，但作为Linux教程，我们还是会尽可能介绍普遍适用的方法。</li>
+                    <li id="ftnt2">这个命令可能和部分软件（如微信）的截图快捷键冲突。</li>
+                    </ol>
+                </footer>
+        </div>
+        <div id="linuxViVim" class="chapter-content" style="display: none;">
+            <h2>2.2 使用vi,vim创建文件</h2>
+            <p><strong>作者：</strong> Jiaqi Z.<p>
+            <h3>知识点</h3>
+            <ul>
+            <li>如何通过<code>vi</code>,<code>vim</code>创建并保存文件</li>
+            <li>如何通过<code>vi</code>,<code>vim</code>打开已有文件</li>
+            </ul>
+            
+            <h3 id="subsec:使用vi,vim创建文件-通过vi创建文件">通过<code>vi</code>创建文件</h3>
+
+            <p>从本节开始，这一章就要开始讨论<code>vi</code>和<code>vim</code>的操作方法。类似于使用<code>nano</code>编辑文件，在Linux当中通过<code>vi</code>(<code>vim</code>)创建文件的方法是<code>vi &lt;文件名&gt;</code>或<code>vim &lt;文件名&gt;</code>。通常来说，使用<code>vi</code>创建文件后的界面如图所示。</p>
+
+            <img src="fig/vim界面.png" alt="vim界面" width="100%">
+
+            <div class="attention">
+                <p>正如<a href="#linuxNano">使用nano简单创建文件</a>开头所说的那样，相比于vi，vim的功能更加强大。目前在很多操作系统当中，都是使用<code>vim</code>代替<code>vi</code>。因此，在本节标题中，我们使用<code>vi</code>和<code>vim</code>作为区分，在后面的讨论中，可能为了方便，我们使用<code>vi</code>代替<code>vim</code>（二者操作方法基本一致）。</p>
+
+                <p>如果你确实想知道使用<code>vi</code>命令打开的是vim编辑器还是vi编辑器，可以使用<code>alias</code>命令，在输出中如果看到有<code>alias vi='vim'</code>，那么说明实际上你所打开的是vim编辑器；如果没有，则意味着打开的是vi。此时如果希望打开vim编辑器，则需要使用命令<code>vim</code>代替<code>vi</code>。</p>
+            </div>
+
+            <h3 id="vi编辑器的三种模式">vi编辑器的三种模式</h3>
+
+            <p>与nano界面相比，vi界面显得更加“简洁”（没有了下方的菜单栏）。但是，如果你尝试着往里面输入内容的话，会发现往往不会是你想要的结果（也有可能“误打误撞”可以输入进去）。这是因为，在vi当中存在三种工作模式：</p>
+
+            <h4>普通模式</h4>
+
+            <p>当你使用<code>vi</code>命令打开编辑器后，则进入了编辑器的<strong>普通模式</strong>。在这一模式下，你可以使用方向键移动光标，也可以进行删除、剪切、粘贴等简单操作。</p>
+
+            <p>一些简单的操作是使用<code>x</code>键删除当前光标所在字符，使用<code>dd</code>删除当前行（实际上是“剪切”），<code>yy</code>复制当前行；使用<code>p</code>（小写）将剪贴板内容粘贴到光标下方，<code>P</code>大写表示粘贴到光标上方。<code>u</code>表示撤销，<code>Ctrl+r</code>表示恢复撤销。</p>
+
+            <p>上面这些操作都是比较基础简单的，通常是用于对文件进行<strong>修改</strong>的。而对于新创建的文件，则可以使用<code>i</code>进入到“编辑模式”。同时，使用<code>a</code>可以在光标下一个位置开始“编辑模式”，<code>o</code>（小写字母）和<code>O</code>（大写字母）分别表示在当前行下方和上方插入新的一行，并进入“编辑模式”</p>
+
+            <h4>编辑模式</h4>
+
+            <p>这是最熟悉的模式。可以在这一模式下如同正常文本编辑器一般进行编辑（例如，方向键移动光标，编辑字符，删除键等都是可用的）。除此之外，还有一些快捷键需要介绍一下<sup>1</sup>这些快捷键很多在Windows当中也有，但可能大多数人并不熟悉。</p>
+
+            <p>使用键盘上的<code>Home</code>键和<code>End</code>键可以将光标定位到行首和行尾；使用<code>Page Up</code>和<code>Page Down</code>可以上下翻页；使用<code>Insert</code>可以在“插入模式”和“替换模式”下切换。</p>
+
+            <p>在“编辑模式”下使用键盘上的<code>Esc</code>键可以返回到“普通模式”。</p>
+
+            <h4> 命令行模式</h4>
+
+            <p>这一模式将会是最复杂的，许多vi的高级操作都是基于一系列的命令完成的。进入命令行模式的方法是<strong>在“普通模式”下输入键盘上的<code>:</code></strong>。</p>
+
+            <p>虽然大多数命令要在后面的章节提到它们，但一些必要的命令还是需要现在知道的--它们涉及到<strong>文件的保存</strong>和<strong>编辑器的关闭</strong>。例如，<code>:w</code>表示保存文件，<code>:q</code>表示关闭编辑器，<code>:q!</code>表示强制退出（不保存），而<code>:wq</code>表示保存后退出<sup>2</sup>。</p>
+
+            <h3 id="subsec:使用vi,vim创建文件-通过vi打开已有文件">通过<code>vi</code>打开已有文件</h3>
+
+            <p>类似于使用<code>nano &lt;文件路径&gt;</code>的方法，使用<code>vi</code>打开已有文件的方法是<code>vi &lt;文件路径&gt;</code>。与前面所介绍的内容一样，打开后的vi界面默认是“普通模式”，此时可以使用一些简单的方式（如<code>dd</code>删除整行等）对文件进行简单的编辑，或者可以使用“编辑模式”进行修改操作。</p>
+
+            <div class="attention">
+                <p>在修改文件时，请确保是否有修改文件的权限。对于没有权限的文件进行修改，在退出时将会返回“'readonly' option is set (add ! to override)”的错误。</p>
+
+                <p>正如错误中所说的那样，你可以使用<code>w!</code>的方式强行覆盖文件，但这始终是一种“下策”。</p>
+            </div>
+
+            <h3 id="使用vi,vim创建文件-错误处理">错误处理</h3>
+
+            <h4>E37: No write since last change (add ! to override)</h4>
+
+            <p>这表明你在<code>:q</code>退出时文件发生了修改。类似于WIndows操作系统下退出时询问是否保存一样，你需要选择是否保存你的编辑。如果保存，则需要先执行<code>:w</code>再<code>:q</code>，或者直接执行<code>:wq</code>；相对地，如果你不需要保存，则执行<code>:q!</code>强制退出。</p>
+
+            <h4>W10: Warning: Changing a readonly file</h4>
+
+            <p>这是一个警告信息，说明你正在编辑一个对你而言有权限限制的文件（大多数时候是“只读”文件，但对于某些“不可读”文件，如果强行编辑，可能也会引起该错误）。如果无视编辑并保存的话，通常会引发下面的错误：</p>
+
+            <h4>E45: 'readonly' option is set (add ! to override) </h4>
+
+            <p>这是正文最后所提到的错误，说明你编辑了一个有权限限制的文件。使用<code>:w!</code>可以强行覆盖保存文件，但这并不是一个正确的方法（至少是不推荐的方法）。</p>
+
+            <h4> [Permission Denied]</h4>
+
+            <p>这是因为你在查看一个不可读的文件。当你尝试编辑时，则会引发上面的警告或错误。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">这些快捷键很多在Windows当中也有，但可能大多数人并不熟悉。</li>
+                <li id="ftnt2">它还有一个形式：<code>:x</code>。</li>
+                </ol>
+                </footer>
+        </div>
+        <div id="linuxFindReplace" class="chapter-content" style="display: none;">
+            <h2>2.3 查找与替换</h2>
+            <p><strong>作者：</strong> Jiaqi Z.<p>
+
+                <h3>知识点</h3>
+                <ul>
+                <li>使用<code>vi</code>的<code>/</code>和<code>?</code>进行字符串查找</li>
+                <li>使用<code>vi</code>进行字符串的替换</li>
+                </ul>
+
+                <p>对于一个现代文本编辑器，一个最基本的功能就是对某一特定的字符串进行查找，以及将其替换为另一字符串。相比于其他在Windows操作系统中常见的文本编辑器（无论是记事本、word、还是VS Code等），Linux的vi编辑器下的查找和替换都显得更加复杂。这确实可能带来了一些学习上的困难，但随着使用场景逐渐复杂，你会发现这种代码式的操作的便利性。</p>
+
+                <h3 id="subsec:查找与替换-查找">查找</h3>
+
+                <p>
+                    首先先来了解如何对一个字符串进行查找。在vi当中，查找的方法是使用<code>/</code>或者<code>?</code>，其基本格式为<code>/[要查找的字符串]</code>或者<code>?[要查找的字符串]</code>。例如，在当前文件中查找<code>Hello</code>，可以输入<code>/Hello</code>，然后回车。</p>
+
+                <div class="attention">
+                    <p> 在输入字符串时，vi会同时在文本内将所有匹配的字符串进行高亮（即便没有按回车）。</p>
+                    <p><code>/</code>和<code>?</code>的作用都是查找字符串，二者的区别在于，<code>/</code>是从当前光标开始向后查找，而<code>?</code>是向前查找。当输入完成后，点击回车，光标会自动定位到最近的相应位置。若要切换，则可以使用<code>n</code>查找下一个或者使用<code>N</code>查找上一个。</p>
+                </div>
+
+                <h3 id="subsec:查找与替换-替换">替换</h3>
+
+                <p>相比于查找命令，vi中的替换命令就显得更加复杂了。最基本的命令是<code>s</code>，但通常会配以更多的命令（类似于参数）。一般来说，替换命令可以用下面的方式表示：<code>:&lt;开始行号&gt;,&lt;结束行号&gt;s[分隔符][要替换的字符串][分隔符][替换为的字符串][分隔符]&lt;g&gt;</code>。其中<code>&lt;开始行号&gt;</code>和<code>&lt;结束行号&gt;</code>都是可选的，若省略则表示<strong>只对当前行进行替换</strong>。命令结尾的<code>&lt;g&gt;</code>也是可选的，表示对所有进行替换，若省略则只替换第一个（每一行或当前行，取决于是否有行号）。</p>
+
+                <p>同时，在替换时需要使用<code>[分隔符]</code>对字符串进行分割，通常情况下习惯于使用<code>/</code>表示，但在一些特殊的情况下（例如要替换的字符串内带有这一字符），则可能会将其改为其他分隔符。命令当中所有出现分隔符的地方都需要\emph{统一}。</p>
+                    
+                <p>下面是一些例子，例如，若希望将当前行的<strong>第一个</strong>“hello”替换为“bye”，则需要命令<code>:s/hello/bye/</code>，若希望对所有字符串进行替换，则使用<code>:s/hello/bye/g</code>。</p>
+                    
+                <p>若希望对第一行到第三行的所有“hello”进行替换，则使用<code>:1,3s/hello/bye/g</code>，若没有最后的<code>g</code>，则表示仅对<strong>第一行到第三行每一行里面的第一个字符串进行替换</strong>。</p>
+                    
+                <p>如果希望对第一行到最后一行的所有“hello”进行替换，则使用<code>:1,$s/hello/bye/g</code>。其中，<code>$</code>表示<strong>最后一行</strong>。</p>
+
+                <div class="attention">
+                    <p>在vi当中，数字可以具有<strong>重复若干次</strong>的含义。例如，在前面所介绍的<code>x</code>表示删除当前光标所在字符，若前面加上一个数字，则表示重复这一操作多少次（即删除多少字符），例如，<code>10x</code>表示删除10个字符。</p>
+
+                    <p>同时，在vi当中，往往使用<code>$</code>表示<strong>最后</strong>的意思。例如，在普通模式下直接输入<code>$</code>则直接跳转到<strong>这一行最后一个字符</strong>，类似的，输入<code>0</code>则跳转到这一行第一个字符。输入<code>:$</code>可以直接跳转到文件最后一行。</p>
+                </div>
+                
+                <h3 id="subsec:查找与替换-错误处理">错误处理</h3>
+
+                <h4>查找（替换）完之后字符串总是高亮显示，怎么将其关闭</h4>
+
+                <p>使用<code>:noh</code>命令。</p>
+
+                <h4>E488: Trailing characters</h4>
+
+                <p>这可能是在输入命令时使用了错误的格式。请仔细检查使用的命令（尤其是替换命令）的格式。</p>
+                
+                <h4>想要替换，却发现把光标上的字符删除了</h4>
+
+                <p>这是因为在使用替换命令时，前面需要有冒号<code>:</code>。若没有添加这一符号，直接使用<code>s</code>则意味着<strong>删除当前字符并插入</strong>。</p>
+        </div>
+        <div id="linuxRegex" class="chapter-content" style="display: none;">
+            <h2>2.4 初窥正则表达式</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>什么是正则表达式</li>
+            <li>如何使用简单的正则表达式进行查找和替换</li>
+            </ul>
+            
+            <h3 id="subsec:初窥正则表达式-关于正则表达式">关于正则表达式</h3>
+
+            <p>在<a href="#linuxFindReplace">查找与替换</a>一节当中，我们提到过，vi的查找和替换相比于其他文本编辑器都稍显复杂。而这一节所介绍的<strong>正则表达式</strong>，则是其十分强大的功能之一。</p>
+
+            <p>简单来说，正则表达式是<strong>一种用于匹配和操作文本的强大工具，它是由一系列字符和特殊字符组成的模式，用于描述要匹配的文本模式</strong>。借助于正则表达式，我们可以很方便对许多具有相同模式的字符串进行匹配与处理。例如，对于<code>ENCUT=200</code>和<code>ENCUT=400</code>，从字符串本身来看是不同的，但二者具有相同的模式（<code>ENCUT=</code>加上一系列整数字符）。因此，可以使用正则表达式进行批量处理。</p>
+
+            <p>在Linux当中，正则表达式是相对比较复杂的内容。在这一节只是简单介绍一下基本用法，对于更完整的内容，将在后面章节进行介绍。</p>
+            
+            <h3 id="subsec:正则表达式-元字符">元字符</h3>
+
+            <p>正则表达式最有特色的部分，就是可以使用<strong>元字符</strong>来匹配一系列特定的字符。在介绍一些复杂的元字符之前，先熟悉一个最简单的符号，<code>[]</code>，在中括号里面，可以放入一些字符。正则表达式将会<strong>匹配这些字符当中的一个</strong>。例如，对于字符串“hello”，使用正则表达式<code>[aeiou]</code>就可以匹配到字符串里面的所有元音字母。</p>
+
+            <div class="attention">
+                <p>在vi当中，可以使用正常的查找方式和替换方式，只不过需要在输入查找的内容时使用正则表达式。简单说，你可以将正则表达式看作是一个表达多个字符串集合的方式，而可以使用这种方式一次性对这个集合内的每一个元素进行查找和替换。这样的话，其使用方法就与普通的查找和替换基本无异了。</p>
+
+                <p>同时，特别需要注意的一点是，在vi当中，有一些符号（后面会提到）与Linux本身的正则表达式不同（Linux的命令行本身也是支持正则表达式的），通常区别在于是否添加一个反斜杠（<code>\</code>）。后面遇到时会特别指出。</p>
+            </div>
+
+            <p>在上面的例子中，我们可以直接在vi当中直接使用<code>/[aeiou]</code>实现对所有元音字母的查找。</p>
+
+            <p>在使用<code>[]</code>时，可以使用<code>-</code>对特定范围内的字符进行查找。例如，使用<code>[a-h]</code>表示对a到h之间的所有字母（小写字母）进行查找。常用的还有，使用<code>[A-Z]</code>表示对所有大写字母进行匹配，<code>[a-z]</code>表示对小写字母进行匹配，<code>[0-9]</code>表示对所有阿拉伯数字进行匹配。</p>
+
+            <div class="extend">
+                <p>也许你会有疑问：这个范围是按照什么排序的？在计算机当中，这些字符都是根据ASCII码将其转化为二进制存储在计算机内。因此，这里的排序也是根据每一个字符所对应的ASCII码排序的。</p>
+
+                <p>ASCII（American Standard Code for Information Interchange，美国信息交换标准代码）是基于拉丁字母的一套电脑编码系统。它主要用于显示现代英语，而其扩展版本延伸美国标准信息交换码则可以部分支持其他西欧语言，并等同于国际标准ISO/IEC 646。</p>
+
+                <p>ASCII 由电报码发展而来。第一版标准发布于1963年 ，1967年经历了一次主要修订，最后一次更新则是在1986年，至今为止共定义了128个字符；其中33个字符无法显示（一些终端提供了扩展，使得这些字符可显示为诸如笑脸、扑克牌花式等8-bit符号），且这33个字符多数都已是陈废的控制字符。控制字符的用途主要是用来操控已经处理过的文字。在33个字符之外的是95个可显示的字符。</p>
+
+                <p>例如，0的ASCII码为48，A的ASCII码为65，而a的ASCII码为97。因此，可以使用<code>[0-a]</code>匹配到大写字母<code>A</code>。</p>
+            </div>
+
+            <p>同时，中括号里面的字符是可以组合使用的，例如，可以使用<code>[A-Za-z]</code>表示所有的字母。那如果希望表达所有的字母和数字呢？</p>
+
+            <strong>答案：</strong><code>[A-Za-z0-9]</code>
+
+            <p>除此之外，对于一些常见的字符，为其设置了特殊的符号，例如，<code>\d</code>就表示<strong>所有的数字字符</strong>，<code>\w</code>表示<strong>所有的字母、数字和下划线</strong>，也就等价于<code>[A-Za-z0-9_]</code>。</p>
+
+            <p>而在使用中括号时，也可以使用符号<code>^</code>进行<strong>反选</strong>。例如，使用<code>^[A-Z]</code>表示排除所有大写字母的字符。</p>
+            
+            <h3 id="subsec:初窥正则表达式-总结">总结</h3>
+
+            <p>本节简单介绍了一些常见的元字符，并可以将其用于查找和替换。例如，在本节开头所介绍的<code>ENCUT=200</code>和<code>ENCUT=400</code>，使用正则表达式可以直接表示为：<code>ENCUT=\d\d\d</code><sup>1</sup>。</p>
+
+            <p>正如最开始所说的那样，正则表达式的功能远不止此，对于更复杂的部分（例如，目前使用<code>[]</code>只能匹配一个字符，如何匹配多个字符？），将在后面的章节进行更加详细的介绍。</p>
+
+            <h3 id="subsec:初窥正则表达式-错误处理">错误处理</h3>
+
+            <h4>如何查找如<code>[hello]</code>这样的字符串？</h4>
+
+            <p>在正则表达式当中，已经将中括号作为特殊符号使用。因此，如果想查找带有中括号的字符串，则需要将中括号前面添加一个反斜杠<code>\</code>表示中括号这一字符本身。例如，对于上面的例子，如果直接使用<code>[hello]</code>表示匹配这5个字母（实际为4个）当中的任意一个字符；而使用<code>\[hello\]</code>或者<code>\[hello]</code>都可以表示字符串“[hello]”</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">事实上，它还有更简洁的表示方法<code>ENCUT=\d\+</code>，但碍于本节的内容，详细的含义将放在后面章节介绍。</li>
+                <li id="ftnt2">脚注内容</li>
+                </ol>
+                </footer>
+        </div>
+        <div id="linuxWildcards" class="chapter-content" style="display: none;">
+            <h2>3.1 通配符</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>什么是通配符</li>
+            <li>如何使用通配符批量处理文件</li>
+            </ul>
+
+            <p>在Linux命令行操作一章当中，我们介绍了如何使用Linux的命令行进行简单的操作，如查看文件、对文件和目录进行操作等。同时，在文本编辑工具vi和vim一章，我们详细介绍了如何使用vi对文本文件进行编辑。对于绝大多数情况，以上两个章节的内容足够后续的计算任务了。</p>
+
+            <p>但“人的本性终究是懒惰的”，在大多数时候，我们可能不希望打开vi后再使用<code>/</code>这样的命令来查找，而是希望直接在命令行查找我们需要的内容。进一步的，对于更多的文件，有时我们希望同时对这些文件的相同内容进行查找，这时在vi中操作就显得麻烦了。因此，在本章，我们会进一步讨论一些在命令行当中的“进阶操作”，主要是为了能够更方便的处理文件和数据。</p>
+
+            <h3 id="subsec:通配符-关于通配符">关于通配符<code>*</code>, <code>?</code></h3>
+
+            <p>通配符是一种特殊语句，主要有星号（<code>*</code>）和问号（<code>?</code>），用来<strong>模糊搜索</strong>。例如，当查找文件时，如果不知道真正的字符，或者希望匹配一系列具有相似模式的文件时，可以使用它来代替一个或多个真正字符。</p>
+
+            <p>其中，<code>*</code>表示<strong>零个或多个任意字符</strong>。例如，使用<code>*.txt</code>表示文件名最后为<code>.txt</code>的所有文件，可以是<code>hello.txt</code>, <code>bye.txt</code>, <code>roselia.txt</code>等。</p>
+
+            <div class="extend">
+                <p>上面的例子实际上就是后缀名的表示方法。它并不是一个很新奇的事情，事实上，在Windows操作系统中，当你在打开或者保存文件时，都可以在下面的“文件类型”中看到这种使用通配符的表示方法（如图所示）</p>
+
+                <p>同时，如果你“思维敏捷”的话，可能会联想到<a href="#linuxRegex">初窥正则表达式</a>一节所介绍的正则表达式。事实上，通配符在<strong>某种程度上</strong>也是正则表达式当中的一个特例。</p>
+
+                <img src="fig/通配符.png" alt="通配符在Windows操作系统下的应用" width="100%">
+            </div>
+
+            <p>相对地，<code>?</code>表示<strong>零个或一个任意字符</strong>，例如，<code>he*o</code>可以匹配到<code>hello</code>，而<code>he?o</code>却不能（可以匹配到<code>helo</code>）</p>
+
+            <h3 id="subsec:通配符-使用通配符进行文件目录操作">使用通配符进行文件目录操作</h3>
+
+            <p>下面将会简单展示一下，如何使用通配符对文件进行“批量操作”。首先，一个最常见的例子是：批量删除文件。例如，假设当前目录下有<code>data1.dat</code>和<code>data2.dat</code>这样两个后缀名为<code>.dat</code>的文件，如果希望同时删除它们，按照原来的做法，则可能需要按照顺序执行两遍命令：<code>rm data1.dat</code>和<code>rm data2.dat</code>。而借助于通配符，可以只使用<code>rm *.dat</code>表示<strong>删除所有后缀名为<code>.dat</code>的文件</strong>。</p>
+
+            <div class="attention">
+                <p>在这一行命令里，通配符所表示的文件可以将其“展开”，等价于<code>rm data1.dat data2.dat</code>。</p>
+
+                <p>另外，在命令行当中，通配符的优先级比较高，因此，如果一个文件本身含有符号<code>*</code>，则需要使用反斜线（<code>\</code>）进行转义，例如，<code>rm \*</code>表示删除当前目录下文件名为<code>*</code>的文件。相反，使用<code>rm *</code>表示删除当前目录下所有文件（务必要小心这一命令）</p>
+            </div>
+
+            <p>同样，使用这一方法也可以批量复制文件，与删除类似，可以使用如<code>cp *.dat data</code>这样的命令将所有后缀名为<code>.dat</code>的文件复制到<code>data</code>目录下。</p>
+
+            <p>正如前面所说的那样，这一命令可以将其展开成<code>cp data1.dat data2.dat data</code></p>
+
+            <p>同样，上面对文件名的通配符使用也可以用于目录当中，例如，<code>rm */*.dat</code>表示删除当前目录下的子目录当中所有后缀名为<code>.dat</code>的文件。</p>
+
+            <div class="attention">
+                <code>*</code>虽然可以表示零个或多个任意字符，但却不能表示<strong>目录下的目录</strong>。例如，<code>rm */data</code>可以匹配到<code>1/data</code>, <code>2/data</code>但无法匹配到<code>1/1/data</code>这样更深一级的目录。
+            </div>
+
+            <p>关于使用<code>?</code>通配符的使用方法，其基本原理和使用<code>*</code>类似，这里不再举例。同时，你也应该意识到的是，上面的例子中，我们都是把通配符放在了开头或者结尾。不一定总是这样的，例如，完全可以使用如<code>hello*.txt</code>这样的方式表示如<code>hello.txt</code>, <code>hello1.txt</code>这样子的文件。</p>
+
+            <div class="extend">
+                <p>虽然这一套教程是关于Linux的，但在Windows当中，通配符同样十分强大。与我们通常使用Windows的方式不同，它通常是在命令提示符（cmd）当中使用的。如果你希望在Windows当中体验这一功能，可以在开始菜单搜索<code>cmd</code>（对于新版Windows操作系统也可以是更高级的<code>PowerShell</code>）。</p>
+
+                <p>一些基本的操作语法与Linux类似，但有些操作可能有些许区别。例如，在Windows的命令行当中，使用<code>dir</code>查看当前目录下的文件，使用<code>del</code>删除文件，使用<code>copy</code>复制文件，使用<code>move</code>移动文件等<sup>1</sup>。因此，在Windows当中，可以使用如<code>del *.txt</code>这样的命令删除当前目录下所有后缀名为<code>.txt</code>的文件，使用<code>move *.jpg jpg</code>将当前目录下所有后缀名为<code>.jpg</code>的文件移动到<code>jpg</code>目录下。</p>
+
+                <p>这种方式可以有效帮助你批量处理电脑中的文件。</p>
+            </div>
+
+            <h3 id="subsec:通配符-错误处理">错误处理</h3>
+
+            <h4>rm: cannot remove &lt;路径名&gt;: No such file or directory</h4>
+
+            <p>在<a href="#subsec:文件操作-错误处理">文件操作-错误处理</a>一节当中已经介绍了这一错误，但对于通配符的使用而言，这种错误更加常见。例如，上面的例子，当你试着使用通配符<code>*/*.dat</code>删除<code>1/1/data.dat</code>文件时，由于无法匹配到对应的文件，因此则会报出这一错误。</p>
+
+            <h4>cp: cannot stat &lt;路径名&gt;: No such file or directory</h4>
+
+            <p>这一错误与上面的错误类似，都是由于文件不存在所导致的。对于使用通配符的情况，请仔细检查文件名是否正确。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">对于cmd命令的完整操作，可以使用cmd下的<code>help</code>命令查看。</li>
+                </ol>
+                </footer>
+        </div>
+        <div id="linuxGrep" class="chapter-content" style="display: none;">
+            <h2>Linux基础 - 3.2 grep匹配字符串</h2>
+            <p>这里是grep匹配字符串的内容...</p>
+        </div>
+        <!-- 更多章节内容 -->
+        <div id="sec:什么是声子、声子谱" class="chapter-content" style="display: none;">
+            <h2>什么是声子、声子谱</h2>
+            <p><strong>作者：</strong>Isay K.<p>
+
+                <h3>知识点</h3>
+                <ul>
+                <li>声子</li>
+                <li>声子谱</li>
+                </ul>
+                
+            <h3 id="subsec:什么是声子、声子谱-声子">声子</h3>
+            
+            <p>声子（Phonon），即“晶格振动的简正模能量量子”，是晶体中<strong>原子振动</strong>的量子化描述。</p>
+
+            <p>在固体物理学中，声子是晶格振动的准粒子，其携带能量和动量，并且可以像粒子一样进行相互作用。</p>
+
+            <p>声子是<strong>简谐近似</strong>下的产物，如果振动太剧烈，超过小振动的范围，那么晶格振动就要用非简谐振动理论描述。</p>
+
+            <p>声子并不是一个真正的粒子，声子可以产生和湮灭，有相互作用的声子数不守恒，声子动量的守恒律也不同于一般的粒子，并且声子不能脱离固体存在。声子只是格波激发的量子，在多体理论中称为集体振荡的元激发或准粒子。</p>
+
+            <p>声子的化学势为零，属于<strong>玻色子</strong>，服从玻色-爱因斯坦统计。声子本身并不具有物理动量，但是携带有准动量，并具有能量，它的能量等于<math xmlns="http://www.w3.org/1998/Math/MathML"><mi data-mjx-alternate="1">ℏ</mi><msub><mi>ω</mi><mi>q</mi></msub></math>。</p>
+
+            <p>声子可以分为以下两类：
+            <ul>
+                <li>声学支：与晶格的纵向和横向振动相关，类似于声波，表示原胞的整体振动。</li>
+                <li>光学支：与晶格的非均匀振动相关，通常与电荷的重新分布有关，表示原胞内原子间的相互振动。</li>
+            </ul>
+            </p>
+
+            <p>如果一个材料的原胞中有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>N</mi></math>个原子，那么声子谱就会有<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn><mi>N</mi></math>支，其中3条声学支，<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn><mi>N</mi><mo>−</mo><mn>3</mn></math>条光学支。</p>
+
+            <h3 id="subsec:什么是声子、声子谱-声子谱">声子谱</h3>
+
+            <p>声子谱，也称为声子色散关系，是描述声子能量与动量之间关系的图表。</p>
+
+            <p>声子谱通常在第一布里渊区内绘制，因为其包含了所有可能的声子模式。</p>
+
+            <p>通常，使用声子谱研究体系的动力学稳定性，使用分子动力学研究体系的热力学稳定性。</p>
+
+            <p>声子谱的其他物理意义：
+            <ul>
+                <li>电子-声子耦合：在半导体和超导体中，电子-声子耦合相互作用对材料的电子性质至关重要；</li>
+                <li>声子散射：在金属和半导体中，声子散射是影响电子迁移率的关键因素；</li>
+                <li>热容：声子谱可以解释材料在不同温度下的热容行为</li>
+                <li>...</li>
+            </ul></p>
+        </div>
+        <div id="sec:计算方法简介" class="chapter-content" style="display: none;">
+            <h2>计算方法简介</h2>
+            <p><strong>作者：</strong>Isay K.<p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>密度泛函微扰理论（DFPT）</li>
+            <li>有限位移法（Finite Displacement Method）</li>
+            <li>适用情境比较</li>
+            </ul>
+            
+            <h3 id="subsec:计算方法简介-密度泛函微扰理论（DFPT）">密度泛函微扰理论（DFPT）</h3>
+
+            <p>DFPT是一种基于第一性原理的方法，它直接从周期性边界条件的Kohn-Sham波函数计算出声子谱。在DFPT中，通过计算原子间相互作用的微扰来得到力常数矩阵，这是描述晶格动力学性质的关键量。</p>
+
+            <div class="extend">
+                1987年，Baroni、Giannozzi和Testa提出了一种新的晶格动力学性质计算方法--微扰密度泛函方法(Density Function Perturbation Theory)。DFPT通过计算系统能量对外场微扰的响应来求出晶格动力学性质。该方法最大的优势在于它不限定微扰的波矢与原胞边界(super size)正交，不需要超原胞也可以对任意波矢求解。因此可以应用到复杂材料性质的计算上。此外，能量对外场微扰的响应不仅可以推导出声子的晶体性质，还能求出弹性系数、声子展宽、拉曼散射截面等性质,这种方法本身就能算出Born effective charge dielectric constant,可以很好的预言LO-TO splitting甚至Kohn anomalies。这些优势使得DFPT一经提出就被广泛应用到了半导体、金属和合金、超导体等材料的计算上。比较常用的程序是pwscf和abinit，castep等采用的是一种linear response theory 的方法（或者称为  density perturbation functional theory，DFPT），直接计算出原子的移动而导致  的势场变化，再进一步构造出动力学矩阵。
+            </div>
+
+            <h3 id="sec:计算方法简介-有限位移法（Finite Displacement Method">有限位移法（Finite Displacement Method）</h3>
+            
+            <p>有限位移法通过在超原胞中引入原子的有限位移来模拟晶格振动。这种方法基于位移-响应理论，通过计算原子位移后系统的受力来构造动力学矩阵</p>
+
+            <div class="extend">
+                直接法，或称frozen-phonon方法，是通过在优化后的平衡结构中引入原子位移，计算作用在原子上的Hellmann-Feynman力，进而由动力学矩阵算出声子色散曲线。用该方法计算声子色散曲线最早开始于80年代初，由于计算简便，不需要特别编写的计算程序，很多小组都采用直接法计算材料性质。直接法的缺陷在于它要求声子波矢与原胞边界(super size)正交，或者原胞足够大使得Hellmann-Feynman力在原胞外可以忽略不计。这使得对于复杂系统，如对称性高的晶体、合金、超晶格等材料需要采用超原胞。超原胞的采用使计算量急剧增加，极大的限制了该方法的使用。这种方法不能很好的预言LO-TO splitting,只有在计算了Born effective charge和dielectric constant之后，进一步考虑了non-analyticity term，才能计算出；但Direct Method本身并不能给出Born effective charge和dielectric constant，所以这也是它的一个缺陷。
+            </div>
+
+            <h3 id="subsec:计算方法简介-适用情境比较">适用情境比较</h3>
+            <p>DFPT适用情境：
+                <ul>
+                    <li>需要高精度声子谱的系统，尤其是小到中等大小的晶胞；</li>
+                    <li>研究者希望避免有限位移法可能引入的系统误差时。</li>
+                </ul></p>
+                
+            <div class="attention">
+                DFPT方法计算成本较高，尤其对于大晶胞或高对称点附近的计算。
+            </div>
+
+            <p>有限声子法适用情境：
+                <ul>
+                    <li>当计算资源有限或需要对多种材料进行筛选时；</li>
+                    <li>对于大晶胞材料的初步声子谱分析。</li>
+                </ul></p>
+
+            <p>总得来说，对于较重的任务，DFPT方法可能会造成内存溢出，且DFPT方法由于其特性而无法进行并行计算，而有限声子法可以并行。对于较小的体系，可以根据需要和组内资源选择方法。</p>
+
+            <div class="extend">
+                <p>建议优先使用有限位移法。</p>
+
+                <p>一些教程中有时候将有限位移法又称为冷冻声子法或直接法。
+                    但笔者并没有找到更官方的资料说明有限位移法和冷冻声子法是同一种方法，谨奉上<a href="https://phonopy.github.io/phonopy/index.html">PHONOPY官网</a>供读者自行分辨。</p>
+            </div>
+
+            <p>参考：<a href="http://muchong.com/html/200802/723527.html">http://muchong.com/html/200802/723527.html</a></p>
+        </div>
+        <div id="sec:计算软件PHONOPY" class="chapter-content" style="display: none;">
+            <h2>计算软件PHONOPY</h2>
+            <p><strong>作者：</strong>Isay K.<p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>开始安装之前</li>
+            <li>PHONOPY快速安装</li>
+            <li>PHONOPY使用方法</li>
+            </ul>
+
+            <h3 id="subsec:计算软件PHONOPY-开始安装之前">开始安装之前</h3>
+
+            <p>由于本教程面向的群体是计算小白（包括笔者也是通过本教程记录一下自己掉的坑），所以在开始安装软件之前，我们强烈建议先咨询组内老师或师兄师姐：服务器上是否已经配置了相应的软件？</p>
+
+            <div class="extend">
+                当然也可以使用 module avail 命令自己检查系统内已安装的软件，如果没有找到的话再咨询更有自主性哦。
+                <img src="fig/module-check.png" alt="检查是否含有所需软件" width="100%">
+            </div>
+
+            <p>通常情况下，组内服务器的<strong>根目录</strong>下已经配置了相应的软件，这个时候再在自己的<strong>用户目录</strong>下进行配置的话，一方面在使用过程中可能会出现命令的冲突，另一方面也是一种时间、精力和资源的浪费。</p>
+
+            如果组内确实并没有安装，或者你是传说中的开山大弟子，又或者是自学，请放心进入<a href="#subsec:计算软件PHONOPY-PHONOPY快速安装">PHONOPY快速安装</a>小节。
+
+            <h3 id="subsec:计算软件PHONOPY-PHONOPY快速安装">PHONOPY快速安装</h3>
+
+            参考：<a href="https://blog.csdn.net/qq_41866202/article/details/124407208?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ECtr-1-124407208-blog-139391379.235%5Ev43%5Epc_blog_bottom_relevance_base9&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ECtr-1-124407208-blog-139391379.235%5Ev43%5Epc_blog_bottom_relevance_base9&utm_relevant_index=1">https://blog.csdn.net/qq_41866202/article/details/124407208?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ECtr-1-124407208-blog-139391379.235%5Ev43%5Epc_blog_bottom_relevance_base9&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ECtr-1-124407208-blog-139391379.235%5Ev43%5Epc_blog_bottom_relevance_base9&utm_relevant_index=1</a>
+
+            <h3 id="subsec:计算软件PHONOPY-PHONOPY使用方法">PHONOPY使用方法</h3>
+
+            <h4>加载PHONOPY环境</h4>
+
+            <p>
+                <ol>
+                    <li>加载Anaconda应用：<code>module load conda</code></li>
+                    <li>激活PHONOPY环境：<code>conda activate PHONOPY</code></li>
+                </ol>
+            </p>
+
+            <h4>命令详解</h4>
+
+            <p>进入下面的官网之后点击Command options即可看到所有功能。</p>
+
+            <a href="https://phonopy.github.io/phonopy/index.html ">https://phonopy.github.io/phonopy/index.html </a>
+
+            <div class="attention">
+                <p>在进行扩胞时的标准是：扩胞后的原子达到80~100个，每个晶轴方向大于10，不然得到的声子谱中很容易出现虚频。</p>
+            </div>
+        </div>
+        <div id="sec:具体计算步骤" class="chapter-content" style="display: none;">
+            <h2>具体计算步骤</h2>
+            <p><strong>作者：</strong>Isay K.<p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>计算声子谱前的结构优化</li>
+            <li>DFPT方法计算声子谱</li>
+            <li>有限位移法计算声子谱</li>
+            </ul>
+
+            <h3 id="subsec:具体计算步骤-计算声子谱前的结构优化">计算声子谱前的结构优化</h3>
+
+            <div class="attention">
+                <p>在计算声子时需要先对原胞结构做高精度的结构优化，不然得到的声子谱中很容易出现虚频。</p>
+            </div>
+
+            <p>我们以TiTe<sub>2</sub>为例，以下是高精度优化的具体参数。</p>
+<h4>INCAR</h4>
+            <pre><code>
+Global Parameters
+ISTART =  1
+ISPIN  =  1
+LREAL  = .FALSE.
+ENCUT  =  380
+
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+ADDGRID= .TRUE.
+LASPH  = .TRUE.
+PREC   = Accurate
+NCORE = 8 
+ISYM = 0
+
+Lattice Relaxation
+NSW    =  300
+ISMEAR =  0
+SIGMA  =  0.03
+IBRION =  2
+ISIF   =  3
+IOPTCELL = 1 0 0 1 1 0 0 0 0
+EDIFF = 1E-08
+EDIFFG = -1E-03
+            </code></pre>
+
+            <p>为了保证优化精度足够高，其中需要注意的是：
+                <ol>
+                <li><code>EDIFF</code>表示电子收敛标准，至少要取<code>1E-06</code>，体系小的话尽量取<code>1E-08</code>；</li>
+                <li><code>EDIFFG</code>取负值时表示力收敛标准，取\<code>1E-03</code>；</li>
+                <li><code>ADDGRID</code>表示是否添加额外网格提高精度，设定为<code>.TRUE.</code>；</li>
+                <li><code>PREC</code>表示“精度”模式，设定为<code>Accurate</code>（准确）；</li>
+                <li><code>NSW</code>表示电子优化步数，取300防止计算中断；</li>
+                <li><code>ENCUT</code>可以自行做测试，详见VASP计算-结构优化章节（先别去找，我没写）；</li>
+            </ol>
+            </p>
+
+            <p>另外，其中<code>ISIF=3</code>表示既优化晶格又优化原子坐标，配合<code>IOPTCELL</code>可以实现晶轴的单独固定，以达到计算二维材料的目的，详见VASP计算-结构优化章节（也还没写）。</p>
+
+            <p>下面的其他输入文件没有需要特别说明的，如有疑问请参考VASP计算-结构优化章节（哈哈，又是这）或参考VASP官网：<a href="https://www.vasp.at/wiki/index.php/The_VASP_Manual">https://www.vasp.at/wiki/index.php/The_VASP_Manual</a></p>
+<h4>KPOINTS</h4>
+            <pre><code>
+A
+0
+Gamma
+24   24   1
+0.0  0.0  0.0  
+            </code></pre>
+<h4>POSCAR</h4>
+            <pre><code>
+TiTe2-1m1                               
+1.00000000000000     
+    3.7458432095936396   -0.0000184453725456    0.0000000000000000
+    -1.8729216047968198    3.2439861579338527    0.0000000000000000
+    0.0000000000000000    0.0000000000000000   18.0000000000000000
+Ti   Te
+    1     2
+Direct
+0.0000000000000000  0.0000000000000000  0.5127400160000022
+0.6666666132020026  0.3333334158033583  0.6098496477195335
+0.3333334157979960  0.6666666131966403  0.4156403382804701
+
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+0.00000000E+00  0.00000000E+00  0.00000000E+00 
+            </code></pre>
+
+            <p>提交任务进行计算，得到?<code>CONTCAR</code>为优化后的更合理的结构，作为后续声子计算的初始晶胞。
+            （后续小节中提到“初始晶胞”均指优化后得到的晶胞，为避免歧义在此说明。）</p>
+
+            <h3 id="subsec:具体计算步骤-DFPT方法计算声子谱">DFPT方法计算声子谱</h3>
+
+            <p>1.<code>mkdir method_DFPT</code></p>
+
+            <p>新建文件夹。</p>
+
+            <p>2.<code>cp relax/CONTCAR method_DFPT/POSCAR</code></p>
+
+            <p>将上一步高精度结构优化得到的<code>CONTCAR</code>复制进文件夹内，并重命名为<code>POSCAR</code>。</p>
+
+            <p>3.<code>cd method_DFPT</code></p>
+
+            <p>进入新文件夹。</p>
+
+            <p>4.<code>module load conda</code>
+            <code>conda activate phonopy</code></p>
+
+            <p>加载<code>conda</code>模块，并激活<code>phonopy</code>环境，详情可参考<a href="#subsec:计算软件PHONOPY-PHONOPY使用方法">PHONOPY使用方法</a></p>
+
+            <p>5.<code>phonopy -d --dim="6 6 1"</code></p>
+
+            <p>使用PHONOPY进行6×6的扩胞。</p>
+
+            <p>此时会产生数个名为<code>POSCAR-0？</code>的位移文件，以及名为<code>SPOSCAR</code>的扩胞后的结构。</p>
+
+            <p>DFPT方法使用的是<code>SPOSCAR</code>，而有限位移法使用的是这些位移文件。</p>
+
+            <div class="attention">
+            <p>笔者研究的是2D结构，仅对两个方向进行扩胞，读者可根据需要自行调整。
+            扩胞的标准是扩胞后达到80~100个原子，且晶轴长度大于10埃，不然得到的声子谱中很容易出现虚频。</p>
+            </div>
+
+            <p>6.<code>mkdir vasp-calculations</code></p>
+
+            <p>新建文件夹用于后续计算。</p>
+
+            <div class="extend">
+            <p>此处根据个人习惯不同，也可以不新建文件夹。将<code>POSCAR</code>重命名为<code>POSCAR-unit</code>，将第5步新产生的<code>SPOSCAR</code>重命名为<code>POSCAR</code>，直接在当前文件夹中进行计算。</p>
+            </div>
+
+            <p>7.<code>cp SPOSCAR vasp-calculations/POSCAR</code></p>
+
+            <p>将第5步新产生的<code>SPOSCAR</code>复制进文件夹，并重命名为<code>POSCAR</code>。</p>
+
+            <p>8.准备其它基本文件：</p>
+<h4>INCAR</h4>
+            <pre><code>
+SYSTEM = TiTe2
+#ISIF = 3
+NSW = 1
+IBRION = 8
+
+LWAVE = F
+LCHARG = F
+
+ENCUT = 380
+EDIFF = 1E-8
+EDIFFG =-1E-3
+ISMEAR = 0
+
+LREAL = F
+SIGMA = 0.03
+
+PREC = A
+ADDGRID = .TRUE.
+            </code></pre>
+
+<h4>KPOINTS</h4>
+<pre><code>
+A
+0
+Gamma
+3   3   1
+0.0  0.0  0.0
+</code></pre>
+
+            <div class="attention">
+                因为该计算使用的是扩胞之后的结构，所以K点没有必要取太大。
+            </div>
+
+            <p>9.<code>sbatch sub.vasp</code></p>
+
+            <p>提交任务进行计算。</p>
+
+            <p>10.<code>cd ..</code></p>
+
+            <p>返回<code>method_DFPT</code>文件夹。</p>
+
+            <p>11.<code>cp vasp-calculations/vasprun.xml .</code></p>
+
+            <p>将<code>vasprun.xml</code>复制到当前文件夹。</p>
+
+            <p>12.<code>phonopy --fc vasprun.xml</code></p>
+
+            <p>使用phonopy读取<code>vasprun.xml</code>生成力常数文件<code>FORCE_CONSTANTS</code>。</p>
+
+            <p>13.<code>vi band.conf</code></p>
+
+            <p>编辑<code>band.conf</code>文件：</p>
+<h4>band.conf</h4>
+            <pre><code>
+ATOM_NAME =Ti Te
+DIM = 6 6 1
+BAND =0 0 0  0.5 0 0  0.33333 0.33333 0   0 0 0
+BAND_POINTS = 101
+FORCE_CONSTANTS = READ
+            </code></pre>
+            
+            <ol>
+                <li> <code>DIM</code>根据体系的扩胞大小设置，如扩胞扩到332，就设置成<code>332</code>。</li>
+                <li><code>BAND</code>和能带的取点是一样的，也可以用vaspkit生成。</li>
+                <li><code>FORCE_CONSTANTS</code>一定设置成<code>READ</code>。</li>
+                <li>更多设置可以看PHONOPY官网。</li>
+            </ol>
+
+            <p>14.<code>phonopy -p -s band.conf</code></p>
+
+            <p>使用phonopy读取<code>band.conf</code>文件，作图并保存。</p>
+
+            <p>15.<code>phonopy-bandplot --gnuplot > phonon.out</code></p>
+
+            <p>将数据导出方便后续用Origin等软件重新绘图。</p>
+
+            <div class="extend">
+            <p>旧版本的phonopy的导出命令为：<code>bandplot  --gnuplot> phonon.out</code></p>
+            </div>
+
+            <h3 id="subsec:具体计算步骤-有限位移法计算声子谱">有限位移法计算声子谱</h3>
+
+            <p>1.<code>mkdir method_yxwy</code></p>
+
+            <p>2.<code>cp relax/CONTCAR method_yxwy/POSCAR</code></p>
+
+            <p>3.<code>cd method_yxwy</code></p>
+
+            <p>4.<code>phonopy -d --dim="6 6 1"</code></p>
+
+            <p>前四步和DFPT法完全相同。</p>
+
+            <p>5.<code>for i in {01..12}; do mkdir $i; cp POSCAR-0$i $i/POSCAR;done</code></p>
+
+            <p>假如第四步产生了12个位移文件，使用<code>for</code>循环生成12个文件夹，并将对应的位移<code>POSCAR</code>移入文件夹重命名为<code>POSCAR</code>。</p>
+
+            <p>6.准备其它基本文件：</p>
+            <h4>INCAR</h4>
+<pre><code>
+ADDGRID = .TRUE.
+PREC = Accurate
+IBRION = -1
+ENCUT = 380
+EDIFF = 1E-8
+EDIFFG = -1E-3
+
+ISMEAR = 0
+SIGMA = 0.03
+
+IALGO = 38
+
+LREAL = .FALSE.
+LWAVE = .FALSE.
+LCHARG = .FALSE.
+
+NCORE = 4
+        </code></pre>
+
+            <div class="attention">
+            <p>有限位移法的单个计算实际上就是高精度的静态自洽。</p>
+            </div>
+            <h4>KPOINTS</h4>
+            <pre><code>
+Automatic mesh
+0
+Gamma
+3 3 1
+0 0 0
+            </code></pre>
+
+            <div class="attention">
+            <p>同DFPT法一样，有限位移法使用的也是扩胞之后的结构，所以K点没有必要取太大。</p>
+            </div>
+
+            <p>7.<code>for i in {01..12}; do cp INCAR KPOINTS POTCAR sub.vasp $i; cd $i; sbatch sub.vasp; cd $OLDPWD;done</code></p>
+
+            <p>将基本文件复制进各个小文件夹中并进行计算。</p>
+
+            <p>8.<code>phonopy -f {01..12}/vasprun.xml</code></p>
+
+            <p>计算全部结束后，使用phonopy读取全部的计算文件夹中的<code>vasprun.xml</code>，生成<code>FORCE_SETS</code>文件。</p>
+
+            <p>9.<code>vi band.conf</code></p>
+            <h4>band.conf</h4>
+            <pre><code>
+ATOM_NAME =Ti Te
+DIM = 6 6 1
+BAND =0 0 0  0.5 0 0  0.33333 0.33333 0   0 0 0
+BAND_POINTS = 101
+FORCE_SETS = READ
+            </code></pre>
+
+            <p>与DFPT方法唯一不同的部分在于将<code>FORCE_CONSTANTS=READ</code>改成<code>FORCE_SETS=READ</code>。</p>
+
+            <p>10.<code>phonopy -p -s band.conf</code></p>
+
+            <p>使用phonopy读取<code>band.conf</code>文件，作图并保存。</p>
+
+            <p>11.<code>phonopy-bandplot --gnuplot > phonon.out</code></p>
+
+            <p>将数据导出方便后续用Origin等软件重新绘图。</p>
+        </div>
+        <div id="sec:声子谱分析" class="chapter-content" style="display: none;">
+            <h2>声子谱分析</h2>
+            <p><strong>作者：</strong>Isay K.<p></p>
+
+            <p>我还不太会，等我学学。</p>
+
+            <a href="http://pubs.acs.org/doi/abs/10.1021/acs.jpcc.5b04669">http://pubs.acs.org/doi/abs/10.1021/acs.jpcc.5b04669</a>
+        </div>
+        <div id="sec:错误处理" class="chapter-content" style="display: none;">
+            <h2>错误处理</h2>
+            <p><strong>作者：</strong>Isay K.</p>
+
+            <p>vasprun.xml没有必要信息</p>
+        </div>
+    </div>
+</body>
+</html>

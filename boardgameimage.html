@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>桌游记录</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            background-image: url('桌游背景.jpg'); /* 替换为你的背景图片路径 */
+            background-size: cover;
+            background-attachment: fixed;
+        }
+        header {
+            background: #33333390;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 自适应列宽 */
+            grid-gap: 10px;
+            padding: 20px;
+            overflow-y: auto; /* 允许垂直滚动 */
+        }
+        .image-container {
+            background-color: #ffffff50; 
+            border: 1px solid #ddd;
+            cursor: pointer;
+            overflow: hidden; /* 隐藏超出容器的图片部分 */
+            position: relative;
+        }
+        .image-container img {
+            width: auto;
+            height: 200px;
+            transition: transform 0.3s ease;
+        }
+        .image-container:hover img {
+            transform: scale(1.1); /* 鼠标悬停时放大 */
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.9); /* 黑色背景带一些透明度 */
+        }
+        .modal-content {
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 700px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .modal img {
+            max-width: 100%;
+            height: auto;
+            display: block; /* 确保图片独占一行 */
+            object-fit: contain;
+        }
+        nav {
+            background: #33333390;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+        nav a {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>7小七Sevenの桌游记录图册</h1>
+        <h3>注：点击可查看大图</h3>
+        <nav>
+            <a href="index.html">返回主页</a>
+            <a href="boardgame_index.html">返回桌游主页</a>
+        </nav>
+    </header>
+    <div class="image-grid">
+        <!-- 示例图片，替换为你自己的图片路径 -->
+        <div class="image-container" onclick="openModal('modal1');">
+            <h2>当个创世神</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_4463817922271_p6s4k34k.jpeg" alt="桌游1">
+        </div>
+        
+        <div class="image-container" onclick="openModal('modal2');">
+            <h2>灵能侦探</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_8326106922271_nlz8taoa.jpeg" alt="桌游2">
+        </div>
+
+        <div class="image-container" onclick="openModal('逻辑对决');">
+            <h2>逻辑对决</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_5188325922271_3nei04k6.jpeg" alt="逻辑对决">
+        </div>
+
+        <div class="image-container" onclick="openModal('夺心魔虫：初次照面');">
+            <h2>夺心魔虫：初次照面</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_7989498622271_wzyotjwz.jpeg" alt="夺心魔虫：初次照面">
+        </div>
+
+        <div class="image-container" onclick="openModal('斋普尔');">
+            <h2>斋普尔</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_5164017622271_84u0dv34.jpeg" alt="斋普尔">
+        </div>
+
+        <div class="image-container" onclick="openModal('伊斯坦堡1');">
+            <h2>伊斯坦堡</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_4791575622271_ae07xngk.jpeg" alt="伊斯坦堡">
+        </div>
+
+        <div class="image-container" onclick="openModal('伊斯坦堡2');">
+            <h2>伊斯坦堡</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_3196575622271_vj741v70.jpeg" alt="伊斯坦堡">
+        </div>
+
+        <div class="image-container" onclick="openModal('魅魔狂热1');">
+            <h2>魅魔狂热</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_5178942687171_ui4tbifr.jpeg" alt="魅魔狂热">
+        </div>
+        <div id="魅魔狂热1" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_5178942687171_ui4tbifr.jpeg" alt="桌游1">
+            </div>
+        </div>
+
+        <div class="image-container" onclick="openModal('魅魔狂热2');">
+            <h2>魅魔狂热</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_2480052687171_3ap6tn05.jpeg" alt="魅魔狂热">
+        </div>
+        <div id="魅魔狂热2" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_2480052687171_3ap6tn05.jpeg" alt="桌游1">
+            </div>
+        </div>
+
+        <div class="image-container" onclick="openModal('厕所里的香夜子');">
+            <h2>厕所里的香夜子</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_3551973987171_ziyra00c.jpeg" alt="厕所里的香夜子">
+        </div>
+        <div id="厕所里的香夜子" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_3551973987171_ziyra00c.jpeg" alt="桌游1">
+            </div>
+        </div>
+
+        <div class="image-container" onclick="openModal('同房异梦');">
+            <h2>同房异梦</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_0709564587171_2jldbom3.jpeg" alt="同房异梦">
+        </div>
+        <div id="同房异梦" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_0709564587171_2jldbom3.jpeg" alt="桌游1">
+            </div>
+        </div>
+
+        <div class="image-container" onclick="openModal('璀璨宝石：宝可梦');">
+            <h2>璀璨宝石：宝可梦</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_6917830587171_1man544r.jpeg" alt="璀璨宝石：宝可梦">
+        </div>
+        <div id="璀璨宝石：宝可梦" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_6917830587171_1man544r.jpeg" alt="桌游1">
+            </div>
+        </div>
+
+        <div class="image-container" onclick="openModal('星露谷物语');">
+            <h2>星露谷物语</h2>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_4135345908071_uv18pb39.jpeg" alt="星露谷物语">
+        </div>
+        <div id="星露谷物语" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_4135345908071_uv18pb39.jpeg" alt="桌游1">
+            </div>
+        </div>
+
+    <!-- 模态框（图片放大查看） -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_4463817922271_p6s4k34k.jpeg" alt="桌游1">
+        </div>
+    </div>
+    
+    <div id="modal2" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_8326106922271_nlz8taoa.jpeg" alt="桌游2">
+        </div>
+    </div>
+
+    <div id="逻辑对决" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_5188325922271_3nei04k6.jpeg" alt="桌游2">
+        </div>
+    </div>
+
+    <div id="夺心魔虫：初次照面" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_7989498622271_wzyotjwz.jpeg" alt="桌游2">
+        </div>
+    </div>
+
+    <div id="斋普尔" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_5164017622271_84u0dv34.jpeg" alt="桌游2">
+        </div>
+    </div>
+
+    <div id="伊斯坦堡1" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_4791575622271_ae07xngk.jpeg" alt="桌游2">
+        </div>
+    </div>
+
+    <div id="伊斯坦堡2" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img src="https://oss.gstonegames.com/static/image/game_comment_gallery/a_3196575622271_vj741v70.jpeg" alt="桌游2">
+        </div>
+    </div>
+    <!-- 更多模态框 -->
+
+    <script>
+        // 获取所有模态框
+        var modals = document.getElementsByClassName("modal");
+
+        // 获取所有关闭按钮
+        var closes = document.getElementsByClassName("close");
+
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = "block";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+
+        // 点击<> (x) 关闭模态框
+        for (var i = 0; i < closes.length; i++) {
+            closes[i].onclick = function() {
+                var modalId = this.parentElement.parentElement.id;
+                closeModal(modalId);
+            }
+        }
+
+        // 点击模态框外部时关闭模态框
+        for (var i = 0; i < modals.length; i++) {
+            modals[i].onclick = function(event) {
+                if (event.target == this) {
+                    closeModal(this.id);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
