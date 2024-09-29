@@ -60,6 +60,15 @@
         <div id="vasp" class="section">
             <button class="toggle" onclick="toggleChapters('vasp')">章节目录</button>
             <div class="chapters" id="vaspChapters" style="display: none;">
+                <div class="chapter" onclick="toggleSubChapters('band')">
+                    <h3>【NEW!!!!!】能带计算</h3>
+                    <ul id="bandSubChapters" style="display: none;">
+                        <li onclick="showContent('sec:能带基础理论')">能带基础理论</li>
+                        <li onclick="showContent('sec:VASP计算能带过程')">VASP计算能带过程</li>
+                        <li onclick="showContent('sec:能带绘图与后处理')">能带绘图与后处理</li>
+                    </ul>
+                </div>
+
                 <div class="chapter" onclick="toggleSubChapters('phonons')">
                     <h3>声子谱计算</h3>
                     <ul id="phononsSubChapters" style="display: none;">
@@ -71,6 +80,7 @@
                         <li onclick="showContent('sec:错误处理')">错误处理</li>
                     </ul>
                 </div>
+                
             </div>
         </div>
         <div id="ml" class="section">
@@ -1463,6 +1473,381 @@ FORCE_SETS = READ
             <p><strong>作者：</strong>Isay K.</p>
 
             <p>vasprun.xml没有必要信息</p>
+        </div>
+
+        <div id="sec:能带基础理论" class="chapter-content" style="display: none;">
+            <h2>能带理论基础</h2>
+            <p><strong>作者：</strong>Jiaqi Z.<p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>什么是能带</li>
+            <li>能带的三个重要近似</li>
+            </ul>
+
+            <p>在本章，我们将要了解材料计算的一个重要内容--关于能带的计算。毫不夸张地说，能带论是目前研究固体中的电子状态，说明固体性质最重要的理论基础。一个最简单的例子是，利用能带的相关计算，我们可以从严格的角度判断材料的导电性。</p>
+
+            <div class="extend">
+                <p>导体和绝缘体的概念，贯穿了我们的学习生涯。而这一概念也在随着认知水平的增长发生变化。</p>
+
+                <p>最开始接触的时候，我们认为，导体是那些带有电荷的物质，而绝缘体内部没有电荷。这一结论是我们对“电”和“电荷”的初步认识，显然是不准确的。进一步学习了物理后，我们了解到：任何原子都是由原子核和电子组成的，所谓的导体，就是存在“自由移动的电子”，相反，绝缘体就是没有自由电子的物质。这一概念结合了原子和电子的认识，相比于最开始的“电荷”，显然更准确了。</p>
+
+                <p>到了现在，我们将要了解到能带。基于能带理论，在导体中，价带（价电子所在的能带）和导带（电子可以自由移动的能带）是重叠的，或者价带顶部和导带底部之间的能隙（带隙）非常小，甚至为零。这意味着电子可以轻易地从价带跃迁到导带，从而在电场作用下自由移动，形成电流。而对于半导体而言，价带和导带之间存在一个较大的带隙，电子要跃迁到导带需要吸收足够的能量（如热能或光能）。在常温下，电子通常没有足够的能量来跃迁，因此电子不能自由移动，导致绝缘体不导电。</p>
+            </div>
+
+            <h3 id="subsec:能带理论基础-什么是能带">什么是能带</h3>
+
+            <p>从原子物理的知识来看，一个孤立原子的电子只能处在特定的能级当中。而我们所计算的材料，往往是周期性的多原子材料<sup>1</sup>。对于多原子而言，电子和电子之间、电子和原子核之间会产生相互作用，此时电子的能级就会发生“展宽”，从而变成一系列的带状结构。称为“能带”。</p>
+
+            <div class="attention">
+                <p>通常情况下，能带仅在周期性材料中讨论。对于单分子（如气体分子等），计算能带往往没有意义。</p>
+            </div>
+
+            <h3 id="subsec:能带理论基础-能带理论的三个近似">能带理论的三个近似</h3>
+
+            <p>我们不会在这一教程中详细介绍能带的推导过程，但是我们还是有必要在这里提到三个重要的近似。这些近似可以说是能带理论的基础，甚至可以说是整个第一性原理计算的基础。</p>
+
+            <ul>
+                <li>Born-Oppenheimer近似，又名绝热近似：因为原子核比电子重的多，所以原子核比电子具有更大的惯性，更难运动。因此，我们只考虑电子的运动，原子核是被固定住的。</li>
+                <li>单电子近似（独立电子近似、平均场近似）：将电子与电子相互作用等效成一个平均值，电子是在一个平均场中运动。</li>
+                <li>周期场近似：平均场是周期性的。</li>
+            </ul>
+
+            <p>具体内容在任何一本固体物理教材中都会详细提到，这里不再赘述。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">对于VASP而言，所有材料都是“周期性”的。我们所说的单原子或单分子计算，通常是通过调整晶格的大小，从而减弱相互之间的作用，近似成“单分子”计算。</li>
+                </ol>
+            </footer>
+        </div>
+
+        <div id="sec:VASP计算能带过程" class="chapter-content" style="display: none;">
+            <h2>VASP计算能带过程</h2>
+            <p><strong>作者：</strong>Jiaqi Z.<p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何使用VASP计算PBE能带</li>
+            </ul>
+
+            <p>在本节，我们将详细讨论如何使用VASP计算能带。我们先讨论最简单的PBE能带计算过程，旨在通过这一流程，掌握计算能带的完整步骤。在这一基础上，后面将会详细讨论精度更高的计算方法（如HSE能带计算等）。</p>
+
+            <div class="attention">
+                <p>使用PBE计算能带往往会得到较小的带隙，如果你使用数据库或文献中的能带图进行复现，可能会得到与文献不同的带隙。这一点是PBE泛函计算能带所固有的缺陷。</p>
+            </div>
+
+            <h3 id="subsec:VASP计算能带过程-结构优化">结构优化</h3>
+
+            <p>在这一部分计算能带时我们使用SiO<sub>2</sub>为例进行分析。所使用数据库来源自<a href="https://legacy.materialsproject.org/materials/mp-546794/">Materials Project</a>。</p>
+
+            SiO<sub>2</sub>的结构文件<code>POSCAR</code>如下所示：
+
+            <pre><code>
+Si2 O4
+1.0
+        5.1358423233         0.0000000000         0.0000000000
+        0.1578526541         5.1334159104         0.0000000000
+        -2.6468476750        -2.5667081359         3.5753437737
+    Si    O
+    2    4
+Direct
+        0.750000000         0.250000000         0.500000000
+        0.000000000         0.000000000         0.000000000
+        0.787033975         0.625000000         0.662033975
+        0.875000000         0.212965995         0.837966025
+        0.962966025         0.125000000         0.337965995
+        0.375000000         0.037034001         0.162034005
+            </code></pre>
+
+            <div class="attention">
+                在计算能带时，大多数时候我们只讨论原胞的计算。因此，在使用Materials Project等数据库导出结构时，应当优先导出原胞结构（Primitive Cell）。
+
+                对于无法导出原胞的情况，可以借助于其他程序或脚本文件。以vaspkit为例，借助于<code>vaspkit-602</code>，可以得到<code>PRIMCELL.vasp</code>文件，将其重命名为<code>POSCAR</code>文件即可。
+            </div>
+
+            <div class="extend">
+                <p>对于一些特殊情形（例如需要掺杂等情况），不得不使用超胞进行计算。如果确实需要计算能带结构，往往需要对能带进行<strong>反折叠</strong>以得到更清楚的图像。我们将在后面的部分对这一技术进行讨论。</p>
+
+                <p>目前，我们所讨论的结构都是原胞。</p>
+            </div>
+
+            <p>在计算能带之前，首先需要对材料进行结构优化。为得到结构优化所用<code>INCAR</code>文件，使用<code>vaspkit-101-LR</code>生成。同时调整其中的部分参数，修改后的<code>INCAR</code>文件如下：</p>
+
+            <pre><code>
+Global Parameters
+ISTART =  1
+LREAL  = .FALSE.
+ENCUT  =  600
+PREC   =  Accurate
+LWAVE  = .TRUE.
+LCHARG = .TRUE.
+ADDGRID= .TRUE.
+    
+Lattice Relaxation
+NSW    =  300
+ISMEAR =  0
+SIGMA  =  0.05
+IBRION =  2
+ISIF   =  3
+EDIFFG = -1.5E-02
+            </code></pre>
+
+            <p>其中，需要特别注意并调整的是：</p>
+
+            <ul>
+                <li><code>ENCUT</code>：截断能。通常设置为600或更高，但更高的截断能往往意味着更长的机时。同时，在后续所有计算中，截断能应当保持不变。</li>
+                <li><code>ISIF</code>：表示优化方式。对于一般的结构优化，通常设置为<code>ISIF=3</code>表示<strong>优化原子坐标和晶格参数</strong>。对于一些特殊的材料（如二维材料），一些晶格参数可能不希望发生变化，此时可以设置<code>OPTCELL</code>文件，其内容为$3\times3$的矩阵，分别对应<code>POSCAR</code>当中的晶格参数坐标。其元素可以是0（表示不优化该坐标）或1（表示优化该坐标）。对于晶格参数不变的情况，可以设置为<code>ISIF=2</code>表示<strong>只优化原子坐标</strong>。</li>
+                <li><code>EDIFFG</code>：表示优化收敛标准。其中正数表示<strong>能量收敛标准</strong>（即能量变化小于这一数值时停止计算），而负数表示<strong>力收敛标准</strong>（原子作用力小于这一数值的绝对值时停止计算）。</li>
+                <li><code>NSW</code>：表示<strong>最大离子步</strong>。当优化离子步达到设定数值时停止计算（此时往往未达到收敛标准，需要重新计算）。或者，当<code>EDIFFG=0</code>时，计算达到设定<code>NSW</code>时停止计算。</li>
+            </ul>
+
+            <p>对于<code>KPOINTS</code>文件，在结构优化时可以使用“自洽计算”的K点，使用<code>vaspkit-102</code>生成，通常设定Gamma点（2），选择密度时通常设定为0.02-0.04即可。</p>
+
+            <p>本例使用<code>vaspkit-102-2-0.02</code>生成<code>KPOINTS</code>文件如下所示：</p>
+
+            <pre><code>
+K-Spacing Value to Generate K-Mesh: 0.020
+0
+Gamma
+12  12  14
+0.0  0.0  0.0
+            </code></pre>
+
+            <div class="attention">
+                使用vaspkit生成K点的同时，脚本会同步生成赝势文件<code>POTCAR</code>。但为了确保生成文件的正确性，建议使用<code>grep TITEL POTCAR</code>查看赝势文件是否正确（与<code>POSCAR</code>文件相比较）<sup>1</sup>。
+            </div>
+
+            <p>将以上文件放置在一个目录下，提交任务计算后得到<code>CONTCAR</code>文件，即为优化后得到的结构文件。</p>
+
+            <h3 id="subsec:VASP计算能带过程-自洽计算">自洽计算</h3>
+
+            <p>计算完成后，新建一个目录（例如命名为<code>scf</code>），将结构优化得到的<code>CONTCAR</code>文件复制（或移动）到<code>scf</code>目录内，并重命名为<code>POSCAR</code>。</p>
+
+            <p>将结构优化的<code>KPOINTS</code>和<code>POTCAR</code>复制（或移动）到<code>scf</code>目录内。</p>
+
+            <p>使用<code>vaspkit-101-ST</code>命令生成自洽计算所需要的<code>INCAR</code>文件。其中需要将截断能<code>ENCUT</code>设置为结构优化所使用的标准。修改后得到的<code>INCAR</code>文件如下所示：</p>
+
+            <pre><code>
+Global Parameters
+ISTART =  1
+LREAL  = .FALSE.
+ENCUT  =  600
+PREC   =  Accurate
+LWAVE  = .FALSE.
+LCHARG = .TRUE. 
+ADDGRID= .TRUE. 
+
+Static Calculation
+ISMEAR =  0
+SIGMA  =  0.05
+LORBIT =  11
+NEDOS  =  2001
+NELM   =  60
+EDIFF  =  1E-08
+            </code></pre>
+
+            <p>其中需要特别注意的设置是：</p>
+
+            <ul>
+                <li><code>LWAVE</code>：表示写入波函数文件<code>WAVECAR</code>，通常用于继续计算时的初始化设定。由于文件较大，因此如无必要，通常可以将其设定为<code>.FALSE.</code>表示不写入文件。</li>
+                <li><code>LCHARG</code>：表示写入电荷密度文件<code>CHGCAR</code>。在计算能带时，由于需要使用到这一文件，因此需要将其设定为<code>.TRUE.</code>。</li>
+                <li><code>EDIFF</code>：表示电子收敛标准。当能量变化达到这一标准时结束迭代计算。</li>
+            </ul>
+
+            <p>将所有文件准备好后提交任务。</p>
+
+            <h3 id="subsec:VASP计算能带过程-能带计算">能带计算</h3>
+
+            <p>相比于自洽计算，能带计算所需要的K点是特殊的<strong>高对称点路径</strong>，因此关键在于KPOINTS的生成。</p>
+
+            <p>将自洽计算得到的<code>CHGCAR</code>, <code>POSCAR</code>, <code>INCAR</code>, <code>POTCAR</code>全部复制（或移动）到一个新的目录下（假设为<code>band</code>）。</p>
+
+            使用<code>vaspkit-3</code>生成计算能带所用<code>KPOINTS</code>文件。其中需要根据结构特点选择是二维材料还是三维材料，在本例中由于SiO<sub>2</sub>是三维材料，因此使用<code>KPOINTS-303</code>生成<code>KPATH.in</code>文件，将其命名为<code>KPOINTS</code>文件。生成后得到的文件如下所示。
+
+            <pre><code>
+K-Path Generated by VASPKIT.
+20
+Line-Mode
+Reciprocal
+0.0000000000   0.0000000000   0.0000000000     GAMMA          
+0.0000000000   0.0000000000   0.5000000000     X              
+
+0.0000000000   0.0000000000   0.5000000000     X              
+0.2500000000   0.2500000000   0.2500000000     P              
+
+0.2500000000   0.2500000000   0.2500000000     P              
+0.0000000000   0.5000000000   0.0000000000     N              
+
+0.0000000000   0.5000000000   0.0000000000     N              
+0.0000000000   0.0000000000   0.0000000000     GAMMA          
+
+0.0000000000   0.0000000000   0.0000000000     GAMMA          
+0.5000000000   0.5000000000  -0.5000000000     M              
+
+0.5000000000   0.5000000000  -0.5000000000     M              
+0.3674577537   0.6325422463  -0.3674577537     S              
+
+-0.3674577537   0.3674577537   0.3674577537     S_0            
+0.0000000000   0.0000000000   0.0000000000     GAMMA          
+
+0.0000000000   0.0000000000   0.5000000000     X              
+-0.2349155075   0.2349155075   0.5000000000     R              
+
+0.5000000000   0.5000000000  -0.2349155075     G              
+0.5000000000   0.5000000000  -0.5000000000     M              
+            </code></pre>
+
+            <p>其中每相邻两个点都是对应于一条高对称点路径。</p>
+
+            <p>对于<code>INCAR</code>文件，需要在自洽所使用文件的基础上，添加<code>ICHARG=11</code>表示<strong>读取当前目录下的<code>CHGCAR</code>文件</strong>，从而用于非自洽计算。</p>
+
+            <div class="extend">
+                在这里我们提到了<strong>自洽计算</strong>和<strong>非自洽计算</strong>，简单来说，自洽计算就是用来计算电子结构最稳定状态，而非自洽计算则是利用这一结构计算电子的其他性质（如能带、态密度等）。
+            </div>
+
+            <p>将以上文件整理后提交任务计算。至此我们就已经完成了VASP计算能带的所有过程。</p>
+
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">我也不知道为什么它是“TITEL”而不是“TITLE”，如果实在记不住的话用<code>TIT</code>也能搜索到对应内容。</li>
+                </ol>
+            </footer>
+        </div>
+
+        <div id="sec:能带绘图与后处理" class="chapter-content" style="display: none;">
+            <h2>能带绘图与后处理</h2>
+            <p><strong>作者：</strong>Jiaqi Z.<p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何使用Origin绘制能带图</li>
+            <li>如何使用vaspkit自动生成能带图</li>
+            </ul>
+
+            <p>在上一节的计算中，我们已经得到了能带所需要的全部信息。但是，使用计算软件得到的仅仅是数据，与我们所需要的“<strong>能带图</strong>”还差一个步骤--数据后处理。</p>
+
+            <p>在这一节，我们将讨论如何借助于vaspkit软件绘制能带图。其中，最基本的方法是使用Origin绘图，但在vaspkit的更新过程中，也添加了借助于Python脚本自动绘图的功能。我们将在本节首先介绍如何配置可自动绘图的vaspkit，然后介绍如何使用vaspkit自动绘图。</p>
+
+            <div class="attention">
+                vaspkit自动绘图并不一定在所有版本都可用，同时这依赖于服务器的配置是否有必要的包（如Python，matplotlib等）。因此，你不应当将vaspkit自动绘图作为依赖，而是作为一个“备选项”。
+
+                使用Origin绘图应当是绘制能带图首先需要掌握的内容。
+            </div>
+
+            <h3 id="subsec:能带绘图与后处理-使用Origin绘制能带图">使用Origin绘制能带图</h3>
+
+            <p>使用Origin绘制能带图的第一步是<strong>得到能带图上每一点的坐标</strong>，借助于vaspkit我们可以很容易实现。利用<code>vaspkit-211</code>可以得到绘制能带图所需要的<code>BAND.dat</code>文件，其中包含了能带图的数据点坐标，下面则是文件开始的一部分：</p>
+
+            <pre><code>
+#K-Path(1/A) Energy-Level(eV)
+# NKPTS & NBANDS: 180  64
+# Band-Index    1
+    0.00000    -19.370800
+    0.04630    -19.368108
+    0.09260    -19.360010
+    0.13890    -19.346551
+    0.18520    -19.327775
+    0.23150    -19.303736
+    0.27780    -19.274533
+            </code></pre>
+
+            <p>除此之外，我们还会得到<code>KLINES.dat</code>文件，用于生成高对称点坐<code>BAND.dat</code>文件后新添一列，并将<code>KLINES.dat</code>文件复制到新添的列中，得到的文件如图所示。</p>
+
+            <img src="fig/BAND_dat.png" weight="50%">
+
+            <p>将新添加的C列（<code>KLINES.dat</code>文件中的x坐标的属性设置为“X”（方法：右键点击上方列名-“设置为”-X）</p>
+
+            <p>将这4列数据全选后点击菜单栏“绘图”-“基础2D图”-“折线图”即可得到所绘制的能带如图所示。</p>
+
+            <img src="fig/Origin生成能带.png" weight="50%">
+
+            <p>调整线型与坐标范围，并在下方添加高对称点标签（可以借助于vaspkit生成的<code>KLABELS</code>文件，其中包含所有高对称点坐标所对应的x轴坐标）</p>
+
+            <div class="attention">
+                <p>一般来说，默认生成的能带图都会如上图所示包含较多的能带。但在实际研究中，我们往往仅关心费米能级附近（即0点附近）的情况。此时除了可以使用Origin调整坐标轴范围的方法，也可以在使用VASP计算自洽和能带的时候使用<code>NBANDS</code>参数，设置<strong>需要显示的能带数量</strong>。</p>
+
+                <code>在使用vaspkit自动生成能带图时，则需要对这一参数进行设置。</code>
+            </div>
+
+            <p>处理后得到的能带图如图所示<sup>1</sup></p>
+
+            <img src="fig/SiO2能带图.png" weight="50%">
+
+            <h3 id="subsec:能带绘图与后处理-使用vaspkit自动生成能带图">使用vaspkit自动生成能带图</h3>
+
+            <p>自1.2.5版本之后，vaspkit更新了自动绘图的功能。利用这一功能，可以不将数据下载至本地后使用Origin绘图，而是直接在Linux操作系统中得到能带图像。</p>
+
+            <p>使用vaspkit自动绘图的过程是比较简单的，但我们需要提前对vaspkit做一些配置上的设置。</p>
+
+            <h4>vaspkit配置过程</h4>
+
+            <div class="attention">
+                <p>请首先检查你所使用的vaspkit是否为1.2.5或更新版本。你可以直接使用<code>vaspkit</code>命令，在菜单栏上方，可以查看所使用的软件版本。</p>
+
+                <p>同时，你还应当确认你的系统上已经配置了Python相关环境，以及绘图所必须的matplotlib包。通常，使用Anaconda可以“一次性”完成Python所需要的所有配置。确认是否安装Anaconda的一个方法是使用命令<code>conda --version</code>，若输出版本号，则表明已经配置了Anaconda<sup>2</sup>。</p>
+
+                <p>如果存在没有的命令或模块，可能需要重新安装。详细安装过程请查阅对应软件官网<sup>3,4</sup>的说明。</p>
+            </div>
+
+            <p>假设你的系统已经确认可以配置，在开始之前还需要做如下操作：</p>
+
+            <ol>
+                <li>使用<code>which python3</code>查看<strong>python3所在目录</strong>。你需要记住这一路径，将其首先复制到本地的记事本或其他地方是一个好方法；</li>
+                <li>使用<code>which vaspkit</code>查看<strong>vaspkit所在目录</strong>，并使用<code>cd</code>命令进入这一目录（通常只需要进入到版本号所在目录即可，例如，在我所在课题组当中，目录为<code>/opt/pub/softwares/VASPKIT/1.5.1</code>）；</li>
+                <li>在这一目录下，找到<code>how_to_set_environment_variables</code>文件，并将其中从<code>#BEGIN_CUSTOMIZE_PLOT</code>到<code>#END_CUSTOMIZE_PLOT</code>之间的所有内容（包括这两行）复制到某个地方，以便稍后使用；</li>
+                <li>回到所在家目录，新建一个<code>.vaspkit</code>文件，并在其中创建如下两行：
+                <pre><code>
+PYTHON_BIN    /opt/pub/toolkits/anaconda3/bin/python3
+AUTO_PLOT     .TRUE.
+                </code></pre>
+                其中，<code>PYTHON_BIN</code>后面对应的是之前所复制的python3所在目录。然后，在文件下方将所复制的<code>#BEGIN_CUSTOMIZE_PLOT</code>到<code>#END_CUSTOMIZE_PLOT</code>之间的所有内容粘贴至后面。</li>
+            </ol>
+
+            <h4>使用vaspkit绘图</h4>
+
+            <p>在使用vaspkit绘图前，应当首先保证你已经导入了相应模块（如Anaconda等）。与正常使用vaspkit导出能带图类似，在使用<code>vaspkit-211</code>导出时，会询问导出图片是仅导出能带图，还是能带图加态密度。我们在这里选择仅绘制能带图（1），得到如图所示的图像。</p>
+
+            <img src="fig/vaspkit自动生成能带图.png" weight="50%">
+
+            <div class="extend">
+                正如你所见那样，使用vaspkit默认生成的能带图是很大的能量范围，且不能对其进行调整。一个简单的方法是在计算时使用<code>EMIN</code>和<code>EMAX</code>参数设置能量区间。
+            </div>
+
+            <h3 id="subsec:能带绘图与后处理-如何计算带隙">如何计算带隙</h3>
+
+            <p>有时，我们可能不是强制要求需要得到能带图，而仅仅关注结构的带隙性质（如带隙大小，类型等）。此时，可以直接使用在绘图过程中生成的<code>BAND_GAP</code>文件（使用<code>vaspkit-211</code>生成）。以SiO<sub>2</sub>为例，文件内容为：</p>
+
+            <pre><code>
+Band Character:    Direct
+Band Gap (eV):    5.7105
+Eigenvalue of VBM (eV):   -0.6699
+Eigenvalue of CBM (eV):    5.0407
+Fermi Energy (eV):   -0.4270
+HOMO & LUMO Bands:        16        17
+Location of VBM: -0.000000  0.000000  0.000000
+Location of CBM: -0.000000  0.000000  0.000000
+            </code></pre>
+
+            <p>其中，<code>Band Character</code>表明带隙类型是直接带隙（Direct）或间接带隙（Inderect）；<code>Band Gap</code>表明所计算结构的带隙大小，在本例中为5.71 eV。除此之外，这一文件还提供了如HOMO（最高占据分子轨道）和LUMO（最低未占据分子轨道）所对应的能带条数，以及VBM（价带顶）和CBM（导带底）所对应的K点坐标。</p>
+
+            <div class="attention">
+                <p>如果你关注过最开始Materials Project所记录的数据，可能会发现，数据库内所给的带隙约为5.8 eV。而我们所计算得到的比实际带隙小了约0.1 eV。正如<a src="#sec:VASP计算能带过程">“VASP计算能带过程”</a>一节开始所说的那样，这一误差是由于PBE泛函所导致的，而这是PBE泛函的固有缺陷。在一些需要精确计算的情况下，我们可能希望计算HSE能带而不是PBE能带。</p>
+            </div>
+
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">绘图配色可以根据自己喜好选择。</li>
+                <li id="ftnt2">在有些服务器上，可能需要其他设置引入Anaconda模块。例如，在我所在课题组的服务器上，使用之前需要调用<code>module load anaconda3</code>导入相关模块。</li>
+                <li id="ftnt3"><a href="https://vaspkit.com/">VASPKIT官网</a></li>
+                <li id="ftnt4"><a href="https://www.anaconda.com/">Anaconda官网</a></li>
+                </ol>
+            </footer>
         </div>
     </div>
 </body>
