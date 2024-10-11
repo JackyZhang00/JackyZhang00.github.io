@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大话骰</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .player, .ai {
+            margin-top: 20px;
+        }
+        .dice-box {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .dice, .life {
+            font-size: 18px;
+            margin: 0 10px;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .log {
+            margin-top: 20px;
+            background-color: #e9e9e9;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>摸鱼小游戏 - 大话骰</h1>
+        <div class="player">
+            <div>你的骰子点数: <span id="playerDices">未掷骰</span> 血量: <span id="playerLife">5</span></div>
+        </div>
+        <div class="ai">
+            <div>AI 血量: <span id="aiLife">5</span></div>
+        </div>
+        <div class="buttons">
+            <button onclick="rollDices()">掷骰子</button>
+            <button onclick="userCall()">叫点</button>
+            <button onclick="userChallenge()">质疑</button>
+        </div>
+        <div class="log">
+            <p id="logText">游戏日志：</p>
+        </div>
+    </div>
+
+    <script src="dice_script.js"> </script>
+</body>
+</html>

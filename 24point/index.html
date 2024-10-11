@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24点游戏</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .number-box {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .number {
+            font-size: 24px;
+            padding: 20px;
+            margin: 10px;
+            border: 1px solid #000;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 10px;
+        }
+        .input-box {
+            margin: 20px;
+        }
+        input {
+            font-size: 18px;
+            padding: 10px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>摸鱼小游戏——24点游戏</h1>
+    <div class="number-box">
+        <div id="num1" class="number">?</div>
+        <div id="num2" class="number">?</div>
+        <div id="num3" class="number">?</div>
+        <div id="num4" class="number">?</div>
+    </div>
+    
+    <div class="input-box">
+        <input type="text" id="expression" placeholder="在此输入你的表达式，例如 (8 + 2) * 3" />
+    </div>
+    
+    <button onclick="checkResult()">提交</button>
+    <button onclick="generateNumbers()">重新生成数字</button>
+    <button onclick="showAnswer()">显示答案</button>
+    
+    <p id="message"></p>
+    <p id="answer"></p>
+
+    <script>
+        let numbers = [];
+
+        // 随机生成数字
+        function generateNumbers() {
+            numbers = [];
+            for (let i = 0; i < 4; i++) {
+                numbers.push(Math.floor(Math.random() * 13) + 1);
+            }
+            document.getElementById("num1").innerText = numbers[0];
+            document.getElementById("num2").innerText = numbers[1];
+            document.getElementById("num3").innerText = numbers[2];
+            document.getElementById("num4").innerText = numbers[3];
+            document.getElementById("message").innerText = '';
+            document.getElementById("expression").value = '';
+            document.getElementById("answer").innerText = '';
+        }
+
+        // 检查用户输入结果
+        function checkResult() {
+            let expression = document.getElementById("expression").value;
+            try {
+                let result = eval(expression);
+                if (result === 24) {
+                    document.getElementById("message").innerText = "恭喜你，正确！";
+                } else {
+                    document.getElementById("message").innerText = "结果不是24，请再试一次。";
+                }
+            } catch (error) {
+                document.getElementById("message").innerText = "表达式无效，请输入有效的算式。";
+            }
+        }
+
+        // 所有运算符组合
+        function getOperators() {
+            return ['+', '-', '*', '/'];
+        }
+
+        // 计算两数的可能运算结果
+        function calculate(a, b, operator) {
+            switch (operator) {
+                case '+': return a + b;
+                case '-': return a - b;
+                case '*': return a * b;
+                case '/': return b !== 0 ? a / b : null;
+                default: return null;
+            }
+        }
+
+        // 生成所有数字的排列
+        function permutations(arr) {
+            if (arr.length <= 1) return [arr];
+            let result = [];
+            for (let i = 0; i < arr.length; i++) {
+                let rest = permutations(arr.slice(0, i).concat(arr.slice(i + 1)));
+                for (let perm of rest) {
+                    result.push([arr[i]].concat(perm));
+                }
+            }
+            return result;
+        }
+
+        // 递归生成所有可能的运算
+        function generateAllExpressions(nums, target) {
+            if (nums.length === 1) {
+                return Math.abs(nums[0] - target) < 0.0001 ? [nums[0].toString()] : [];
+            }
+            let expressions = [];
+            let operators = getOperators();
+            for (let i = 0; i < nums.length; i++) {
+                for (let j = i + 1; j < nums.length; j++) {
+                    let remaining = nums.slice(0, i).concat(nums.slice(i + 1, j)).concat(nums.slice(j + 1));
+                    for (let op of operators) {
+                        let result = calculate(nums[i], nums[j], op);
+                        if (result !== null) {
+                            let subExpressions = generateAllExpressions([result].concat(remaining), target);
+                            for (let expr of subExpressions) {
+                                expressions.push(`(${nums[i]} ${op} ${nums[j]}) ${expr}`);
+                            }
+                        }
+                    }
+                }
+            }
+            return expressions;
+        }
+
+        // 显示24点的解法
+        function showAnswer() {
+            let permNums = permutations(numbers);
+            for (let perm of permNums) {
+                let expressions = generateAllExpressions(perm, 24);
+                if (expressions.length > 0) {
+                    document.getElementById("answer").innerText = `可能的解法: ${expressions[0]}`;
+                    return;
+                }
+            }
+            document.getElementById("answer").innerText = "没有找到解法！";
+        }
+
+        window.onload = generateNumbers;
+    </script>
+</body>
+</html>
