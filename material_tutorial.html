@@ -53,6 +53,8 @@
                     <ul id="linuxAdvancedCommandsSubChapters" style="display: none;">
                         <li onclick="showContent('linuxWildcards')">3.1 通配符</li>
                         <li onclick="showContent('linuxGrep')">3.2 grep匹配字符串</li>
+                        <li onclick="showContent('sec:sed文本替换')">【NEW!!!!!】3.3 sed文本替换</li>
+                        <li onclick="showContent('sec:管道与重定向')">【NEW!!!!!】3.4 管道与重定向</li>
                     </ul>
                 </div>
             </div>
@@ -61,11 +63,12 @@
             <button class="toggle" onclick="toggleChapters('vasp')">章节目录</button>
             <div class="chapters" id="vaspChapters" style="display: none;">
                 <div class="chapter" onclick="toggleSubChapters('band')">
-                    <h3>【NEW!!!!!】能带计算</h3>
+                    <h3>能带计算</h3>
                     <ul id="bandSubChapters" style="display: none;">
                         <li onclick="showContent('sec:能带基础理论')">能带基础理论</li>
                         <li onclick="showContent('sec:VASP计算能带过程')">VASP计算能带过程</li>
                         <li onclick="showContent('sec:能带绘图与后处理')">能带绘图与后处理</li>
+                        <li onclick="showContent('sec:HSE能带计算')">【NEW!!!!!】HSE能带计算</li>
                     </ul>
                 </div>
 
@@ -1007,9 +1010,220 @@ drwx------  75 zjq    zjq    4096 Aug 12 17:12 zjq
                 </footer>
         </div>
         <div id="linuxGrep" class="chapter-content" style="display: none;">
-            <h2>Linux基础 - 3.2 grep匹配字符串</h2>
-            <p>这里是grep匹配字符串的内容...</p>
+            <h2>3.2 grep匹配字符串</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何使用<code>grep</code>查找文件中的字符串</li>
+            </ul>
+
+            <p>在<a href="#sec:查找与替换">查找与替换</a>一节当中，已经详细介绍了如何在vi当中进行查找和替换。正如本章一开始所说的那样，很多时候我们希望在不打开vi的前提下直接找到我们所需要的信息。或者我们希望能够在一系列类似的文件中查找同样的内容<sup>1</sup>，在命令行下借助于<a href="#sec:通配符">通配符</a>一节所介绍的内容，可以很容易实现这一点。</p>
+
+            <p>因此，本节我们需要了解如何在命令行当中直接查找特定字符串。同时，我们还将再一次“复习”关于正则表达式的内容（暂时只会用到<a href="#sec:初窥正则表达式">初窥正则表达式</a>一节所介绍过的内容）。</p>
+
+            <h3 id="subsec:grep匹配字符串-使用grep查找字符串">使用<code>grep</code>查找字符串</h3>
+
+            <p>在Linux当中，查找文本内容的常见命令是<code>grep</code>，其基本语法为：<code>grep [匹配的内容] [文件名]</code>，其中<code>[匹配的内容]</code>是要查找的<strong>正则表达式</strong>，而<code>[文件名]</code>则是希望查找的文件。</p>
+
+            <div class="attention">
+                <p>虽然说查找的是<strong>正则表达式</strong>，但实际上直接输入一个普通的字符串也是可行的。此时查找的内容就是普通的字符串查找。</p>
+
+                <p>同时，查找的文件可以有多个，甚至可以使用通配符。若没有提供文件名，<code>grep</code>将会从<strong>标准输入</strong><sup>2</sup>中读取内容。</p>
+            </div>
+
+            <p>例如，使用<code>grep ENCUT INCAR</code>就可以查找在<code>INCAR</code>文件下所有<code>ENCUT</code>。</p>
+
+            <p>同时，还可以使用<code>-r</code>参数<strong>递归搜索目录下的所有文件</strong>。例如，<code>grep -r ENCUT .</code>表示在当前目录下递归搜索<code>ENCUT</code>字符串。</p>
+
+            <p>除此之外还有其他选项。例如，使用<code>-v</code>表示<strong>查找不匹配的行</strong>。例如，<code>grep -v ENCUT INCAR</code>表示打印<code>INCAR</code>文件中所有没有<code>ENCUT</code>的行；<code>-i</code>表示忽略大小写匹配；<code>-n</code>表示显示行号输出；<code>-l</code>表示只打印匹配的文件名。</p>
+
+            <p>其中多数选项都是可以混用的，例如，<code>grep -l -r ENCUT .</code>表示什么含义？</p>
+
+            <p><strong>答案：</strong>递归查找当前目录下所有含有<code>ENCUT</code>的文件，并只输出文件名。</p>
+
+            <h3 id="subsec:grep匹配字符串-在grep当中使用正则表达式">在<code>grep</code>当中使用正则表达式</h3>
+
+            <p>在<code>grep</code>当中，使用正则表达式有两个地方：<strong>查找内容</strong>和<strong>文件名</strong>。关于文件名，大多数内容都如同<a href="#sec:初窥正则表达式">初窥正则表达式</a>一节和<a href="#sec:通配符">通配符</a>一节所介绍的那样，例如，使用<code>grep ENCUT */INCAR</code>表示查找当前目录所有子目录下名为<code>INCAR</code>的文件当中含有<code>ENCUT</code>的行。</p>
+
+            <p>除此之外，在查找的内容当中，也可以使用正则表达式，此时的用法就完全类似于在vi当中使用正则表达式进行查找（见<a href="#sec:初窥正则表达式">初窥正则表达式</a>）。</p>
+
+            <h3 id="subsec:grep匹配字符串-错误处理">错误处理</h3>
+
+            <h4>grep: &lt;路径名&gt;: Is a directory</h4>
+
+            <p>这表示你尝试在目录当中查找字符串，这显然是行不通的。如果你希望查找这一路径下所有文件，可以使用<code>grep -r &lt;字符串&gt; &lt;目录名&gt;</code>或者<code>grep &lt;字符串&gt; &lt;目录名&gt;/*</code>。</p>
+
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">这在后续VASP批量处理中可能十分有用，例如，我们希望查找所有<code>INCAR</code>文件当中的<code>ENCUT</code>设置情况，就需要这个方法。</li>
+                <li id="ftnt2">从终端、键盘输入</li>
+                </ol>
+                </footer>
         </div>
+
+        <div id="sec:sed文本替换" class="chapter-content" style="display: none;">
+            <h2>sed文本替换</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何使用<code>sed</code>命令对文本文件进行替换</li>
+            <li>如何使用<code>sed</code>查看文件内容</li>
+            <li>如何使用<code>sed</code>添加（删除）文本文件的内容</li>
+            </ul>
+
+            <p>在<a href="#sec:查找与替换">查找与替换</a>当中，已经介绍了如何使用vim进行文本文件的替换。与vi里面的<code>s</code>命令类似，在命令行也有类似的方式可以对文本文件进行替换（甚至更复杂的操作）。那就是使用<code>sed</code>命令。</p>
+
+            <h3 id="subsec:sed文本替换-使用sed显示">使用<code>sed</code>显示</h3>
+
+            <p><code>sed</code>的语法格式是：<code>sed [选项] "&lt;动作&gt;" [文件路径]</code>。其中，常见的选项包括</p>
+
+            <ul>
+                <li><code>-n</code> 表示<strong>只有处理的文本</strong>显示在屏幕上（默认是全部文本）</li>
+                <li><code>-i</code> 表示<strong>直接修改文件内容</strong></li>
+            </ul>
+
+            <div class="attention">
+                <p>在本节，我们所处理的文件都会使用<code>-i</code>选项直接对文件进行处理。但这一行为是危险的，尤其是对于不确定的修改操作，由于它是对原文件进行修改，因此需要提前备份。</p>
+
+                <p>在下一节将介绍管道运算符和重定向运算符，将会帮助你避免这一问题。</p>
+            </div>
+
+            <div class="extend">
+                <p>如果你仔细观察上面的语法格式，需要特别注意的是里面的<code>[文件路径]</code>是“可选”的，也就是说，<strong>对于<code>sed</code>命令而言，可以不提供文件路径</strong>。这件事可能会比较“难以置信”，毕竟如果没有文件，怎样处理文件呢？</p>
+
+                <p>事实上，<code>sed</code>命令是一个<strong>管道命令</strong>，简单来说，它是可以读取并处理终端输出的内容。除此之外，像前面的<code>grep</code>也是类似的（虽然我们前面并没有特别强调这一点）。</p>
+
+                <p>在下一节，我们将详细讨论管道命令的内容。</p>
+            </div>
+
+            <p>让我们先来看一个最简单的操作——<strong>打印</strong>，即试着将特定几行的内容打印在屏幕上。其在“动作”部分的写法是<code>&lt;开始行号&gt;,&lt;结束行号&gt;p</code>。例如，我们希望将<code>POSCAR</code>的第3-5行输出，可以使用命令<code>sed -n "3,5p" POSCAR</code>表示输出第3-5行内容。</p>
+
+            <div class="extend">
+                <p>如果你此时忘记了<code>-n</code>选项的话，命令将会输出所有的<code>POSCAR</code>文件，但对应行号的内容会重复输出。（可以试试）</p>
+
+                <p>另外，如果希望对最后一行进行操作，需要使用<code>$</code>符号表示<strong>最后一行</strong>，但此时<strong>需要将外面的双引号变为单引号</strong>。通常情况下，双引号和单引号是等价的，但在涉及到<code>$</code>符号时，使用双引号则表示将<code>$</code>和后面的符号（例如<code>$p</code>）解析成<strong>变量p</strong>，而使用单引号则表明这一符号就是符号本身。变量的作用，将在后面循环和批量处理中体现，在此不做讨论。</p>
+            </div>
+
+            <h3 id="subsec:sed文本替换-使用sed添加和删除">使用<code>sed</code>添加和删除</h3>
+
+            <p>使用<code>sed</code>命令删除某一行的方法是使用<code>d</code>，例如，如果希望删除<code>POSCAR</code>文件的第3-5行，类似于上面的显示，使用方法是<code>sed -n "3,5d" POSCAR</code></p>
+
+            <div class="attention">
+                <p>这一操作是对文件内容进行删除，因此你应该谨慎使用<code>-i</code>选项（会直接将原文件对应内容删除），在下一节的重定向运算符将会提供灵活的解决方法。目前的一个方法是<strong>创建一个备份文件</strong>。</p>
+            </div>
+
+            <p>对于添加某行内容，可以使用<code>a</code>或<code>i</code>，前者表示<strong>新增（在下一行）</strong>，后者表示<strong>插入（在上一行）</strong>。具体的，其命令为：<code>sed [选项] "行号a(i) 添加字符串" [文件名]</code>例如，希望在<code>POSCAR</code>的第一行后面添加一个字符串“1.0”，可以使用<code>sed -n "1a 1.0" POSCAR</code>。</p>
+
+            <p>那么，如果希望在第一行添加内容，应当怎么办呢？</p>
+
+            <strong>答案：</strong><code>sed -n "1i 1.0" POSCAR</code>即可。
+
+            <h3 id="subsec:sed文本替换-使用sed替换">使用<code>sed</code>替换</h3>
+
+            <p>使用<code>sed</code>替换有两种模式，分别是<strong>整行替换</strong>和<strong>字符串替换</strong>。对于整行替换，命令为<code>sed [选项] "行号c 替换目标字符串" [文件名]</code>。例如，若希望将<code>POSCAR</code>的第2行替换为“0.8”，则可以使用命令：<code>sed -n "2c 0.8" POSCAR</code>。</p>
+
+            <p>相比于整行替换，字符串替换可能更为强大。与vim的替换类似，在<code>sed</code>当中替换字符串的命令是<code>sed [选项] "s/要被替换的字符串/新字符串/g"</code>。例如，希望在<code>INCAR</code>当中的<code>ENCUT=400</code>替换为<code>ENCUT=600</code>，可以使用命令<code>sed "s/ENCUT=400/ENCUT=600/g" INCAR</code>。</p>
+
+            <p>对于字符串替换而言，更重要的是<strong>支持正则表达式</strong>（关于正则表达式的内容详见<a href="#sec:初窥正则表达式">初窥正则表达式</a>一节），例如，在上面的例子中，我们希望将<code>ENCUT=400</code>或<code>ENCUT=600</code>全部替换为<code>ENCUT=800</code>，则可以使用<code>sed "s/ENCUT=\d\d\d/ENCUT=800/g" INCAR</code></p>
+
+            <div class="attention">
+                <p>同样，由于这是对内容的删除（更改），因此需要提前备份。除非有足够的把握，否则不要使用<code>-i</code>选项。</p>
+            </div>
+
+
+            <h3 id="subsec:sed文本替换-错误处理">错误处理</h3>
+
+            <h4>sed: -e expression #1, char 2: invalid usage of line address 0</h4>
+
+            <p>在使用行号时，第一行是1而不是0. 通常来说，当你试图在第1行插入数据时，应当使用<code>sed -n "1i 字符串" [文件名]</code>，其中<code>i</code>表示在第1行前面插入数据（即在第一行写入字符串）</p>
+        </div>
+
+        <div id="sec:管道与重定向" class="chapter-content" style="display: none;">
+            <h2>管道与重定向</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>管道运算符、如何使用管道运算符连接多个命令</li>
+            <li>使用重定向写入（读取）文本文件</li>
+            </ul>
+
+            <h3 id="subsec:管道与重定向-管道">管道</h3>
+
+            <p>在<a href="#sec:sed文本替换">sed文本替换</a>一节当中，我们讨论了如何使用<code>sed</code>命令对文本文件进行编辑。当时我们提到，<code>sed</code>命令是一个管道命令，可以读取终端输出的内容。除此之外，在很多时候我们希望对某一文件进行多次操作，例如，提取某一文件的前10行，并将其中的“C”改成“B”，然后再写入新的文件当中。</p>
+
+            <p>像上面这种输入和输出层层传递的（一个命令的输出作为另一个命令的输入），就可以使用这一节的“管道”命令。在Linux当中，管道运算符是<code>|</code>（通常是Shift+Backspace下面的那个键），它的作用是<strong>把前面命令的输出作为下一个命令的参数输入</strong>。例如，我们希望将<code>POSCAR</code>输出，可以使用<code>cat POSCAR</code>，若此时又想取出前5行，则可以使用<code>cat POSCAR | head -n 5</code></p>
+
+            <div class="attention">
+                <p>也许使用<code>head -n 5 POSCAR</code>一样可以解决上述问题，但使用管道更具有“可扩展性”。例如，<code>cat</code>命令本意是将多个文件连接起来，若希望将连接之后的文件读取前5行，则使用管道运算符是最简单的方法之一。</p>
+            </div>
+
+            <p>上面的过程，可以看作是将<code>cat</code>命令输出结果作为<code>head</code>命令的参数输入，之后运行<code>head</code>命令并输出（至标准输出），进一步，如果我们希望将其中的“C”全部替换成“B”，则需要借助于<code>sed</code>命令，表示为：<code>cat POSCAR | head -n 5 | sed "s/C/B/g"</code></p>
+
+            <div class="attention">
+                <p>此时使用<code>sed</code>命令由于没有添加<code>-i</code>选项，因此结果也仅仅在标准输出当中进行输出，源文件并没有修改。</p>
+            </div>
+
+            <p>类似地，如果我们希望得到<code>OUTCAR</code>最后一个包含“without”字符串的行，在使用管道之前是“几乎不可能”的，而在利用管道时，便可以使用命令：<code>grep without OUTCAR | tail -n 1</code>得到结果<sup>1</sup>。</p>
+
+            <h3 id="subsec:管道与重定向-输出重定向与输入重定向">输出重定向与输入重定向</h3>
+
+            <p>在之前，我们得到的输出结果仅仅是在屏幕上输出（也被称为“标准输出”），但必要的时候，我们也希望将结果保存至本地，以便后续处理（无论是进一步使用程序语言读取并处理，还是过一段时间再看）。正因如此，寻找一种方法将输出结果保存就十分重要。</p>
+
+            <p>在Linux当中，保存终端输出的本质就是“将输出<strong>重定向</strong>至文件”，其运算符是<code>&gt;</code>或<code>&gt;&gt;</code>，后面需要有一个文件名路径表示<strong>希望写入的文件</strong>。其中，前者（<code>&gt;</code>）表示<strong>创建</strong>，当文件存在时则会覆盖；后者（<code>&gt;&gt;</code>）表示<strong>追加</strong>，当文件不存在时新建，存在时则会在后面追加新的内容。</p>
+
+            <p>有了这一方法，我们终于可以解决<a href="#sec:sed文本替换">sed文本替换</a>一节所遗留的关键问题：如何将编辑后的文件保存至新的文件？答案就是<strong>使用重定向运算符</strong>。例如，我们希望将<code>INCAR</code>文件里面的<code>ENCUT=400</code>改为<code>ENCUT=600</code>并保存至<code>INCAR2</code>，则可以使用命令：<code>sed "s/ENCUT=400/ENCUT=600/g" INCAR &gt; INCAR2</code></p>
+
+            <p>再一个例子，如果希望将<code>Si/POTCAR</code>和<code>O/POTCAR</code>合并至一个新的<code>POTCAR</code>当中，应当怎样写呢？</p>
+
+            <strong>答案：</strong><code>cat Si/POTCAR O/POTCAR &gt; POTCAR</code>
+
+            <div class="extend">
+                <p>请注意运算符是<code>&gt;</code>而不是<code>&lt;</code>，前者表示“输出重定向”，而后者表示“输入重定向”，即将文件的内容作为命令的输入。例如，<code>cat &lt; POSCAR</code>与<code>cat POSCAR</code>等价。</p>
+
+                <p>二者的方向虽然容易混淆，但似乎可以从箭头的方向看出一点规律——<code>&gt;</code>表示将命令的内容“输出至”文件中，而<code>&lt;</code>表示将文件“输入至”命令中。</p>
+            </div>
+
+            <p>在必要的时候，我们当然也可以将输入和输出同时重定向，例如，<code>cat &lt; POSCAR &gt; POSCAR2</code>也是可行的（将<code>POSCAR</code>重定向输入至<code>cat</code>命令，并将命令输出结果重定向至<code>POSCAR2</code>输出）</p>
+
+            <div class="extend">
+                <p>除了“标准输入”和“标准输出”之外，Linux还有一个“标准错误输出”，用来输出命令运行报错的结果。例如，当我们希望删除一个名为<code>POSCUT</code>的文件时（该文件并不存在），使用<code>rm POSCUT</code>会报错（这一点在<a href="#sec:文件操作">文件操作</a>已经详细讨论过了）。如果试图将这一输出重定向，例如，<code>rm POSCUT &gt; output</code>，效果是一样的。但如果使用<code>rm POSCUT 2&gt; output</code>呢？你会发现，终端没有报错了，而将报错输出至文件<code>outcar</code>当中了。这其中，<code>2&gt;</code>就表示将“标准错误输出”重定向至后面的文件。</p>
+
+                <p>在这一基础上，稍微扩展一下。在后面的VASP教程中，我们将看到提交脚本中有<code>mpirun vasp_std &gt; vasp.out 2&gt;vasp.err</code>这一行<sup>2</sup>。暂且忽略掉前面的<code>mpirun</code>（表示分布式计算系统下并行运行任务），可以发现，这一行的作用就是运行<code>vasp_std</code>，并将输出结果输出至<code>vasp.out</code>，而将错误信息输出至<code>vasp.err</code>。</p>
+
+                <p>另外，我们这里重定向的文件并不一定是文本文件。如果你回顾一下<a href="#subsec:查看文件-Linux文件类型">查看文件-Linux文件类型</a>一节，可能会发现里面有一个“设备文件”，它也是可以作为重定向输入输出的一部分。例如，<code>rm POSCUT 2&gt; /dev/null</code>则表示将输出报错信息重定向至<code>/dev/null</code>设备（这是一个“空设备”，用于消除所输出的内容）。运行这一命令，你将不会得到任何输出结果（输出被消除了）</p>
+            </div>
+
+            <h3 id="subsec:管道与重定向-错误处理">错误处理</h3>
+
+            <h4>使用<code>cat &lt;&lt; POSCAR</code>没有反应</h4>
+
+            <p>如果你确实希望使用输入重定向，应当注意是<code>&lt;</code>（一个）而不是<code>&lt;&lt;</code>（两个）。后者在Linux中通常用于终端交互中，例如，上面的命令表示将<code>POSCAR</code>之间的内容作为输入。一个演示例子为：</p>
+
+            <pre><code class="bash">
+$ cat &lt;&lt; POSCAR
+&gt; hello
+&gt; world
+&gt; POSCAR
+hello
+world
+            </code></pre>
+
+            <p>可以看到，它把“POSCAR”之间的内容传入了<code>cat</code>命令（输出）</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">这一过程实际上是在VASP当中得到最后收敛能量的过程。</li>
+                <li id="ftnt2">不同课题组可能有所不同，这里仅仅作为例子。</li>
+                </ol>
+            </footer>
+        </div>
+
         <!-- 更多章节内容 -->
         <div id="sec:什么是声子、声子谱" class="chapter-content" style="display: none;">
             <h2>什么是声子、声子谱</h2>
@@ -1846,6 +2060,119 @@ Location of CBM: -0.000000  0.000000  0.000000
                 <li id="ftnt2">在有些服务器上，可能需要其他设置引入Anaconda模块。例如，在我所在课题组的服务器上，使用之前需要调用<code>module load anaconda3</code>导入相关模块。</li>
                 <li id="ftnt3"><a href="https://vaspkit.com/">VASPKIT官网</a></li>
                 <li id="ftnt4"><a href="https://www.anaconda.com/">Anaconda官网</a></li>
+                </ol>
+            </footer>
+        </div>
+
+        <div id="sec:HSE能带计算" class="chapter-content" style="display: none;">
+            <h2>HSE能带计算</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何计算HSE能带</li>
+            </ul>
+
+            <p>在之前介绍PBE能带计算时提到，<strong>使用PBE计算会得到带隙偏小的情况</strong>，而这对于高精度计算显然是不合适的。因此，在大多数计算能带的论文中都需要其他泛函如HSE计算得到的能带。因此，在本节我们将讨论如何使用HSE计算能带并给出更加准确的带隙。</p>
+
+            <h3 id="subsec:HSE能带计算-结构优化与自洽计算">结构优化与自洽计算</h3>
+
+            <p>在本节我们将讨论的结构是金刚石，其<code>POSCAR</code>文件如下所示：</p>
+
+            <pre><code>
+C2
+1.0
+        2.5269944668         0.0000000000         0.0000000000
+        1.2634972334         2.1884414035         0.0000000000
+        1.2634972334         0.7294804678         2.0632823422
+    C
+    2
+Direct
+        0.750000000         0.750000000         0.750000000
+        0.500000000         0.500000000         0.500000000
+            </code></pre>
+
+            <p>对于HSE泛函计算能带，结构优化过程与前面<a href="#subsec:VASP计算能带过程-结构优化">VASP计算能带过程-结构优化</a>所介绍的步骤完全相同，因此这里不再赘述。</p>
+
+            <p>对于自洽计算，<code>KPOINTS</code>则需要使用hse的K点。生成方法可以使用<code>vaspkit-3-302/303</code>生成<code>KPATH.in</code>后使用<code>vaspkit-25-251</code>生成<code>KPOINTS</code>，其中可以根据需要选择Monkhorst-Pack Scheme或Gamma Scheme方法生成K点<sup>1</sup>。然后需要依次输入scf所使用k点密度（通常设定为<code>0.04</code>）以及计算能带所需要的k点密度（通常也设定为<code>0.04</code>）</p>
+
+            <p>同时，在计算scf时还需要将<code>INCAR</code>的<code>LWAVE = .TRUE.</code>以生成波函数文件，以便计算能带时使用。下面是一个参考使用的<code>INCAR</code>文件：</p>
+
+            <pre><code>
+Global Parameters
+ISTART =  1
+ISPIN  =  1
+LREAL  = .FALSE.
+ENCUT  =  600   
+PREC   =  Accurate
+LWAVE  = .TRUE.  
+LCHARG = .FALSE.  
+ADDGRID= .TRUE.
+
+Static Calculation
+ISMEAR =  0       
+SIGMA  =  0.05    
+LORBIT =  11      
+NEDOS  =  2001    
+NELM   =  60      
+EDIFF  =  1E-08       
+            </code></pre>
+
+            <h3 id="subsec:HSE能带计算-HSE能带计算">HSE能带计算</h3>
+
+            <p>上一步计算完成后，将<code>KPOINTS</code>, <code>POTCAR</code>, <code>POSCAR</code>和<code>WAVECAR</code>文件拷贝（或移动）至新的目录（暂且命名为<code>hse-band</code>，使用<code>vaspkit-101-STH6</code>生成HSE计算的<code>INCAR</code>文件，调整必要的参数后如下所示：</p>
+
+            <pre><code>
+Global Parameters
+ISTART =  1
+ISPIN  =  1
+LREAL  = .FALSE.
+ENCUT  =  600
+PREC   =  Accurate
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+ADDGRID= .TRUE.
+    
+Static Calculation
+ISMEAR =  0
+SIGMA  =  0.05
+LORBIT =  11
+NEDOS  =  2001
+NELM   =  60
+EDIFF  =  1E-08
+    
+HSE06 Calculation
+LHFCALC= .TRUE.
+AEXX   =  0.25
+HFSCREEN= 0.2
+ALGO   =  ALL
+TIME   =  0.4
+PRECFOCK= N
+            </code></pre>
+
+            <p>这里面的关键参数是<code>AEXX</code>，表示杂化泛函所占的比重，通常设定为0.25是比较合适的。但<strong>这一比值会影响到带隙的大小</strong>，因此在必要的时候需要进行调整以适应实验结果。</p>
+
+            <p>将上述文件提交计算，由于HSE能带计算精度较高，因此需要时间较长<sup>2</sup>。</p>
+
+            <h3 id="subsec:HSE能带计算-HSE能带计算后处理">HSE能带计算后处理</h3>
+
+            <p>与<a href="#sec:能带绘图与后处理">能带绘图与后处理</a>一节所介绍的类似，在HSE计算后也需要对数据进行处理，绘图。但在一些细节上有些许不同：</p>
+
+            <ul>
+                <li>在绘制能带图之前，需要确保当前目录下有<code>KPATH.in</code>文件（可以直接使用<code>vaspkit-3-302/303</code>的方式生成，也可以直接从之前<code>scf</code>目录下复制过来；</li>
+                <li>使用<code>vaspkit-25-252</code>生成能带数据，所得到的<code>BAND.dat</code>和<code>KLINE.dat</code>文件可以将其放入Origin等软件中绘图（方法参考<a href="#sec:能带绘图与后处理">能带绘图与后处理</a>一节，在此略）</li>
+            </ul>
+
+            <p>生成能带数据后，可以通过<code>BAND_GAP</code>文件查看计算得到的带隙。在本地测试时，得到结果为5.29 eV，与文献<sup>3</sup>结果5.38 eV接近。</p>
+
+            <p>同时，我们也可以利用<a href="#sec:VASP计算能带过程">VASP计算能带过程</a>所介绍的PBE能带计算方法，对金刚石的PBE带隙进行计算。结果发现其带隙为4.12 eV，显然小于HSE带隙。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">一般来说，使用Monkhorst-Pack生成K点精度较高，但对于六方晶系，则需要选择Gamma方法。</li>
+                <li id="ftnt2">在测试计算时，64核计算时间为7.7个小时。</li>
+                <li id="ftnt3">Stoliaroff, A. & Latouche, C. Accurate ab initio calculations on various PV-based materials: Which functional to be used? The Journal of Physical Chemistry C 124, 8467–8478 (2020).</li>
                 </ol>
             </footer>
         </div>
