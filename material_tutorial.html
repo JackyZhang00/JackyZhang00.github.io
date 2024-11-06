@@ -53,8 +53,9 @@
                     <ul id="linuxAdvancedCommandsSubChapters" style="display: none;">
                         <li onclick="showContent('linuxWildcards')">3.1 通配符</li>
                         <li onclick="showContent('linuxGrep')">3.2 grep匹配字符串</li>
-                        <li onclick="showContent('sec:sed文本替换')">【NEW!!!!!】3.3 sed文本替换</li>
-                        <li onclick="showContent('sec:管道与重定向')">【NEW!!!!!】3.4 管道与重定向</li>
+                        <li onclick="showContent('sec:sed文本替换')">3.3 sed文本替换</li>
+                        <li onclick="showContent('sec:管道与重定向')">3.4 管道与重定向</li>
+                        <li onclick="showContent('sec:简单for循环')">【NEW!!!!!】3.5 简单for循环</li>
                     </ul>
                 </div>
             </div>
@@ -68,7 +69,7 @@
                         <li onclick="showContent('sec:能带基础理论')">能带基础理论</li>
                         <li onclick="showContent('sec:VASP计算能带过程')">VASP计算能带过程</li>
                         <li onclick="showContent('sec:能带绘图与后处理')">能带绘图与后处理</li>
-                        <li onclick="showContent('sec:HSE能带计算')">【NEW!!!!!】HSE能带计算</li>
+                        <li onclick="showContent('sec:HSE能带计算')">HSE能带计算</li>
                     </ul>
                 </div>
 
@@ -245,6 +246,10 @@ drwxrwxr-x 2 zjq zjq 6 Aug 12 16:35 python
 drwxrwxr-x 2 zjq zjq 6 Aug 12 16:35 vasp
 </code></pre>
 <p>表示<code>INCAR</code>是文件，而<code>vasp</code>和<code>python</code>是目录。如果执行了<code>cd INCAR</code>，则会报错。</p>
+
+<h4>-bash: cd: &lt;目录名&gt;: No such file or directory</h4>
+
+<p>这是因为你所要进入的目录不存在。请再次检查你所输入的目录是否正确。</p>
 
 <h4>-bash: cd: &lt;目录名&gt;: Permission denied</h4>
 <p>这表明你尝试进入一个你没有权限的目录。例如，在<code>/home</code>目录下，有<code>ljk</code>和<code>zjq</code>两个目录，分别表示两个用户。如果执行<code>ls -l</code>则会发现：</p>
@@ -2173,6 +2178,125 @@ PRECFOCK= N
                 <li id="ftnt1">一般来说，使用Monkhorst-Pack生成K点精度较高，但对于六方晶系，则需要选择Gamma方法。</li>
                 <li id="ftnt2">在测试计算时，64核计算时间为7.7个小时。</li>
                 <li id="ftnt3">Stoliaroff, A. & Latouche, C. Accurate ab initio calculations on various PV-based materials: Which functional to be used? The Journal of Physical Chemistry C 124, 8467–8478 (2020).</li>
+                </ol>
+            </footer>
+        </div>
+        <div id="sec:简单for循环" class="chapter-content" style="display: none;">
+            <h2>简单for循环</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>命令行<code>for</code>循环的基本结构</li>
+            <li>如何使用<code>for</code>循环批量处理任务</li>
+            <li><code>$OLDPWD</code>变量的使用</li>
+            </ul>
+
+            <p>在这一章的最后，让我们看一下关于命令行的最后一个话题——<strong>批量处理</strong>。其中，批量处理的一个基本方法是使用<code>for</code>循环语句。</p>
+
+            <div class="attention">
+                <p>更复杂的批量处理可能需要配合下一章介绍的bash批处理脚本，那里面会有进一步复杂的如条件判断等。一般来说，更复杂的批量处理会放到脚本中执行。在本节，我们仅仅讨论一些能使用<code>for</code>循环简单处理的任务。</p>
+            </div>
+
+            <div class="extend">
+                <p>虽然说是“最后一个话题”，但实际上关于命令行的使用远不止此。只不过目前教程（或者说科研过程中）可能涉猎到的也就这些。一些更复杂的，或者更细节的使用，例如系统本身操作等，我们并没有对此进行讲解。对于需要的人来说（例如服务器维护相关人员），请查阅更专业的书籍或相关手册了解更多如系统目录架构，以及服务器维护，root权限等相关内容。<sup>1</sup></p>
+                
+                <p>对于一些后续可能会用到的命令，会有新的补充，请继续关注仓库内版本更新，或者网页端动态更新。</p>
+            </div>
+
+            <h3 id="subsec:简单for循环-for语句基本结构"><code>for</code>语句基本结构</h3>
+
+            <p>在Linux当中，<code>for</code>语句的基本结构为：<code>for [变量名] in [列表范围]; do [要执行的语句]; done</code>。其中，<code>[列表范围]</code>可以使用大括号将其依次列出，例如<code>{a,b,c,d,e}</code>表示<strong>遍历这五个字母</strong>。同时，在<code>do</code>后面需要是按顺序执行的语句，其中每一个语句后面以分号（<code>;</code>）结尾。</p>
+
+            <div class="attention">
+                <p>在Linux当中，分号表示一个命令的结束，对于最后一个语句可以不加分号（此时回车表示结束）。例如，希望一次性输出<code>POSCAR</code>和<code>CONTCAR</code>文件的最后几行，可以一次性运行两句命令<code>tail POSCAR; tail CONTCAR</code>，其中分号表示这是两个语句。</p>
+
+                <p>在<code>for</code>循环中，你也可以这样理解分号，其中<code>done</code>前面只需要有一个分号（表示语句与<code>done</code>的分割）。换言之，<strong>不可能有两个分号相邻</strong>。</p>
+            </div>
+
+            <h3 id="subsec:简单for循环-关于变量">关于变量</h3>
+
+            <p>如果只是重复执行几个没有丝毫变化的语句，似乎有点“无趣”。但我们如何在命令中加入一些可以变化的东西呢？那就是<strong>变量</strong>。在Linux命令行当中，变量是以<code>$</code>符号表示的。例如，<code>$i</code>表示变量<code>i</code>。因此，如果我们希望一次性创建a到e五个目录，则可以使用下面的语句：<code>for i in {a,b,c,d,e}; do mkdir $i; done</code>。其中，<code>for i in {a,b,c,d,e}</code>表示<strong>遍历后面的列表，并分别将变量<code>i</code>赋值为列表中的元素</strong>；后面的语句表示执行<code>mkdir</code>命令，但其中的参数为变量<code>i</code>，例如，第一次时执行的为<code>mkdir a</code>，第二次就为<code>mkdir b</code>，以此类推。</p>
+
+            <div class="extend">
+                <p>在所有变量中，有一些变量是比较特殊的，它们具有特定的含义。比较常见的如<code>$PWD</code>表示<strong>当前所在的目录路径</strong>；<code>$OLDPWD</code>表示上一个所在的目录路径。</p>
+
+                <p>在一般的命令行中，你也可以在必要的时候使用这些命令（哪怕不是在循环中）。例如，<code>echo $PWD</code>表示打印当前路径<sup>2</sup>。（事实上，你也可以直接使用<code>pwd</code>命令快速实现这一功能）</p>
+
+                <p>特别注意的是，<code>$OLDPWD</code>表示上一个所在的目录路径，而不是上一级目录。例如，原先在<code>1/a/</code>目录下，当你使用<code>cd 1/b/</code>切换到<code>1/b/</code>目录时，变量<code>$OLDPWD</code>表示的是<code>1/a/</code>而不是它的上一级目录<code>1/</code>。使用<code>cd $OLDPWD</code>可以帮助你快速切换到上一个操作的目录，但还有一个更简单的方法是使用<code>cd -</code>，这二者是等价的。</p>
+            </div>
+
+            <div class="attention">
+                <p>就目前在写作的过程中，我还没有具体了解到如何在<code>for</code>循环中使用两个变量。类似于<code>for i,j in {a,b,c},{1,2,3}</code>这种写法是<strong>不可行的</strong>。如果你了解到了具体实现这一效果的方法（在命令行下），请通过前面的联系方式联系我。</p>
+            </div>
+
+            <h3 id="subsec:简单for循环-seq序列"><code>seq</code>序列</h3>
+
+            <p>在前面使用<code>for</code>循环时，我们需要把遍历元素全部列举出来。通常这种方法适合于一些没有特定模式的序列，且数量较少。对于数量较多，或者我们明确知道其规律（通常是一些数字序列），一般会选择使用序列的方式让命令行自动生成。在Linux当中，最普遍的<strong>数字序列</strong>生成的方法是使用<code>seq</code>命令，其形式为<code>seq &lt;起始数值&gt; &lt;步长&gt; 终止数值</code>。当只有一个参数时，起始数值和步长默认为1；两个参数则分别表示起始数值和终止数值（此时步长默认为1）。</p>
+
+            <p>当希望在<code>for</code>循环中使用序列时，需要将<code>seq</code>命令（包括后面的参数）使用反引号（<code>`</code>）括起来。例如，<code>for i in `seq 1 2 10`</code>表示对序列<code>{1,3,5,7,9}</code>进行遍历。</p>
+
+            <div class="attention">
+                <p>正如你所见，<code>seq 1 2 10</code>表示序列<code>{1,3,5,7,9}</code>而不包括11，这是因为11超过了终止数值10.而对于<code>seq 1 2 11</code>则包括11.这一点可能与其他编程语言如Python不同，在Python当中，<code>range(1,11,2)</code>不包括最后的11.</p>
+
+                <p><code>seq</code>命令可以使用负步长表示递减序列。例如，<code>seq 5 -1 1</code>表示序列<code>{5,4,3,2,1}</code>。</p>
+
+                <p>同时，<code>seq</code>也可以使用浮点数，例如，<code>seq 0.1 0.1 0.5</code>表示序列0.1到0.5，间隔0.1.</p>
+            </div>
+
+            <p>除此之外，对于一些整数的序列，也可以使用更简单的方式，其形式为<code>{起始数值..终止数值..&lt;步长&gt;}</code>。例如，<code>for i in {1..10}</code>表示对1到10进行遍历；而<code>for i in {1..5..2}</code>则对<code>{1,3,5}</code>遍历。</p>
+
+            <p>与<code>seq</code>不同的是，使用<code>..</code>的表示方法还可以对字母序列进行表示，例如，<code>{a..z}</code>表示所有小写字母，同理<code>{A..Z}</code>表示所有大写字母。</p>
+
+            <div class="attention">
+                <p>同样的，你也可以使用<code>A..z</code>对大写字母和小写字母进行表示，但此时<strong>还包括一些特殊字符如[,]等</strong>，它们是在ASCII码介于字母中间的部分（91到96）。</p>
+
+                <p>特别注意的一点是，使用<code>..</code>的方法不能对浮点数进行操作。当然，对于负步长仍然可用，例如，<code>5..1..-1</code>表示序列<code>{5,4,3,2,1}</code>。但对于这一方法，更特别的是你可以省略后面的步长（加上也不错），Linux会自动做降序。更甚者，你可以使用<code>{10..2..2}</code>的方法来生成<code>{10,8,6,4,2}</code>这一序列（此时步长完全是错误的）。</p>
+            </div>
+
+            <p>最后再来总结一下，对于整数序列，无论使用哪种方式都能得到；而对于小数（浮点数）序列，只能使用<code>seq</code>方法；对于字母序列则只能使用<code>..</code>方法生成。</p>
+
+
+            <h3 id="subsec:简单for循环-一些for循环使用例">一些<code>for</code>循环使用例</h3>
+
+            <p>下面，讨论一些<code>for</code>循环的使用方式，仅供启发用（实际使用时可能需要根据实际情况进行个性化调整）。</p>
+
+            <p>首先，如果我们希望生成序列为{200,400,600,800}的目录，则可以使用命令<code>for i in {200..800..200}; do mkdir $i; done</code>。正如你所见的那样，这一命令表示对于这样一个序列进行遍历，执行<code>mkdir</code>命令，其中参数为变量<code>i</code>，依次为200,400,600,800（前面的序列）。</p>
+
+            <p>下面，假设我们在当前目录下有一个文件<code>INCAR</code>，希望将其拷贝至这里面每一个目录下，可以使用命令<code>for i in {200..800..200}; do cp INCAR $i; done</code>。其中表示对序列的每一个变量<code>i</code>，执行<code>cp</code>命令，其中参数（拷贝目标路径）分别设置为序列里的元素。</p>
+
+            <p>最后，当我们希望将每个目录里面的<code>INCAR</code>里面的<code>ENCUT = 200</code>分别改为<code>ENCUT = [目录名]</code>，可以使用下面的方法：<code>for i in `seq 200 200 800`; do cd \$i; sed -i "s/200/$i/g" INCAR; cd $OLDPWD; done</code>。这表示对前面的序列\footnote{这里我们使用<code>seq</code>方式生成，仅是为了多一种展示，也可以使用<code>200..800..200</code>，它们是一样的。}，依次执行下面的操作：</p>
+
+            <ol>
+                <li>进入其目录；</li>
+                <li>使用<code>sed</code>命令修改（使用方法详见<a href="#sec:sed文本替换">sed文本替换</a>一节），其目标文本为变量<code>$i</code>，也就是目录名；</li>
+                <li>返回到之前的目录（以便于能够继续遍历其他元素，进入对应目录）</li>
+            </ol>
+
+            <div class="extend">
+                <p>你可以试一试，如果没有后面的<code>cd $OLDPWD</code>，会发生什么？稍加分析可以看出，当进入<code>200</code>目录时，修改完毕之后，会进入下一次循环遍历，此时尝试执行<code>cd 400</code>。但当前目录下并没有该目录（200和400是并列关系，不是父子目录关系），因此程序会报错。具体的报错可以看下面的<a href="#subsec:简单for循环-错误处理">简单for循环-错误处理</a>一部分。</p>
+            </div>
+
+
+            <h3 id="subsec:简单for循环-错误处理">错误处理</h3>
+
+            <h4>-bash: cd: &lt;目录名&gt;: No such file or directory</h4>
+
+            <p>这就是前面所说的忘记<code>cd $OLDPWD</code>的错误信息，此时会发现，没有目录，怎么办？只能报错了（如果你足够“机敏”，也许你会联想到<a href="#sec:目录操作">目录操作</a>一节。没错，在那里的<a href="#subsec:目录操作-错误处理">目录操作-错误处理</a>当中，也有这一错误。实际上，二者的本质是相同的。</p>
+
+            <h4>seq: invalid floating point argument: &lt;字符&gt;</h4>
+
+            <p>这是因为你在使用<code>seq</code>时尝试生成非数值（整数或浮点数）序列。例如，你也许本意是生成字母a到z的序列，但使用<code>seq a z</code>则会产生上面的错误。正确方法是使用<code>{a..z}</code></p>
+
+            <h4>使用<code>..</code>的方法生成浮点数，结果错误</h4>
+
+            <p>使用<code>..</code>不能生成浮点数。因此，如果你希望生成浮点数，一种方法是使用<code>seq</code>，当然，还有一种“投机取巧”的方法，即尝试将<strong>浮点数用整数表示</strong>。例如，如果希望生成<code>{0.1,0.2,0.3,0.4,0.5}</code>的目录，除了使用<code>for i in `seq 0.1 0.1 0.5`; do mkdir $i; done</code>外，还可以使用<code>for i in {1..5}; do mkdir 0.$i; done</code>。其中<code>0.$i</code>的<code>$i</code>需要替换为遍历的序列（整数），也就是<code>{0.1,0.2,0.3,0.4,0.5}</code>。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">我们不讲解还有一个原因：担心一般使用时出现错误导致服务器崩溃等异常情况出现。</li>
+                <li id="ftnt2"><code>echo</code>表示输出显示某一个内容，其后面的参数表示输出的内容。</li>
                 </ol>
             </footer>
         </div>
