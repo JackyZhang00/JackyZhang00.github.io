@@ -27,7 +27,7 @@
     </nav>
     <div class="sidebar">
         <div id="linux" class="section">
-            <button class="toggle" onclick="toggleChapters('linux')">章节目录</button>
+            <button class="toggle" onclick="toggleChapters('linux')">Linux基础</button>
             <div class="chapters" id="linuxChapters" style="display: none;">
                 <div class="chapter" onclick="toggleSubChapters('linuxCommandLine')">
                     <h3>1. Linux命令行操作</h3>
@@ -56,13 +56,23 @@
                         <li onclick="showContent('linuxGrep')">3.2 grep匹配字符串</li>
                         <li onclick="showContent('sec:sed文本替换')">3.3 sed文本替换</li>
                         <li onclick="showContent('sec:管道与重定向')">3.4 管道与重定向</li>
-                        <li onclick="showContent('sec:简单for循环')">【NEW!!!!!】3.5 简单for循环</li>
+                        <li onclick="showContent('sec:简单for循环')">3.5 简单for循环</li>
+                    </ul>
+                </div>
+
+                <div class="chapter" onclick="toggleSubChapters('Shell')">
+                    <h3>【NEW!!!!!】4. Shell脚本基础</h3>
+                    <ul id="ShellSubChapters" style="display: none;">
+                        <li onclick="showContent('sec:第一个脚本')">【NEW!!!!!】4.1 第一个脚本</li>
+                        <li onclick="showContent('sec:变量')">【NEW!!!!!】4.2 变量</li>
+                        <li onclick="showContent('sec:输入')">【NEW!!!!!】4.3 输入</li>
+                        <li onclick="showContent('sec:判断语句')">【NEW!!!!!】4.4 判断语句</li>
                     </ul>
                 </div>
             </div>
         </div>
         <div id="vasp" class="section">
-            <button class="toggle" onclick="toggleChapters('vasp')">章节目录</button>
+            <button class="toggle" onclick="toggleChapters('vasp')">VASP教程</button>
             <div class="chapters" id="vaspChapters" style="display: none;">
                 <div class="chapter" onclick="toggleSubChapters('band')">
                     <h3>能带计算</h3>
@@ -89,7 +99,7 @@
             </div>
         </div>
         <div id="ml" class="section">
-            <button class="toggle" onclick="toggleChapters('ml')">Chapters</button>
+            <button class="toggle" onclick="toggleChapters('ml')">机器学习</button>
             <div class="chapters" id="mlChapters" style="display: none;">
                 <!-- 机器学习章节内容 -->
             </div>
@@ -1093,7 +1103,7 @@ drwx------  75 zjq    zjq    4096 Aug 12 17:12 zjq
             </ul>
 
             <div class="attention">
-                <p>在本节，我们所处理的文件都会使用<code>-i</code>选项直接对文件进行处理。但这一行为是危险的，尤其是对于不确定的修改操作，由于它是对原文件进行修改，因此需要提前备份。</p>
+                <p>在本节，我们所处理的文件都会使用<code>-i</code>选项直接对文件进行处理。但这一行为是危险的，尤其是对于不确定的修改操作，由于它是对原文件进行修改，因此需要提前备份。此外，千万不要将<code>-n</code>和<code>-i</code>结合起来使用，它表示<strong>仅将处理的文本修改为文件内容</strong>。</p>
 
                 <p>在下一节将介绍管道运算符和重定向运算符，将会帮助你避免这一问题。</p>
             </div>
@@ -2266,7 +2276,7 @@ PRECFOCK= N
 
             <p>下面，假设我们在当前目录下有一个文件<code>INCAR</code>，希望将其拷贝至这里面每一个目录下，可以使用命令<code>for i in {200..800..200}; do cp INCAR $i; done</code>。其中表示对序列的每一个变量<code>i</code>，执行<code>cp</code>命令，其中参数（拷贝目标路径）分别设置为序列里的元素。</p>
 
-            <p>最后，当我们希望将每个目录里面的<code>INCAR</code>里面的<code>ENCUT = 200</code>分别改为<code>ENCUT = [目录名]</code>，可以使用下面的方法：<code>for i in `seq 200 200 800`; do cd \$i; sed -i "s/200/$i/g" INCAR; cd $OLDPWD; done</code>。这表示对前面的序列\footnote{这里我们使用<code>seq</code>方式生成，仅是为了多一种展示，也可以使用<code>200..800..200</code>，它们是一样的。}，依次执行下面的操作：</p>
+            <p>最后，当我们希望将每个目录里面的<code>INCAR</code>里面的<code>ENCUT = 200</code>分别改为<code>ENCUT = [目录名]</code>，可以使用下面的方法：<code>for i in `seq 200 200 800`; do cd $i; sed -i "s/200/$i/g" INCAR; cd $OLDPWD; done</code>。这表示对前面的序列\footnote{这里我们使用<code>seq</code>方式生成，仅是为了多一种展示，也可以使用<code>200..800..200</code>，它们是一样的。}，依次执行下面的操作：</p>
 
             <ol>
                 <li>进入其目录；</li>
@@ -2301,6 +2311,679 @@ PRECFOCK= N
                 </ol>
             </footer>
         </div>
+
+        <div id="sec:第一个脚本" class="chapter-content" style="display: none;">
+            <h2>第一个脚本</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>什么是Shell脚本</li>
+            <li>如何编写第一个Shell脚本——Hello World</li>
+            <li>如何运行脚本</li>
+            </ul>
+
+            <p>在前面的学习中，我们已经了解如何使用Linux命令在Shell进行操作，我们了解了如何对文件和目录进行简单的操作（如删除、复制等），同时我们也了解了一些更复杂的操作，例如使用<code>grep</code>和<code>sed</code>进行文本的查找和替换等。最后，我们还了解了如何使用<code>for</code>循环来进行批量操作。</p>
+
+            <p>而在一些特殊的场景下，我们可能希望做更复杂的操作，或者说，我们希望更简单地执行一些操作（这两句话本质上是一样的）。例如，如果我们每次都需要使用<code>sed</code>命令修改特定的内容，如<code>ENCUT = 400</code>，刚开始还好，时间长了可能就会“嫌麻烦”。此时可能就会希望有一个单独的命令（比如叫做<code>changeENCUT</code>）来实现这一功能。而实现这一功能的方法，就是使用<strong>脚本</strong>。</p>
+
+            <p>在本章，我们将会讨论如何编写自己的脚本。类似于编程语言，脚本里面将会包含大量的编程思想——如输入、输出、条件、判断、函数等。在学习这一部分之前，希望你已经有了部分编程语言基础（没有也没有关系）。</p>
+
+            <div class="extend">
+                <p>关于Shell和Bash的区别：一般来说，Shell指的是系统和用户交互的那层“外壳”，之前我们所学习的内容，其操作都是在Shell当中进行的。Shell具有多种版本，如“Bourne Shell”、“Bourne Again Shell”、“C Shell”等。其中，“Bourne Again Shell”就是我们所谓的“bash”。在你的操作系统下，可以使用<code>top</code>命令查看其Shell类型。</p>
+                
+                <p>Shell脚本，全称叫做“Shell Script”，是一种在Shell当中批量运行多条语句的程序。</p>
+                
+                <p>由于目前主流的Shell是基于Bash解释的，而我们所写的Shell脚本，实际上也大多都是Bash脚本，因此在后文当中，我们可能不会精确区分Bash脚本和Shell脚本的区别。</p>
+            </div>
+
+            <h3 id="subsec:第一个脚本-编写第一个脚本">编写第一个脚本</h3>
+
+            <p>正如任何程序的开始都是“Hello World”，在本章我们也不例外。在Linux当中编写Shell脚本不需要额外的程序，只需要使用<code>vi</code>编写一段文本文件，并<strong>赋予它运行权限</strong>，就可以作为脚本运行了。首先通过<code>vi</code>创建一个名为<code>hello</code>的文件，并输入如下内容：</p>
+
+            <pre><code class="bash">
+#!/bin/bash
+# 输出Hello World!
+echo "Hello World!"
+            </code></pre>
+
+            <p>编写完成后保存，并添加运行权限（<code>chmod +x hello</code>，详见第<a href="#sec:文件权限管理">文件权限管理</a>一节），然后执行<code>./hello</code>，即可在屏幕上看到输出结果。</p>
+
+            <div class="attention">
+                <p>在运行时需要加上<code>./</code>表示在当前目录寻找命令。在Linux当中，不添加<code>./</code>表示在环境变量<code>PATH</code>下查找文件运行，你可以在家目录下找到<code>.bashrc</code>的文件，里面包含有一系列配置Bash的命令，其中就有对环境变量的设置。</p>
+
+                <p>在运行前，你需要保证程序已经具有运行权限，或者可以使用<code>source ./hello</code>或<code>. ./hello</code>的方式（二者等价）“临时赋予运行权限”<sup>1</sup>。</p>
+            </div>
+
+            <p>其中，代码第一行<code>#!/bin/bash</code>表示<strong>使用bash运行</strong>。正如前面所说的那样，Shell具有多种版本，因此，在编写时应当特别指定你所使用的版本。由于目前大多数Shell都是使用Bash，因此这一行在有些时候“可以省略”。但我们不建议将其省略，因为<strong>你永远不能保证你的这个脚本今后会在哪个版本的Shell下运行</strong>。</p>
+
+            <div class="extend">
+                <p>你可以想见，<code>/bin/bash</code>就是<code>bash</code>命令所在位置，你可以去看一下是不是真的存在。在查看的时候，注意是从“根目录”开始而不是“家目录”</p>
+
+                <p>如果你真的这么做了，一种简单的方法是在<code>/bin/</code>目录下使用<code>ls | grep bash</code>只输出具有“bash”的文件，从而简化输出结果。当然，你也可以直接使用<code>ls bash</code>查看。</p>
+
+                <p>当然，不建议你尝试使用<code>vi bash</code>查看里面的内容，<strong>它不是文本文件</strong>。</p>
+            </div>
+
+            <p>代码第二行以<code>#</code>开头表示<strong>注释</strong>。如同编写其他代码一样，使用注释是一个好习惯，它可以帮助你划分代码段落，以及记住对应的功能。随着学习的深入，我们会编写越来越长的脚本。因此，记得加注释是个好习惯。</p>
+
+            <p>第三行是这一脚本的关键，它使用<code>echo</code>实现字符串的输出。事实上，Shell脚本的每一个命令都可以在Shell本身下运行。因此，你也可以直接在Shell运行这一命令，会实现同样的效果。而编写脚本之后，就可以直接通过<code>./hello</code>实现这一功能，这便是脚本的作用。</p>
+
+            <div class="attention">
+                <p><code>echo</code>会将它后面的所有内容输出（在其他一些编程教材中，会将这一功能叫做“应声虫”，实际上，echo也就是“回音”的意思）。我们在这里添加双引号是为了强调它们是整体的，事实上，当你去掉这两个双引号，对程序运行结果没有任何影响。</p>
+
+                <p>如果你在你的脚本中编写了代码，并同样使用了双引号，请注意：<strong>使用英文符号而不是中文符号</strong>，这一点在后续所有脚本编写过程中都应当注意。一般来说，我们不建议在脚本当中添加中文，虽然你写<code>echo "你好，世界！"</code>可能也会得到正确的结果，但不会永远如此。</p>
+
+                <p>在本章的教程中，为了考虑到读者水平，我们的注释部分都会采用中文，如果这样也会引起脚本运行的失败（在测试时正常，但不敢保证在你的电脑也会正常），请删除中文注释后运行。</p>
+            </div>
+
+            <h3 id="subsec:第一个脚本-添加至环境变量">添加至环境变量</h3>
+
+            <p>正如前面所说，使用<code>./hello</code>表示在当前目录下查找名为<code>hello</code>的脚本并运行。这可以帮助我们快速调试代码，但在真正应用时，我们可能会希望在任何目录下运行脚本。此时就会希望将代码添加至环境变量，也就是前面所说的<code>PATH</code>。添加方法有两种——将脚本放置到已有的环境变量中，或者将脚本所在的目录设置为环境变量。</p>
+
+            <p>你可以通过<code>$PATH</code>命令输出当前环境变量，通常来说，你可以将你所编写的脚本命令放置在<code>\texttilde/bin/</code>目录下（这一般都是用户的环境变量）完成后，你可以在任何目录下运行你的脚本了（不需要<code>./</code>了）。例如，在完成上述配置后，在任何目录下运行只需要使用<code>hello</code>即可。</p>
+
+            <p>如果你编写了一系列脚本，一个简单的方法是直接将它们所在的目录设置成“环境变量”。此时需要通过<code>.bashrc</code>文件。假设你的脚本所在目录为<code>\texttilde/bash/</code>，使用<code>vi</code>打开<code>.bashrc</code>文件，在最后一行添加<code>export PATH=$HOME/bash:$PATH</code>即可。</p>
+
+            <p>其中，<code>export</code>是用来设置“环境变量”的命令，后面的<code>PATH=...</code>则是“变量赋值”的过程（后面就会学到）。<code>$HOME</code>是系统内置的变量，表示<strong>用户的家目录</strong>，你可以在Shell下使用<code>echo $HOME</code>查看变量的值\footnote{在这里我们又不知不觉接触到<code>echo</code>的新用法：输出变量的值。这本是后面的内容，在这里你可以提前先了解一下。}，后面的<code>$PATH</code>则表示原先的环境变量。</p>
+
+            <p>简单说，这一语句的意思就是在原有的<code>PATH</code>变量前面添加一个新的<code>$HOME/bash</code>。添加完成后你需要使用<code>source \texttilde/.bashrc</code>命令“激活”这一环境变量（或者重启也可以实现这一功能），然后即可在任何地方如一般运行命令一样运行你在<code>\texttilde/bash/</code>目录下所有的脚本了。</p>
+
+            <div class="attention">
+                <p>在后面的教学演示中，我们都不会添加<code>./</code>运行脚本（或者说，只有在这一节我们会详细提到如何运行脚本，后面都简单说作“运行脚本”）。如无特殊说明，无论是哪种方法（在当前目录、添加环境变量），运行最终效果都是一样的，后面不再赘述。</p>
+
+                <p>为了你的方便，建议新建一个目录作为你后续练习脚本的目录，并使用上面的方法将其添加到环境变量中。</p>
+            </div>
+
+
+            <h3 id="subsec:第一个脚本-错误处理">错误处理</h3>
+
+            <h4>-bash: &lt;脚本名&gt;: Permission denied</h4>
+
+            <p>这可能是因为你在运行脚本时没有赋予其运行权限而直接运行脚本，如果你没有赋予权限，请使用<code>source</code>命令或<code>.</code>运行脚本。这同样适用于环境变量中的命令。对于环境变量中没有运行权限的脚本，需要使用<code>source &lt;脚本名&gt;</code>或<code>. &lt;脚本名&gt;</code>执行。</p>
+
+            <footer>
+            <p>注解：</p>
+            <ol>
+            <li id="ftnt1">这是表面上的用法，事实上，<code>source</code>本意是<strong>在当前Shell下运行文件</strong>。相对的，其他的用法（不加<code>source</code>）则是在当前shell下新建了一个“子Shell”运行代码，其运行结果（例如一些变量）并不会带回外面。</li>
+            </ol>
+            </footer>
+        
+        </div>
+
+        <div id="sec:变量" class="chapter-content" style="display: none;">
+            <h2>变量</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何在脚本中定义变量</li>
+            <li>如何输出变量</li>
+            <li>如何对变量进行简单运算</li>
+            </ul>
+
+            <p>如果所有脚本都只能按照固定的内容运行，显然功能太弱了。与其他编程语言类似，脚本语言应当也具有类似于“<strong>变量</strong>”的功能实现“可拓展性”。</p>
+
+            <p>所谓“变量”，指的就是<strong>在运行过程中会发生变化的量</strong>，这些值可能是由用户输入给定的，或者在运行过程中生成的，或者是通过文件读取得到的。</p>
+
+            <h3 id="subsec:变量-定义变量与初始化">定义变量与初始化</h3>
+
+            <p>与C语言等强类型语言不同，Shell脚本的变量在使用之前不需要对其进行“声明”，相对地则是需要对其进行<strong>初始化</strong>。与其他编程语言类似，在Shell脚本中，第一次使用变量时需要对变量进行赋值（也可以叫做“初始化”）。例如，我们希望将字符串“Hello World!”赋值给一个变量，则可以使用<code>STRING="Hello World!"</code></p>
+
+            <div class="attention">
+                <p>与其他编程语言类似，在Shell脚本中，赋值也是使用<code>=</code>运算符。但不同的一点是，在运算符两侧<strong>不能有空格</strong>。</p>
+
+                <p>在变量命名时，需要遵守如下原则：变量名只能包括数字、字母和下划线(<code>_</code>)，第一个字符不能是数字，不能是已有的关键字<sup>1</sup>。</p>
+            </div>
+
+            <p>在一个程序中，可以同时存在多个变量，对于已经赋值的变量，也可以对其再次进行赋值（原有值会发生变化）。例如，下面的代码：</p>
+
+            <pre><code>
+#! /bin/bash
+# 变量初始化
+STRING1="Hello World!"
+STRING2="I Like Bash"
+STRING2="I Like Shell Script"
+            </code></pre>
+
+            <p>上述代码第3行定义了一个变量<code>STRING1</code>，其赋值为<code>"Hello World!"</code>；在第4行，首先定义了一个变量叫做<code>STRING2</code>，首先赋值为<code>"I Like Bash"</code>，在第5行又一次对其进行赋值，此时<code>STRING2</code>的值变为<code>"I Like Shell Script"</code>。</p>
+
+            <h3 id="subsec:变量-调用变量">调用变量</h3>
+
+            <p>如果你熟悉其他编程语言如C、Java、Python等，也许在编写上面的语句时，你会很自然写出如<code>STRING2=STRING1</code>这样的语句。在你看来，这好像是把<code>STRING1</code>的值赋值给<code>STRING2</code>，但当你运行时，发现事实并非如此。这是因为在Shell脚本中，变量的调用需要用到其他的方法。</p>
+
+            <div class="attention">
+                <p>在上面我们提到<code>STRING2=STRING1</code>的含义是<strong>将<code>STRING1</code>的值赋值给<code>STRING2</code></strong>，这对于了解过其他编程语言的读者而言是很自然的。但如果你没有学习过其他编程语言，需要特别注意的一点是：在程序设计语言中（几乎大多数的程序语言），<code>=</code>所表示的含义与你所熟悉的数学上的含义不同。在数学上，=表示一种<strong>状态</strong>，表达两个值相等；而在程序设计中，<code>=</code>表示将右边的值<strong>赋值给</strong>左边的值（一种<strong>动作</strong>）。</p>
+
+                <p>尽管在最后的结果上，二者是相同的，但数学上的=表达一种“状态”，而程序设计中表达一种“动作”，是不同的。一个很简单的例子就是上面的<code>STRING2=STRING1</code>，从数学的角度看，这显然不成立，因为<code>"I Like Shell Script"</code>显然不可能<strong>等于</strong><code>"Hello World!"</code>，但程序设计上是可行的，因为它表达了“赋值”的动作。</p>
+
+                <p>也正因如此，在数学上，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math>相等写成<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi><mo>=</mo><mi>b</mi></math>或者<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi><mo>=</mo><mi>a</mi></math>都是可行的（这也就是等式的“对称性”）；而对于程序设计而言，<code>a=b</code>和<code>b=a</code>显然是不同的，因为它们所表达的动作“方向”是不同的。</p>
+            </div>
+
+            <p>在Shell脚本中，调用变量需要使用到<code>$</code>符号。事实上，这不是你第一次见到它（如果你忘记了，请回到<a href="#sec:简单for循环">简单for循环</a>一节，或者更准确的，<a href="#subsec:简单for循环-关于变量">简单for循环-关于变量</a>一节）。与定义变量不同，在Shell脚本中，但凡是需要<strong>调用变量</strong>的地方，都需要使用<code>$</code>符号。例如，在上面的例子中，如果你确实希望表达<code>STRING2=STRING1</code>，需要写作<code>STRING2=$STRING1</code>。</p>
+
+            <p>这里有一点“小绕”的地方在于，为什么在<code>STRING2</code>前面不需要添加<code>$</code>符号。这是因为，我们实际上只是调用了<code>STRING1</code>变量的值，并不关心<code>STRING2</code>里面是<code>"I Like Shell Script"</code>还是<code>"I Like Roselia"</code>。因此，我们只需要通过<code>$STRING1</code>来获得<code>STRING1</code>的值。</p>
+
+            <div class="extend">
+                <p>你还可以做一个“不准确”的理解：<code>$</code>总是试图将右边的内容“展开”为完整的内容。例如，假设<code>STRING2</code>的值为<code>"Hello World!"</code>，那么在调用<code>STRING2=$STRING1</code>时，可以写作<code>STRING2="Hello World!"</code>（将变量<code>STRING1</code>展开）</p>
+
+                <p>对于前面所介绍的<code>for</code>循环，其本质是类似的。例如，<code>for i in {1..5}; do echo $i; done</code>，实际上也是将变量<code>i</code>展开为具体的1到5.</p>
+
+                <p>当你了解这个时，对于后面的一些操作，会很有帮助。</p>
+            </div>
+
+            <p>在了解了如何调用变量后，我们就可以做一些完整的事情了。例如，下面的一段完整代码实现了变量的初始化，修改赋值和调用，并在最后使用<code>echo</code>语句进行输出。</p>
+
+            <pre><code>
+#! /bin/bash
+# 变量初始化
+STRING1="Hello World!"
+STRING2="I Like Bash"
+# 修改变量的值
+STRING2="I Like Shell Script"
+# echo输出变量的值（调用变量）
+echo $STRING1
+echo $STRING2
+            </code></pre>
+
+            <p>运行上述代码，就可以看到输出了“Hello World!”和“I Like Shell Script”。</p>
+
+            <h3 id="subsec:变量-字符串中的$符号">字符串中的$符号</h3>
+
+            <p>像上面这样在字符串中使用<code>$</code>符号，最简单的情况就是上面这种单纯输出一个变量。但大多数时候，我们可能希望在输出时提供更复杂的内容。例如，我们有下面的变量</p>
+
+            <pre><code>
+#!/bin/bash
+# 初始化变量
+name="Jiaqi Z."
+band="Roselia"
+            </code></pre>
+
+            <p>如果我希望输出“My name is Jiaqi Z., and I like Roselia”。如果考虑到<code>echo</code>可以<strong>连续输出多个参数</strong>，也许你会想写出<code>echo "My name is" $name", and I like" $band</code>这样的语句。确实，从运行的角度，这个句子没有任何问题。但显然从可读性的角度，稍显复杂。那么，有没有更简单，更清晰的方式呢？</p>
+
+            <p>在使用<code>$</code>表示变量时，我们可以将变量名使用大括号将其括起来。例如，上面的例子，我们就可以写作<code>echo "My name is ${name}, and I like ${band}"</code></p>
+
+            <div class="extend">
+                <p>如果你尝试将大括号去掉，在这一例子中，同样可以运行出正确的结果。这是因为，<strong>每一个变量名后面都跟着一个“标点符号”</strong>。如果对于再一般的情况，我们的变量名后面跟着另外一些字母。例如，如果我们在<code>$name</code>后面再加个s，对于使用大括号的情况，则会输出<code>Jiaqi Z.s</code>，而对于没有大括号的情况，则会输出错误的结果（由于没有变量叫做<code>names</code>）。</p>
+
+                <p>因此，为了更一般的情况，我们建议<strong>在使用变量名调用变量时加上大括号</strong>。</p>
+            </div>
+
+            <h3 id="subsec:变量-变量简单运算">变量简单运算</h3>
+
+            <p>在前面的例子中，我们都是针对于字符串变量进行讨论。事实上，变量还可以保存一些数值信息（例如整数、小数等）。例如，我们可以定义变量<code>a=3</code>和<code>b=2.5</code>。</p>
+
+            <p>同时，在脚本中，我们也可以进行简单的四则运算。简单的方式则是利用<code>$ (( 表达式 ))</code>的格式写出运算内容。例如，下面的代码则是简单计算1+1的结果：</p>
+
+            <pre><code>
+#! /bin/bash
+# 定义变量
+a=1
+b=1
+# 计算
+c=$(( ${a} + ${b} ))
+# 输出
+echo ${c}
+            </code></pre>
+
+            <p>在Shell脚本中，四则运算（加减乘除）的符号分别为<code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>，同时需要特别注意的两个符号是<code>%</code>表示<strong>取余</strong>，即<strong>求得两个整数相除后的余数</strong>，例如，计算<code>echo $(( 9%4 ))</code>可以得到1；<code>**</code>（两个乘号）表示<strong>幂运算</strong>，例如，<code>echo $(( 2**10 ))</code>表示<math xmlns="http://www.w3.org/1998/Math/MathML" ><msup><mn>2</mn><mrow><mn>10</mn></mrow></msup></math>，即1024.</p>
+
+            <div class="extend">
+                <p>在Shell脚本中，你可以使用这种方法进行整数的四则运算。对于小数而言，则需要使用更复杂的方法。例如，对于变量<code>a=1.5</code>和<code>b=2</code>，如果希望做小数的四则运算，可以使用<code>bc</code>命令，写作<code>echo "${a} + ${b}" | bc</code>。</p>
+
+                <p>但对于脚本来说，通常你不应寄希望于它的运算功能（这主要由于运算效率的限制）。通常来说，对于需要使用复杂运算的任务，应当考虑其他效率更高的编程语言如C语言<sup>2</sup>和Python语言。</p>
+
+                <p>例如，上述问题如果希望使用C语言编写，则可以写作下面的代码：</p>
+
+                <pre><code>
+#include "stdio.h"
+int main()
+{
+    double a = 1.5;
+    int b = 2;
+    printf("%f\n",a+b);
+    return 0;
+}   
+            </code></pre>
+                <p>并通过<code>gcc calculate.c</code>的方式编译代码，得到<code>a.out</code>可执行文件。通过<code>./a.out</code>即可运行得到正确结果。</p>
+
+                <p>正因如此，在本教程中，我们不会详细讨论脚本的计算（如果你确实需要使用脚本进行复杂运算，请查阅其他相关资料（例如<code>bc</code>和<code>awk</code>的相关使用方法）</p>
+            </div>
+
+            <h3 id="subsec:变量-错误处理">错误处理</h3>
+
+            <h4>-bash: &lt;表达式&gt; : syntax error: invalid arithmetic operator (error token is "&lt;表达式&gt;")</h4>
+
+            <p>这可能是由于你错误使用了四则运算符，例如，在使用<code>$(())</code>的方式进行计算时，要求只能进行整数四则运算。如果你的运算符两边出现了小数，则会出现错误。</p>
+
+            <h4>bash: &lt;变量名&gt;: command not found...</h4>
+
+            <p>这是因为你在对变量进行赋值时，在<code>=</code>两边加了空格。在Shell脚本中，赋值符号(<code>=</code>)两边不能有空格，这一点与其他编程语言不同。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">“关键字”指的是在Shell脚本中已经具有特定含义的词语，如<code>echo</code>就不能作为变量名。</li>
+                <li id="ftnt2">在大多数Linux当中都有C语言的编译器<code>gcc</code>，你可以使用<code>gcc --version</code>查看对应版本。</li>
+                </ol>
+            </footer>
+        </div>
+
+        <div id="sec:输入" class="chapter-content" style="display: none;">
+            <h2>输入</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何读取用户输入</li>
+            <li>如何读取命令参数</li>
+            <li>如何将命令执行结果赋值给变量</li>
+            </ul>
+
+            <p>在前面，我们仅仅讨论了脚本内定义的变量，这对于脚本而言远远不够。在实际使用脚本的时候，有一些信息只有在调用时才能知道。例如，如果我们希望编写一个可以删除文件的脚本<sup>1</sup>，在编写时不可能知道需要删除哪些文件。因此，有必要在写脚本时考虑实现“交互”。</p>
+
+            <p>通常来说，交互的方式有三种：程序运行时输入、程序调用参数、以及外部文件。在本节，我们将讨论这三种交互方式如何在脚本中实现。</p>
+
+            <div class="attention">
+                <p>严格来说，还有一种：管道输入。在本节我们不详细讨论管道的输入方式。</p>
+            </div>
+
+            <h3 id="subsec:输入-用户输入">用户输入</h3>
+
+            <p>在Shell脚本中，实现用户输入的方法是使用<code>read</code>语句。一般格式是<code>read &lt;变量名&gt;</code>，例如，<code>read a</code>表示在运行时读取用户输入，并将输入结果赋值给变量<code>a</code>。</p>
+
+            <p>在调用<code>read</code>命令时，可以提供一个选项，<code>-p</code>表示在屏幕上显示提示信息，其格式为<code>read -p &lt;提示信息&gt; &lt;变量名&gt;</code>。</p>
+
+            <p>利用这一命令，我们可以实现简单的交互。例如，我们可以写一个简单的“应声虫”小程序，即当用户输入一个内容后，程序原封不动将其输出。</p>
+
+            <pre><code>
+#!/bin/bash
+# 读取输入
+read -p "Please input a string: " STRING
+# 输出
+echo "You said: ${STRING}."
+echo "Good Luck!"
+            </code></pre>
+
+            <p>其中，第3行我们使用<code>read</code>命令读取用户输入，并将其赋值给<code>STRING</code>。之后在第5行使用<code>echo</code>语句输出了用户的内容（在前面加了一些其他内容）。</p>
+
+            <p>在运行时，程序会首先输出<code>Please input a string: </code>并等待用户输入。当用户输入完毕后，按下回车表示完成，此时程序执行后面的内容（输出）。</p>
+
+            <div class="attention">
+                <p>在读取输入时，不要在变量名前面“画蛇添足”加上一个<code>$</code>符号。如果你试着这样做，会得到错误的结果——它有可能会输出空白信息，或者输出一些其他的内容。</p>
+            </div>
+
+            <div class="extend">
+                <p>输出空白或者其他信息取决于你的运行方式是使用<code>source</code>还是添加执行权限。对于前者，<code>source</code>本质上相当于在当前Shell终端下执行了脚本里的命令，其变量会延续到脚本外。因此，如果你在刚开始正确时输入了一个内容，如“Hello World!”，脚本会将其赋值给<code>STRING</code>变量并延续到Shell外部（用更专业的说法，这种“延续”实际上是“作用域”的体现）。此时如果你尝试在外面直接运行<code>echo $STRING</code>，也会得到对应的结果。</p>
+
+                <p>如果你是添加了执行权限并运行的话，脚本实际上是在当前Shell下新建了一个“子Shell”并运行，运行过程中产生的变量仅会在这一Shell内有效（表现为程序内），当退出脚本时，变量也就因此失效了。</p>
+
+                <p>在使用<code>read</code>输入变量时，如果后面加了<code>$</code>符号，则不会输入任何内容。此时在<code>echo $STRING</code>时，则会根据目前环境下已有的变量，输出对应的结果（已有的内容或空白）</p>
+            </div>
+
+            <h3 id="subsec:输入-参数输入">参数输入</h3>
+
+            <p>除了使用前面所介绍的<code>read</code>方法在程序运行时读取用户输入，在有些时候可能也希望通过类似于参数调用的方式输入。可以类比一下最开始我们所接触到的如<code>cd</code>和<code>rm</code>，在切换目录或者删除文件时，都是在调用时直接给出对应的文件名，而不是在运行过程当中输入。那我们有没有类似的方法实现这一功能？</p>
+
+            <p>答案肯定是有的，而且这一部分你不需要任何特殊的命令。因为在脚本中，如果调用时提供了一个参数，默认在程序中就是<code>$1</code>，以此类推，如果有两个或多个参数，则分别是<code>$2, $3, $4</code>等等。例如，下面的代码则实现了位置参数的调用：</p>
+
+            <pre><code>
+#!/bin/bash
+# 输出第一个参数
+echo "First parameter is ${1}"
+# 输出第二个参数
+echo "Second parameter is ${2}"
+            </code></pre>
+
+            <p>当调用时，类似于之前使用其他内置命令那样，可以往其中传递参数（使用空格分割），如<code>./loc_parameters hello world</code>，则第一个参数为“hello”，第二个参数为“world”。</p>
+
+            <div class="attention">
+                <p>通常来说，我们将这种形式上如<code>$n</code>的参数叫做<strong>位置参数</strong>。也请务必注意的一点是：位置参数默认是从1开始而不是从0开始的。当参数数量在9个及以内时，可以直接使用<code>$1</code>到<code>$9</code>这种形式，但如果到了10个及以上参数，需要在数字外面加大括号如<code>${10}</code>。</p>
+
+                <p>你也可以尝试在程序中使用<code>$0</code>，它表示<strong>正在运行的脚本名称</strong>。</p>
+            </div>
+
+            <div class="extend">
+                <p>如果你真的尝试输出<code>$0</code>的值，可能会意外地输出一个叫做<code>-bash</code>的内容而不是脚本名称。这是因为如果你使用的是<code>source</code>方式运行，在这种情况下，你的脚本实际上是在当前命令行环境下运行，此时程序中的<code>$0</code>与你直接在命令行中输入<code>$0</code>运行结果应当是一致的。</p>
+
+                <p>另外，如果你的程序是在其他目录下运行（假设你已经将这一目录添加进环境变量），此时<code>$0</code>会输出这一脚本所在的完整目录。</p>
+            </div>
+
+            <p>除了直接使用位置编号表示参数本身外，Bash脚本还提供其他内置的参数表示其他信息。常见的例如<code>$#</code>表示传递的参数个数（不包括<code>$0</code>），<code>$@</code>表示整个参数列表。下面的程序使用<code>for</code>循环遍历了所有参数（完整的<code>for</code>循环教程在后面介绍）</p>
+
+            <pre><code>
+#!/bin/bash
+# 输出一些特殊参数
+echo "Current file is ${0}"
+echo "We have $# parameters"
+echo "They are:"
+for i in $@ 
+do
+    echo $i
+done
+            </code></pre>
+
+            <p>其中，第6行使用<code>$@</code>符号表示传入的参数列表，并对其中的所有元素进行遍历（输出）</p>
+
+            <h3 id="subsec:输入-读取命令作为输入">读取命令作为输入</h3>
+
+            <p>除了在运行时输入，在很多时候我们需要借助于一些命令读取文件的内容，并将其作为变量进行处理。例如，我们希望读取<code>INCAR</code>文件中的<code>ENCUT</code>所在的一行，根据前面所学习的方法，我们可以使用<code>grep</code>命令，如<code>grep ENCUT INCAR</code>命令来输出这一行。如果我们希望将这一命令作为变量输入到脚本中，只需要使用<code>$(grep ENCUT INCAR)</code>这种形式即可，其命令使用小括号，且前面加上变量的<code>$</code>符号。同样，在命令里面也可以使用变量以实现更复杂的交互功能，下面的代码实现了<strong>用户输入一个字符串和文件名，查找文件中包含这一字符串所在一行的内容</strong>：</p>
+
+            <pre><code>
+#!/bin/bash
+# 读取字符串
+read -p "Please input a string: " STRING
+# 读取文件名
+read -p "Please input a file name: " FILE
+# 读取命令并赋值
+result=$(grep ${STRING} ${FILE})
+echo ${result}
+            </code></pre>
+
+            <div class="attention">
+                <p>上述代码并不是一个“完美”的代码，因为在读取文件时，并没有对文件是否存在进行检查。因此，如果输入了一个不存在的文件名，则会输出错误的结果（如同你正常使用<code>grep</code>时输入了错误的文件名那样报错）。当你测试这一段代码时，请提前创建好一个对应的文件。</p>
+
+                <p>在后面的学习中，我们将进一步完善这一代码（设置一段代码实现文件是否存在的检查）</p>
+            </div>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">尽管我们已经有了<code>rm</code>命令，但我们可能还会有其他想法。例如，我们希望在删除完成后输出删除了哪些文件，或者我们希望将“删除”改为移动至某一个目录实现“回收站”的功能。</li>
+                </ol>
+            </footer>
+
+        </div>
+
+        <div id="sec:判断语句" class="chapter-content" style="display: none;">
+            <h2>判断语句</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何在脚本中使用<code>if</code>及相关语句</li>
+            <li>如何对数值、字符串和文件进行判断</li>
+            <li>如何进行逻辑判断（与、或、非）</li>
+            </ul>
+
+            <p>在之前的脚本中，我们只能按照顺序进行执行，从某种程度上来看，这并不“智能”。通常来说，一个好的脚本应该会根据实际情况来决定执行的内容，比如，当用户输入了一个文件名后，如果这个文件并不存在，程序应当做出相应的反馈。这一节，我们就会稍微了解以下如何进行判断，并且让程序根据情况做事。</p>
+
+            <h3 id="subsec:判断语句-if语句"><code>if</code>语句</h3>
+
+            <p>在开始这一切的学习之前，让我们先来了解一个最基本的判断语句框架，以便在后面更好地讨论深入的话题。类似于C语言和Python语言等，在Shell脚本中，最简单的判断语句（<code>if</code>语句）框架如下：</p>
+
+            <pre><code>
+commands1
+if [ condition ]; then
+    commands2
+fi
+commands3
+            </code></pre>
+
+            <img src="fig/if语句.png" width="20%" alt="if语句流程图">
+
+            <p>这一段代码当执行完<code>commands1</code>之后，进行condition判断（条件是否成立），如果（if）成立，然后（then）执行<code>commands2</code>语句，<strong>否则不执行任何语句</strong>，最后执行<code>commands3</code>。</p>
+
+            <div class="attention">
+                <p>无论条件是否满足，<code>commands3</code>都会执行（它是if语句之外的内容，类似于<code>commands1</code>）。在这里的<code>commands1,commands2,commands3</code>都代表语句（们），每一部分可以是一条或多条语句。<code>condition</code>是<strong>判断条件</strong>，在后面的部分我们将详细介绍如何描述这一部分，简单来说，它描述的内容就是“是否……？”。</p>
+
+                <p>需要特别注意<code>condition</code>前后与中括号之间的空格，这个空格不能省略！千万不要写成<code>[condition]</code>这种形式。</p>
+            </div>
+
+            <div class="extend">
+                <p>与C语言使用大括号，Python语言使用缩进不同，Shell脚本采用类似于Basic语言和MATLAB那样使用语句表示一整个语句块的方式。一个判断语句一定是以<code>if</code>开始，以<code>fi</code>结束。这个<code>fi</code>不代表“finish”或者“final if”等类似含义，而是<code>if</code>的倒序（在后面其他内容的学习中，会逐渐印证这一点）。</p>
+
+                <p>换言之，在上述代码中，使用缩进与否并不会影响脚本执行效果，但为了增强可读性，我们仍然建议<strong>使用缩进表示每一级之间的层级关系</strong>。事实上，如果你使用<code>vi</code>创建<code>*.sh</code>文件时，在输入<code>if</code>后默认会进行缩进，这也是大多数现代程序语言文本编辑器应当具有的功能。</p>
+            </div>
+
+            <h3 id="subsec:判断语句-关系运算符">关系运算符</h3>
+
+            <p>任何一个分支判断语句，都应当首先给定一个关系运算，并根据这个结果来判断应该执行哪些命令。在Shell脚本中，我们大致可以将关系运算符分成三类：</p>
+
+            <h4>整数比较</h4>
+
+            <p>类似于数学上的大于、小于和等于，在Linux当中也有对数值的比较，包括等于（<code>-eq</code>, <code>==</code>）、不等于（<code>-ne</code>, <code>!=</code>）、大于（<code>-gt</code>, <code>&gt;</code>）、小于（<code>-lt</code>, <code>&lt;</code>）、大于等于（<code>-ge</code>）和小于等于（<code>-le</code>）六种。</p>
+
+            <div class="attention">
+                <p>在Shell脚本中，许多运算符都是通过上面这种“选项”的形式给出。与一般输入命令类似，选项前后也需要有空格进行分割。</p>
+
+                <p>除了选项格式外，前四种（等于、不等于、大于和小于）我们也给出了类似于C和Python等其他编程语言所使用的运算符格式。这些在Shell脚本中同样可用。但是，对于大于等于和小于等于，没有<code>&gt;=</code>和<code>&lt;=</code>。如果你使用了这两个符号，大概率会报错。关于这一问题，目前还没有找到相关的解决方法，如果你有了对应解决方法（当然，不是后面要讲的内容），请联系我。</p>
+            </div>
+
+            <div class="extend">
+                <p>这些选项实际上是英文单词的缩写，例如，<code>eq</code>=equal; <code>ne</code>=not equal; <code>gt</code>=greater than; <code>lt</code>=less than; <code>ge</code>=Greater or Equal; <code>le</code>=Less or equal</p>
+
+                <p>在后面你还会见到其他类似的语句，了解它们的实际含义可以帮助你记忆这些选项。</p>
+            </div>
+
+            <p>下面的程序可以用来判断两个数字是否相等（使用前面的<code>if</code>语句）</p>
+
+            <pre><code>
+#!/bin/bash
+# 判断两个数字是否相等
+a=10
+b=10
+# if语句判断是否相等
+if [ $a -eq $b ]; then
+    echo "$a is equal to $b"
+fi
+# 判断结束后输出
+echo "Bye!"
+            </code></pre>
+
+            <p>你可以试着修改变量的值，查看输出结果是否有不同。在上述代码中，当变量相等时，判断结果为“1”，从而执行里面的语句；如果不相等，则判断结果为“0”，跳过里面的语句。无论结果如何，你都会看见第10行所输出的“Bye!”（它在<code>if</code>语句外面）。</p>
+
+            <div class="extend">
+                <p>在这里我们提到了“1”和“0”，它们实际上叫做“<strong>布尔值</strong>”或者“<strong>逻辑值</strong>”，也是关系运算（与后面要提到的逻辑运算）的返回结果，其值只包含两种：“真”（也可以用“True”、“1”等代替）和“假”（也可以用“False”、“0”等代替）。</p>
+            </div>
+
+            <div class="attention">
+                <p>在中括号里面表示条件判断时，请务必记得中括号内前后要加空格，同时<code>-eq</code>前后也要加空格。</p>
+
+                <p>在完成<code>if</code>语句后，不要忘记后面的<code>fi</code>。</p>
+            </div>
+
+            <p>你也可以试着修改判断条件，例如改成<code>-gt</code>，并修改变量的值，查看结果。</p>
+
+            <h4>*浮点数比较</h4>
+
+            <div class="extend">
+                <p>由于前面所介绍的浮点数在脚本中的局限性，这一部分内容关于浮点数的比较并非必须了解。但如果你确实有此方面需求，在确定不能使用其他如C和Python等编程语言实现的前提下，可以参考这一部分所介绍的方法。</p>
+
+                <p>相比于前面的整数比较，浮点数比较<strong>不能使用</strong>前面的“选项”格式。例如，你写出<code>if [ 3.5 -ne 2.5 ]</code>是错误的。但是，前面所使用的运算符形式如<code>==, !=</code>等还是可用的。基于此，对于判断等于和不等于（包括大于和小于），最简单的方法就是使用如<code>if [ 3.5 != 2.5 ]</code>的格式。</p>
+
+                <p>但是，对于大于等于和小于等于这两种情况，整数部分尚且还有选项可用，浮点数则完全没有对应的简单方法。参考前面<a href="#subsec:变量-变量简单运算">变量-变量简单运算</a>一节所介绍的<code>bc</code>命令，我们可以退而求其次，借助于逻辑运算符的输出结果1和0，来进行判断。例如，我们希望判断3.5是否大于等于2.5，则可以使用<code>if [ $(echo "3.5 &gt;= 2.5" | bc) -eq 1 ]</code>这种方式，其中小括号部分借助管道运算符和<code>bc</code>命令计算<code>3.5 &gt;= 2.5</code>的结果，根据前面所介绍的逻辑值，输出结果应当是0或1（在这里为1）。然后利用整数的判断方法，判断它与0或1的关系，从而实现浮点数对大于等于和小于等于的判断。</p>
+            </div>
+
+            <h4>字符串判断</h4>
+
+            <p>与数值判断类似，字符串也可以进行相应的判断，一般常见的包括判断两个字符串是否相等（<code>==</code>），是否不相等（<code>!=</code>），以及判断一个字符串是否为空字符串（<code>-z</code>和<code>-n</code>）</p>
+
+            <div class="attention">
+                <p>在判断是否为空字符串时，可以使用<code>-z</code>和<code>-n</code>，二者在本质上判断的内容是一样的，但返回结果<strong>相反</strong>，前者当内容为空时返回“真”，后者当内容不为空时返回“真”。借助于后面的“求非”运算，这二者只需要有一个即可，但为了简洁易读，还是建议在对应的时候使用正确的关系运算符。</p>
+
+                <p>此外，与前面数值判断不同，判断字符串是否为空是“一元运算符”，即<strong>只需要一个变量</strong>。后面的代码则给出了这种一元运算符的一般格式。</p>
+            </div>
+
+            <p>下面的代码实现了判断一个字符串是否为空字符串：</p>
+
+            <pre><code>
+#!/bin/bash
+# 判断字符串是否为空
+read -p "Please input a string:" string
+# -n当字符串不为空时为真
+if [ -n "$string" ]; then
+    echo "Right! I got something ..."
+    echo "You input: $string"
+fi
+echo "Bye!"
+            </code></pre>
+
+            <p>上述代码第5行通过<code>-n</code>判断输入字符串是否不为空，如果有内容（结果为真），则执行<code>if</code>语句里面的内容。</p>
+
+            <div class="attention">
+                <p>在对字符串进行判断时（包括使用二元关系运算符），请务必将字符串变量前后加上双引号。如果不加双引号可能会造成奇怪的错误。</p>
+            </div>
+
+            <h4>文件判断</h4>
+
+            <p>Shell脚本也提供了大量的运算符选项，用来判断文件的相关信息。例如，使用<code>-e</code>判断文件<strong>是否存在</strong>，使用<code>-f</code>（<code>-d</code>）判断是否为普通文件（目录），使用<code>-r, -w, -x</code>依次判断文件是否可读、可写、可执行。</p>
+
+            <p>与前面字符串的代码类似，这里的所有运算符都是一元运算符（即采用<code>&lt;选项&gt; 变量</code>的格式。例如，下面的代码简单实现了判断文件<code>INCAR</code>是否存在的功能：</p>
+
+            <pre><code>
+#!/bin/bash
+# 判断文件INCAR是否存在
+if [ -e "INCAR" ]; then
+    echo "This file exists."
+fi
+echo "Bye!"
+            </code></pre>
+
+            <p>其中，<code>-e</code>后面的<code>"INCAR"</code>是指当前运行目录下的INCAR文件，你也可以使用绝对路径来描述文件。</p>
+
+            <h3 id="subsec:判断语句-带有else的判断语句">带有<code>else</code>的判断语句</h3>
+
+            <p>下面，我们将进一步介绍<code>if</code>语句，在之前我们仅仅用来判断某一个条件是否满足，且当满足时执行某一（些）语句。但有时，我们可能有更复杂的需求。例如，判断某一个文件是否存在，如果存在则对文件进行处理，如果不存在则输出文件不存在，并提示用户重新输入。我们姑且忽略到继续输入这一动作（需要用到后面的循环），当条件不满足时如何执行另外的语句？类似于其他编程语言，在Shell当中也可以使用<code>if-else</code>语句。其基本格式如下：</p>
+
+            <pre><code>
+commands1
+if [ condition ]; then
+    commands2
+else
+    commands3
+fi
+commands4
+            </code></pre>
+
+            <img src="fig/if-else语句.png" width="50%" alt="if-else语句">
+
+            <p>首先程序会执行<code>commands1</code>，然后进行判断，如果（if）条件成立，则（then）执行<code>commands2</code>，否则（else）执行<code>commands3</code>。 无论结果如何，最后执行<code>commands4</code>。</p>
+
+            <p>下面的代码则是利用上面的语法结构，对前面的判断文件是否存在的脚本进行了修改：</p>
+
+            <pre><code>
+#!/bin/bash
+# 判断文件INCAR是否存在
+if [ -e "INCAR" ]; then
+    echo "This file exists."
+else
+    echo "This file NOT exists."
+fi
+echo "Bye!"
+            </code></pre>
+
+            <p>此之外，与Python语言类似，Shell脚本也有<code>if-elif-else</code>语句，用来对多条件进行判断，语法如下：</p>
+
+            <pre><code>
+commands1
+if [ condition1 ]; then
+    commands2
+elif [ condition2 ]; then
+    commands3
+elif [ condition3 ]; then
+    commands4
+……
+else
+    commands5
+fi
+commands6
+            </code></pre>
+
+            <img src="fig/if-elif-else语句.png" width="40%" alt="if-elif-else语句">
+
+            <p>程序首先判断<code>condition1</code>是否满足，如果（if）满足，则（then）执行<code>commands2</code>并结束判断语句，反之如果（else if, elif）满足<code>condition2</code>，则（then）执行<code>commands3</code>并结束判断语句；反之如果……；否则都不满足（else），执行<code>commands5</code>。在结束判断语句后，执行<code>commands6</code>。</p>
+
+            <p>下面的程序可以用来判断两个整数之间的关系：</p>
+
+            <pre><code>
+#!/bin/bash
+# 判断两个整数之间的关系
+# 输入两个整数
+read -p "Please input an integer(a): " a
+read -p "Please input an integer(b): " b
+# 判断两个整数之间的关系
+if [ $a -eq $b ]; then
+    echo "$a = $b"
+elif [ $a -gt $b ]; then
+    echo "$a &gt; $b"
+else
+    echo "$a &lt; $b"
+fi
+echo "Bye!"
+            </code></pre>
+
+            <h3 id="subsec:判断语句-嵌套if语句">嵌套<code>if</code>语句</h3>
+
+            <p>与其他编程语言类似，脚本也可以使用嵌套的<code>if</code>语句，甚至可以更复杂的<code>if-elif-else</code>嵌套，基于此可以实现复杂的功能。在这里我们不举例子，但有一个需要特别注意的地方：</p>
+
+            <div class="attention">
+                <p>任何一个<code>if</code>语句，其后面都需要配合一个<code>fi</code>作为语句结束。尤其是对于嵌套时的<code>if-else</code>匹配问题，<code>else</code>总是与最近的未完成的<code>if</code>语句匹配（与缩进无关）。例如，下面的代码就违反了第一个原则（<code>if</code>必须配合有一个<code>fi</code>）；同时，看似<code>else</code>是属于<code>condition1</code>所对应的判断，但事实上是属于里面的<code>if</code>。</p>
+
+                <pre><code>
+if [ condition1 ]; then
+    commands1
+    if [ condition2 ]; then
+        commands2
+else
+    commands3
+fi
+                </code></pre>
+
+                <p>这段代码是无法正常运行的。所缺少的<code>fi</code>可以加在<code>commands2</code>后面，也可以加在<code>commands3</code>后面，二者所实现的效果是不一样的。你可以尝试一下不同位置所对应的程序运行结果。</p>
+
+            </div>
+
+            <h3 id="subsec:判断语句-逻辑运算">逻辑运算</h3>
+
+            <p>在这一节的最后，让我们再来讨论一下逻辑运算。逻辑运算一共分为三种：与（<code>-a</code>）、或（<code>-o</code>）和非（<code>-n</code>）。其中与运算和或运算都是二元运算符，而非运算是一元运算符。</p>
+
+            <p>对于与运算而言，<strong>只有当两个值都为真时结果为真</strong>。而对于或运算，<strong>只要有一个为真，结果为真</strong><sup>1</sup>。对于非运算，是一元运算符，其运算结果就是<strong>真变假，假变真</strong>。</p>
+
+            <p>下面一个例子实现了判断三个数字是否从小大大排序：</p>
+
+            <pre><code>
+#!/bin/bash
+# 判断三个数字是否从小到大排序
+a=5
+b=8
+c=10
+# 使用与运算符连接
+if [ $a -le $b -a $b -le $c ]; then
+    echo "$a, $b, $c"
+fi
+            </code></pre>
+
+            <div class="extend">
+                <p>在这里我们使用多个运算符进行连接，与其他编程语言类似，这里也具有“优先级”的问题。可以简单的理解：关系运算符的优先级高于逻辑运算符的优先级（这在大多数编程语言中都是如此）。虽然上面的写法比较简单，但对于条件复杂的时候可能不具有较好的可读性。因此，可以使用类似于C语言的运算符（<code>&&</code>表示“与”，<code>||</code>表示“或”），而中间每一个条件使用中括号分割，写作<code>if [ $a -le $b ] && [ $b -le $c ]</code></p>
+            </div>
+
+
+            <h3 id="subsec:判断语句-错误处理">错误处理</h3>
+
+            <p>这一部分有可能出现的错误太多了，以至于难以在这里全部列出。这里仅列举一些常见的错误，且这些错误的解决方法仅是一部分可能的原因。当你出现错误时，请首先查看对应的格式是否正确，并且可以尝试联系我们。</p>
+
+            <h4>-bash: &lt;文件名&gt;: line &lt;行号&gt;: syntax error: unexpected end of file</h4>
+
+            <p>这是因为在使用<code>if</code>后没有对应的<code>fi</code>作为结束。通常出现在嵌套语句中或者一个<code>if</code>语句太长，到最后忘记了匹配。对此，我们建议，在开始就按照<code>if-fi</code>对应关系输入。</p>
+
+            <h4>bash: [&lt;变量&gt;: command not found...</h4>
+
+            <p>这可能是由于你在输入关系表达式时忘记了中括号里前后要加空格。</p>
+
+            <h4>-bash: [: missing `]'</h4>
+            <p>与前面的错误类似，这个通常指右中括号前面没有空格。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">或者还有一种表述是，只有当两个值都为假时，结果为假。</li>
+                </ol>
+            </footer>
+
+        </div>
+
+        
     </div>
 </body>
 </html>
