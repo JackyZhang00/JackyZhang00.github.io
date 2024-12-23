@@ -61,12 +61,13 @@
                 </div>
 
                 <div class="chapter" onclick="toggleSubChapters('Shell')">
-                    <h3>【NEW!!!!!】4. Shell脚本基础</h3>
+                    <h3>4. Shell脚本基础</h3>
                     <ul id="ShellSubChapters" style="display: none;">
-                        <li onclick="showContent('sec:第一个脚本')">【NEW!!!!!】4.1 第一个脚本</li>
-                        <li onclick="showContent('sec:变量')">【NEW!!!!!】4.2 变量</li>
-                        <li onclick="showContent('sec:输入')">【NEW!!!!!】4.3 输入</li>
-                        <li onclick="showContent('sec:判断语句')">【NEW!!!!!】4.4 判断语句</li>
+                        <li onclick="showContent('sec:第一个脚本')">4.1 第一个脚本</li>
+                        <li onclick="showContent('sec:变量')">4.2 变量</li>
+                        <li onclick="showContent('sec:输入')">4.3 输入</li>
+                        <li onclick="showContent('sec:判断语句')">4.4 判断语句</li>
+                        <li onclick="showContent('sec:case分支语句')">【NEW!!!!!】4.5 case分支语句</li>
                     </ul>
                 </div>
             </div>
@@ -2981,6 +2982,197 @@ fi
                 </ol>
             </footer>
 
+        </div>
+
+        <div id="sec:case分支语句" class="chapter-content" style="display: none;">
+            <h2><code>case</code>分支语句</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何使用<code>case</code>语句实现分支判断</li>
+            </ul>
+
+            <p>在前面的<code>if</code>语句中，已经了解了如何进行判断。理论上了解了<code>if</code>语句后可以解决所有分支情况，但是有一些情况可能比较特殊。例如，我们希望实现一个菜单界面，此时可能需要用户输入一些指令表示对应的功能。可以想见，如果使用<code>if</code>语句，将会有许多的判断条件，甚至随着条件的增多，也会影响程序运行效率<sup>1</sup>。</p>
+
+            <p>因此，我们希望可以寻找一种方法，直接对变量进行判断，并根据它的值选择合适的语句执行。可以猜到，这就是本节<code>case</code>语句所要解决的问题。</p>
+
+            <h3 id="subsec:case分支语句-case语句基本结构"><code>case</code>语句基本结构</h3>
+
+            <p>类似于<code>if</code>判断语句，<code>case</code>判断语句的基本结构为：</p>
+
+            <pre><code>
+case &lt;变量&gt; in
+pattern1)
+    statements1
+    ;;
+pattern2)
+    statements2
+    ;;
+......
+*)
+    statements3
+    ;;
+esac
+            </code></pre>
+
+            <p>程序会根据变量所在（in）的模式（可以是一个单独的值，或者正则表达式），选择合适的语句进行执行。例如，如果变量满足<code>pattern1</code>，则会执行<code>statements1</code>语句；如果满足<code>pattern2</code>，则会执行<code>statements2</code>语句；以此类推，如果所有的都不满足，则执行<code>*</code>所对应的<code>statements3</code>语句。</p>
+
+            <div class="attention">
+                <p>有几个细节需要特别关注：所有匹配模式都是以小括号作为结束分割（没有左括号）；当每一个分支里面的语句结束时，需要有<code>;;</code>作为结束的标志；在<code>case</code>语句结束时，需要有<code>esac</code>作为结束标志。</p>
+            </div>
+
+            <div class="extend">
+                <p>正如在<a href="#sec:判断语句">判断语句</a>中所讲的那样，<code>esac</code>也是<code>case</code>的倒序。另外，模式当中的<code>*</code>实际上可以想见，表示的就是通配符里面的可以表示任意多个字符的<code>*</code>符号。</p>
+            </div>
+
+            <h3 id="subsec:case分支语句-case分支语句应用"><code>case</code>语句应用</h3>
+
+            <p>下面让我们来看几个常见的应用例子。</p>
+
+            <h4>单一字符匹配</h4>
+
+            <p>在<code>case</code>语句中，最简单的就是对单独一个字符进行匹配。下面这个例子则实现了一个对菜单的模拟，用户通过输入1或者2来实现对应不同的功能。</p>
+
+            <pre><code>
+#!/bin/bash
+# 模拟菜单选项
+echo "--------------------"
+echo "1) option 1"
+echo "2) option 2"
+echo "--------------------"
+read -p "Please input a number: " number
+case $number in
+1)
+    echo "You input 1"
+    echo "I will do something for option 1..."
+    ;;
+2)
+    echo "You input 2"
+    echo "I will do something for option 2..."
+    ;;
+*)
+    echo "You did NOT input 1 or 2"
+    ;;
+esac
+echo "Bye!"
+            </code></pre>
+
+            <p>运行上面的代码，可以看见：当用户输入1时，程序可以直接跳转到<code>1)</code>所对应的语句；对应的，当用户输入2时，可以跳转到<code>2)</code>所对应的语句；如果输入其他内容（例如输入3），则会跳转到最后提示输入错误。</p>
+
+            <div class="attention">
+                <p>与<code>if</code>语句类似，<code>case</code>语句的前后，即开始的提示和后面的“Bye!”无论哪种情况都会输出，因为它们不属于<code>case</code>语句内。</p>
+            </div>
+
+            <h4>字符串匹配</h4>
+
+            <p>字符串匹配与单一字符匹配完全一样（你可以将单个字符理解成一种特殊的字符串）。但是，在这里我们也有一点新东西要讲。如果我们希望多个选项匹配同一个分支，可以<strong>使用<code>|</code>符号表示“或”进行分隔</strong>。例如，下面的程序则是根据用户输入的字符串选择特定的分支（有时多个输入对应同一个分支）：</p>
+
+            <pre><code>
+#!/bin/bash
+# 字符串匹配
+read -p "Please input you favourite band: " band
+case $band in
+"PPP"|"ppp"|"Poppin'Party")
+    echo "Thanks! I have known that you like Poppin'Party!"
+    ;;
+"Roselia"|"R")
+    echo "Thanks! I have known that you like Roselia!"
+    ;;
+"RAS"|"RAISE A SUILEN"|"Raise a suilen")
+    echo "Thanks! I have known that you like RAISE A SUILEN!"
+    ;;
+"MyGO!!!!!"|"mygo"|"mygo!!!!!")
+    echo "Thanks! I have known that you like MyGO!!!!!"
+    ;;
+*)
+    echo "Sorry...I don't know this band."
+    echo "But now I have known it -- $band"
+    echo "Thank you!"
+    ;;
+esac
+echo "Bye!"
+            </code></pre>
+
+            <p>与前面的代码分析完全类似，但特别的是，这里面分支的判断使用<code>|</code>表示“或”，例如，“PPP”、“ppp”和“Poppin'Party”对应的都是同一个分支；类似地，“R”和“Roselia”也是对应同一个分支，当用户输入“R”或者输入“Roselia”时，得到的结果是一样的。</p>
+
+            <h4>正则表达式匹配</h4>
+
+            <p>正如一开始所说的那样，在匹配时可以使用<strong>正则表达式</strong>。例如，下面的代码试图读取用户输入的参数为字母还是数字<sup>2</sup>：</p>
+
+            <pre><code>
+#!/bin/bash
+# 读取调用时的选项
+export LC_ALL=C
+case $1 in
+[a-z])
+    echo "You input a lowercase"
+    ;;
+[A-Z])
+    echo "You input an uppercase"
+    ;;
+[1-9])
+    echo "You input a number"
+    ;;
+*)
+    echo "You input other things"
+    ;;
+esac
+echo "Bye!"
+            </code></pre>
+
+            <div class="extend">
+                <p>也许你足够灵敏，注意到了第3行的<code>export LC_ALL=C</code>，这句命令表示将程序运行语言环境设置为默认值（可以通过<code>locale</code>查看环境语言设置），其中<code>C</code>表示系统默认值。</p>
+                
+                <p>在这里我们需要添加这一行命令以确保程序运行正确，但这行命令并不影响我们对<code>case</code>的理解。</p>
+
+                <p>同时，当你运行这一行代码之后，可能程序中的中文注释发生乱码，这并不影响程序运行结果，你可以重新启动系统以恢复开始的状态。</p>
+            </div>
+
+            <p>在调用时，当用户传递给一个小写字母时，则会匹配到<code>[a-z]</code>，相对地，若给定一个大写字母作为参数，则会匹配到<code>[A-Z]</code>。但是，我们这里只能对用户输入的一个参数进行判断，如果用户输入多个字符的参数（例如<code>abc</code>），程序则会认为输入了其他内容。如何修改程序呢？请自己思考并尝试写一段代码<sup>3</sup>，同时自己测试它。（为简单起见，我们只需要匹配第一个字符即可）</p>
+
+            <p>同时，正则表达式也可以使用<code>|</code>作为分隔以进行多个情况的判断，例如，我们希望将上面的代码修改为无论大小写字母都判断为字母，则可以写成下面的样子：</p>
+
+            <pre><code>
+#!/bin/bash
+# 读取调用时的选项
+export LC_ALL=C
+case $1 in
+[a-z]|[A-Z])
+    echo "You input a letter"
+    ;;
+[1-9])
+    echo "You input a number"
+    ;;
+*)
+    echo "You input other things"
+    ;;
+esac
+echo "Bye!"
+            </code></pre>
+
+            <h3 id="subsec:分支语句-错误处理">错误处理</h3>
+
+            <h4>-bash: &lt;文件名&gt;: line &lt;行号&gt;: syntax error near unexpected token `)'</h4>
+
+            <p>这可能是因为你在结束分支时少了<code>;;</code>表示当前分支内结束。如果你了解C语言，你可能会很自然将这这个符号作为C语言中<code>switch-case</code>的<code>break</code>语句。但显然，C语言的<code>break</code>更加灵活（它可以没有从而越过其他分支），但Shell脚本不能没有<code>;;</code>结束。</p>
+
+            <h4>-bash: &lt;文件名&gt;: line &lt;行号&gt;: syntax error near unexpected token `&lt;字符串&gt;'</h4>
+
+            <p>这可能是由于你在使用<code>case</code>语句后忘记结束<code>esac</code>而后面还有其他语句从而报错。如果后面没有语句，则可能会出现下面的错误：</p>
+
+            <h4>-bash: &lt;文件名&gt;: line &lt;行号&gt;: syntax error: unexpected end of file</h4>
+
+            <p>这也表明你可能没有使用<code>esac</code>作为<code>case</code>语句的结束。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">这是因为在进行判断时，脚本需要对所有条件进行遍历。</li>
+                <li id="ftnt2">为了复习之前的变量种类，我们在这里尝试使用参数给定变量而不是使用<code>read</code>命令。</li>
+                <li id="ftnt3">请真的这样做，这会极大提高你的编程思维。</li>
+                </ol>
+            </footer>
         </div>
 
         
