@@ -47,6 +47,7 @@
                     </ul>
                 </div>
                 <!-- 小教程杂谈 -->
+                <li onclick="showContent('2025-1-8-1')">双曲型、抛物型和椭圆型偏微分方程的区别</li>
             </div>
             <button class="toggle" onclick="toggleChapters('kepu')">科普</button>
             <div class="chapters" id="kepuChapters" style="display: none;">
@@ -77,6 +78,56 @@
         </div>
     </div>
     <div class="content">
+        <div id="2025-1-8-1" class="chapter-content" style="display: none;">
+            <h2>双曲型、抛物型和椭圆型偏微分方程的区别</h2>
+            <p>时间：2025-01-08  作者：Jiaqi Z.</p>
+            <p>分类：小教程</p>
+            <hr>
+            <p>在数学物理方程（偏微分方程）中，我们了解了波动方程、热传导方程和泊松方程（或者拉普拉斯方程），并且也说，它们三个方程分别属于<strong>双曲型、抛物型和椭圆型</strong>。并且在“标准型”的讨论中，也了解了这些类型与<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math>存在直接相关的关系。</p>
+            <p>当听到“双曲”、“抛物”和“椭圆”时，免不了会联想到<strong>圆锥曲线</strong>，可以证明（或者其他教材中所说的那样），任何一个圆锥曲线，都可以写作下面的方程所表示的曲线</p>
+            <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>A</mi><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>B</mi><mi>x</mi><mi>y</mi><mo>+</mo><mi>C</mi><msup><mi>y</mi><mn>2</mn></msup><mo>+</mo><mi>D</mi><mi>x</mi><mo>+</mo><mi>E</mi><mi>y</mi><mo>+</mo><mi>F</mi><mo>=</mo><mn>0</mn></math></p>
+            <p>假设我们现在令<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math>分别表示<math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mi mathvariant="normal">∂</mi><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mi mathvariant="normal">∂</mi><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow></mfrac></math>，且等式两边同时作用于函数<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>u</mi></math>，则可以将上面的“圆锥曲线”写作下面的偏微分方程：</p>
+            <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>A</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><mi>B</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>+</mo><mi>C</mi><msub><mi>u</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>+</mo><mi>D</mi><msub><mi>u</mi><mi>x</mi></msub><mo>+</mo><mi>E</mi><msub><mi>u</mi><mi>y</mi></msub><mo>+</mo><mi>F</mi><mi>u</mi><mo>=</mo><mn>0</mn></math></p>
+            <p>从而将这两个方程画上了“等号”。既然如此，我们就可以利用圆锥曲线的“形状”来定义微分方程的“类型”：</p>
+            <p><em>我们这里姑且不考虑参数<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>D,E</mi></math>，即只考虑最简单的<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>B</mi><mi>x</mi><mi>y</mi><mo>+</mo><mi>C</mi><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><mn>0</mn></math>这一“二次方程”。</em></p>
+            <ul>
+            <li>
+            <p>假设这是一个椭圆方程，则利用已知的椭圆方程定义
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><msup><mi>x</mi><mn>2</mn></msup><msup><mi>a</mi><mn>2</mn></msup></mfrac><mo>+</mo><mfrac><msup><mi>y</mi><mn>2</mn></msup><msup><mi>b</mi><mn>2</mn></msup></mfrac><mo>=</mo><mn>1</mn></math>
+            不难得到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>B</mi><mo>=</mo><mn>0</mn></math>，且<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&gt;</mo><mn>0</mn></math>，因此定义一个<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><msup><mi>B</mi><mn>2</mn></msup><mo>−</mo><mi>A</mi><mi>C</mi></math>，可以得到<strong>对椭圆而言，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>&gt;</mo><mn>0</mn></math></strong></p>
+            </li>
+            <li>
+            <p>对于抛物线而言，假设一个最简单的方程
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math>
+            可以很容易得到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>B</mi><mo>=</mo><mn>0</mn></math>且<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>C</mi><mo>=</mo><mn>0</mn></math>（若抛物线方程为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup></math>，则<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>=</mo><mn>0</mn></math>），类似带入上面的<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math>定义，可以得到<strong>对抛物线而言，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><mn>0</mn></math></strong></p>
+            </li>
+            <li>
+            <p>对双曲线而言，其定义为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><msup><mi>x</mi><mn>2</mn></msup><msup><mi>a</mi><mn>2</mn></msup></mfrac><mo>−</mo><mfrac><msup><mi>y</mi><mn>2</mn></msup><msup><mi>b</mi><mn>2</mn></msup></mfrac><mo>=</mo><mn>1</mn></math>
+            可以得到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&lt;</mo><mn>0</mn></math>，从而<strong>对双曲线而言，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>&gt;</mo><mn>0</mn></math></strong>。</p>
+            </li>
+            </ul>
+            <h3>代回微分方程</h3>
+            <p>类似的讨论方法，让我们依次对三种“基本方程”进行讨论（假设我们只考虑齐次方程，因为非齐次项不影响方程类型）。</p>
+            <ul>
+            <li>
+            <p>波动方程，其基本形式为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>u</mi><mrow><mi>t</mi><mi>t</mi></mrow></msub><mo>−</mo><msup><mi>a</mi><mn>2</mn></msup><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>=</mo><mn>0</mn></math>
+            很显然，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&lt;</mo><mn>0</mn></math>，利用圆锥曲线的讨论，这一判定式说明它是<strong>双曲型</strong>。</p>
+            </li>
+            <li>
+            <p>热传导方程，其形式为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>U</mi><mi>t</mi></msub><mo>−</mo><msup><mi>a</mi><mn>2</mn></msup><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>=</mo><mn>0</mn></math>
+            其中，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&lt;</mo><mn>0</mn></math>，从而<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><mn>0</mn></math>，是<strong>抛物型</strong></p>
+            </li>
+            <li>
+            <p>Laplace方程，其形式为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi mathvariant="normal">∇</mi><mn>2</mn></msup><mi>u</mi><mo>=</mo><mn>0</mn><mo stretchy="false">⇒</mo><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><msub><mi>u</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>=</mo><mn>0</mn></math>
+            从而<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&gt;</mo><mn>0</mn></math>，判断<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>&lt;</mo><mn>0</mn></math>，是<strong>椭圆型</strong></p>
+            </li>
+            </ul>
+        </div>
+
         <div id="2024-12-23-1" class="chapter-content" style="display: none;">
             <h2>关于杂谈的内容</h2>
             <p>时间：2024-12-23 作者：Jiaqi Z.</p>
