@@ -29,6 +29,7 @@
             <div class="chapters" id="contentsChapters" style="display: none;">
                 <li onclick="showContent('2024-12-23-1')">【置顶】关于杂谈的内容</li>
                 <li onclick="showContent('2025-2-16')">Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</li>
+                <li onclick="showContent('2025-1-31-1')">【快报】从刘谦魔术看排列组合与冒泡算法</li>
                 <li onclick="showContent('2025-1-13-1')">如何从零开始进行程序设计</li>
                 <li onclick="showContent('2025-1-8-1')">双曲型、抛物型和椭圆型偏微分方程的区别</li>
                 <li onclick="showContent('2024-12-25')">Linux当中<code>for</code>与VASPKIT“联动”</li>
@@ -56,6 +57,7 @@
             <button class="toggle" onclick="toggleChapters('kepu')">科普</button>
             <div class="chapters" id="kepuChapters" style="display: none;">
                 <!-- 科普杂谈 -->
+                <li onclick="showContent('2025-1-31-1')">【快报】从刘谦魔术看排列组合与冒泡算法</li>
             </div>
             <button class="toggle" onclick="toggleChapters('bangdream')">BanG Dream!</button>
             <div class="chapters" id="bangdreamChapters" style="display: none;">
@@ -104,6 +106,84 @@
 
         </div>
         
+        <div id="2025-1-31-1" class="chapter-content" style="display: none;">
+            <h2>【快报】从刘谦魔术看排列组合与冒泡算法</h2>
+            <p>时间：2025-01-31 作者：小七Seven@<a href="https://mp.weixin.qq.com/s/sjIwolJ_dX5N9JQSdjwg6A?token=1716024577&lang=zh_CN">科普小白说</a></p>
+            <p>分类：科普</p>
+            <hr>
+            <p><strong>注：继去年讲解刘谦魔术之后，这又是一篇“快报”，用最短的方法给大家解释第一个魔术种关于排序问题所使用的——冒泡算法</strong></p>
+        <h2>回顾魔术效果</h2>
+        <p>让我们从头回顾一下第一个“举杯”的魔术过程：</p>
+        <blockquote>
+        <ol>
+        <li>把杯子、筷子和勺子随意按照顺序摆放</li>
+        <li>将<strong>筷子和左边互换</strong></li>
+        <li>将<strong>杯子和右边互换</strong></li>
+        <li>将<strong>勺子和左边互换</strong></li>
+        <li>左手举起最左边的东西，右手举起最右边的东西，放下左手的东西，右手一定是杯子</li>
+        </ol>
+        </blockquote>
+        <h2>关于“冒泡排序”</h2>
+        <p>在表演完这个魔术之后，网上有一些评论提到了“<strong>冒泡排序</strong>”。在某种程度上，它和这个算法是类似的，因此我们先用一些篇幅说明这个算法，在最后我们来解释一下——为什么这个魔术实际上<strong>不是</strong>冒泡排序。</p>
+        <blockquote>
+        <p>冒泡排序（Bubble Sort）是最简单和最通用的排序方法，其基本思想是：在待排序的一组数中，将相邻的两个数进行比较，若前面的数比后面的数大就交换两数，否则不交换；如此下去，直至最终完成排序。由此可得，在排序过程中，大的数据往下沉，小的数据往上浮，就像气泡一样，于是将这种排序算法形象地称为冒泡排序。
+        ——以上内容转自“百度百科”</p>
+        </blockquote>
+        <p>正如上面所解释的那样，冒泡排序实际上是计算机领域一个<strong>排序问题</strong>算法。</p>
+        <p><em>也许你会想问：为什么计算机需要排序算法？类比查字典这个过程，以《新华字典》为例，是按照拼音字母顺序排序的，也正因如此，对于知道读音的情况，熟悉字典的人可以不用查询前面的目录就可以定位到后面对应拼音的位置。对于英语词典更是如此。从计算机的角度看，有序数据更有利于后续的查找。</em></p>
+        <h2>排列与组合</h2>
+        <p><em>对于熟悉高中数学的人来说，这一部分可以跳过去</em></p>
+        <p>正如前面所引用的内容，冒泡排序需要对所有数字两两比较大小。于是涉及到一个问题——<strong>最多需要比较多少次</strong>？之所以选择“最多”的次数，是为了得到评估算法效率的<strong>时间复杂度</strong>。</p>
+        <p>让我们进一步抽象这个问题，就可以化简为：给定<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个数，需要需要选出2个数，最多有几种选法？或者再进一步推广一下，假设有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个数，需要选出<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个数，最多有几种选法？</p>
+        <h3>排列——考虑顺序的组合</h3>
+        <p>以这个魔术为例，有3个物体，首先考虑一个问题，有多少种排列方法？让我们把三个物体暂时抽象成123三个数字，在选择第一个物体时，可以有3种选法；对第二个物体，由于第一个物体已经选定，所以<strong>只有2种选法</strong>了；对于第三个物体，则只剩下1个物体。于是最终的排列方法就是<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>1</mn><mo>=</mo><mn>6</mn></math></p>
+        <p>进一步，假设我们有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体，则第一个选择有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>种选法；第二个物体有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>−</mo><mn>1</mn></math>种选法；以此类推，最后一个只有1种选法，所以最终的排列方法就是<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>×</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>×</mo><mo>⋯</mo><mo>×</mo><mn>1</mn></math></p>
+        <p><em>上述运算我们也可以表示为“阶乘”，即<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>!</mo><mo>=</mo><mi>m</mi><mo>×</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>×</mo><mo>⋯</mo><mo>×</mo><mn>1</mn></math></em></p>
+        <p>再考虑一下，如果在<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体当中选<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个物体进行<strong>排列</strong>，将排列的个数记为<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>A</mi><mi>m</mi><mi>n</mi></msubsup></math>或者<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>P</mi><mi>m</mi><mi>n</mi></msubsup></math>，参考上面的方法，可以得到结果为</p>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>P</mi><mi>m</mi><mi>n</mi></msubsup><mo>=</mo><mi>m</mi><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>⋯</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>m</mi><mo>!</mo></mrow><mrow><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo stretchy="false">)</mo><mo>!</mo></mrow></mfrac></math></p>
+        <h3>组合——再把同一组删掉</h3>
+        <p>正如标题所说的那样，所谓<strong>组合</strong>，就是<strong>在排列的基础上不考虑顺序</strong>，例如，对于排列而言，AB和BA是不同的，但组合中二者是相同的。因此，在计算<strong>组合</strong>时，我们只需要将之前排列的结果，除以每个组合中全排列的个数即可。</p>
+        <p><em>全排列：指的是将<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体中选出<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个进行排列，即开始时所考虑的<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>!</mo></math></em></p>
+        <p>根据上面的解释，将<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体选<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个进行组合，其结果记为<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>m</mi><mi>n</mi></msubsup></math>，表达式为</p>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>C</mi><mi>m</mi><mi>n</mi></msubsup><mo>=</mo><mfrac><mrow><mi>m</mi><mo>!</mo></mrow><mrow><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo stretchy="false">)</mo><mo>!</mo><mi>n</mi><mo>!</mo></mrow></mfrac></math></p>
+        <p>例如，将3个物体选2个，带入表达式可以计算出<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mn>3</mn><mn>2</mn></msubsup><mo>=</mo><mn>3</mn></math>，即共有3种选法。</p>
+        <h2>冒泡算法——一种“低效”的排序算法</h2>
+        <p>在前面，我们提到：<strong>冒泡排序需要对所有数字两两比较</strong>，对于比较结果较大的数字，向后排（假设按照升序，当然也可以定为“降序”，这不是算法关键）。让我们假定一个例子，假设有这个一组数字：5，2，3，1，6；按照冒泡排序算法，首先比较<strong>5和2</strong>，发现5较大，则往后排，变为<strong>2</strong>，<strong>5</strong>，3，1，6，进一步比较5和3，发现5较大，则将5继续向后排，变为2，3，<strong>5</strong>，1，6，以此类推，当排序变为2，3，1，<strong>5</strong>，6时，将5和6比较，发现6更大，则将6放在后面，结束排序。</p>
+        <p>进一步对2进行移动，依次为</p>
+        <ul>
+        <li>2，3，1，5，6（2和3比较后）</li>
+        <li>2，1，3，5，6（3和1比较后）</li>
+        <li>2，1，3，5，6（3和5比较后）</li>
+        </ul>
+        <p>再对2进行移动（<strong>始终移动最前面的数字</strong>），依次为</p>
+        <ul>
+        <li>1，2，3，5，6（2和1比较后）</li>
+        <li>1，2，3，5，6（2和3比较后）</li>
+        </ul>
+        <p>最后，对1进行移动，和2比较后发现2比1大，结果最终排序为“<strong>1，2，3，5，6</strong>”</p>
+        <p>让我们看看上面总共进行了多少次比较：<strong>10次</strong>！这看似是一个小数目，但这仅仅是5个数据的比较，如果是10个呢？20个呢？甚至100个1000个呢？利用前面的排列组合知识可以计算得到，假设有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个数据，选择2个进行比较，一共有</p>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>C</mi><mi>n</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mrow><mi>n</mi><mo>!</mo></mrow><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo><mo>!</mo><mn>2</mn><mo>!</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mi>n</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><mn>2</mn></mfrac></math></p>
+        <p>可以发现，比较次数是与数据量成<strong>平方关系</strong>上升，这在数据结构中记为<strong>时间复杂度</strong>为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></math></p>
+        <p>这种平方数量级的时间复杂度实际上效率是很低的，尤其是随着数据量的提高。因此，在算法设计上，人们提出了更多高效率的算法例如归并排序算法（采用分治法），此时时间复杂度可以达到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>n</mi><mo stretchy="false">)</mo></math>。下面的图片展示了对于数据个数从1-10情况下两种时间复杂度的比较。可以看到，相比于<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></math>，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>n</mi><mo stretchy="false">)</mo></math>的增长速率更低</p>
+        <p><img src="https://files.mdnice.com/user/34923/0407eea2-09c3-435a-8fa0-c5975c598c37.png" alt="时间复杂度比较，其中蓝线表示$O(n^2)$，橙线表示$O(n\log n)$"></p>
+        <p>上图为时间复杂度比较，其中蓝线表示<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></math>，橙线表示<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>n</mi><mo stretchy="false">)</mo></math></p>
+        <h2>最后的解释</h2>
+        <p>首先让我们定性说明一下——为什么这个魔术的原理不是<strong>冒泡算法</strong>。原因很简单，冒泡算法是需要<strong>比较</strong>的，同时我们可以很容易证明，对于3个物体，实际上比较3次应该是有固定顺序的。但显然事实不是如此。这是因为<strong>我们在交换时实际上没有进行比较</strong>。</p>
+        <p>那这个魔术是怎么变的呢？让我们再来看一下魔术步骤（我们省略掉开头的调整顺序和最后的“举杯”）：</p>
+        <blockquote>
+        <ol>
+        <li>将<strong>筷子和左边互换</strong></li>
+        <li>将<strong>杯子和右边互换</strong></li>
+        <li>将<strong>勺子和左边互换</strong></li>
+        </ol>
+        </blockquote>
+        <p>我们假设将筷子记为A、杯子记为B、勺子记为C，在一开始会有6种情况（全排列），经过第一步移动，只会出现4种情况：ACB、ABC、BAC和CAB，经过第二次移动，这四种情况会变为：ACB（前两种一样）、ABC和CAB；对于B在最后的情况，第三步移动<strong>是多余的</strong>（因为不会影响B的位置），而对于ABC，第三步会变为“ACB”。</p>
+        <p>简单来说，最后的顺序只有两种可能——<strong>筷子、勺子、杯子</strong>和<strong>勺子、筷子、杯子</strong>。无论哪种情况，<strong>最右边一定是杯子</strong>。</p>
+        <h2>一点题外话</h2>
+        <p>与去年相比，很多人认为魔术原理更简单了。正如去年所说的那样，<strong>魔术的精髓并不是这个原理，而是表演的过程</strong>。事实上，从这个原理出发，可以设计出来这个魔术，难道不是更厉害吗？</p>
+
+        </div>
+
         <div id="2025-1-13-1" class="chapter-content" style="display: none;">
             <h2>如何从零开始进行程序设计</h2>
             <p>时间：2025-01-13  作者：Jiaqi Z.</p>
