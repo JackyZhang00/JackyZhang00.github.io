@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>小七の杂谈</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" defer></script>
+    <script src="mobile_script.js" defer></script>
     <style>
         body {
           background-image: url('background.png');
@@ -15,10 +15,57 @@
         background-blend-mode: multiply;
         /* background-color: #DDDDFFAA; */
         }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
     </style>
 </head>
 
 <body>
+    <select class="mobile-nav" onchange="showContentMobile(this.value)">
+        <option value="">导航菜单</option>
+        <option value="2024-12-23-1">【置顶】关于杂谈的内容</option>
+        <option value="2025-2-20">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</option>
+        <option value="2025-2-16">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</option>
+        <option value="2025-1-31-1">【科普】【快报】从刘谦魔术看排列组合与冒泡算法</option>
+        <option value="2025-1-13-1">【机器学习与人工智能】如何从零开始进行程序设计</option>
+        <option value="2025-1-8-1">【小教程】双曲型、抛物型和椭圆型偏微分方程的区别</option>
+        <option value="2024-12-25">【材料计算】Linux当中<code>for</code>与VASPKIT“联动”</option>
+        <option value="2024-12-23-2">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</option>
+    </select>
     <!-- <nav>
         <a href="index.html">返回主页</a>
     </nav> -->
