@@ -164,10 +164,11 @@
             <li>由于处理COHP需要读取WAVECAR文件，因此需要保留WAVECAR（<code>LWAVE=.TRUE.</code>）</li>
             <li>需要设置一个较大的<code>NBANDS</code></li>
             </ul>
-            <p>其中在设置<code>NBANDS</code>时可以首先忽略掉这个参数，直接提交任务进行自洽计算，在开始时查看OUTCAR中<code>NBANDS</code>的数值（使用grep命令，具体方法请详见材料计算教程）。通常来说，默认数值偏小，一般设置为默认数值的1.5-2倍。</p>
+            <p>其中在设置<code>NBANDS</code>时可以首先忽略掉这个参数，直接提交任务进行自洽计算，在开始时查看OUTCAR中<code>NBANDS</code>的数值（使用grep命令，具体方法请详见<a href="material_tutorial.html">材料计算教程</a>中的“Linux基础-高级Linux命令-grep匹配字符串”一节）。通常来说，默认数值偏小，一般设置为默认数值的1.5-2倍。</p>
             <p>例如，在计算时默认<code>NBANDS=300</code>，则可以在<code>INCAR</code>中设置<code>NBANDS=500</code>左右。</p>
             <h4>3. 使用lobster处理COHP</h4>
             <p>在服务器上使用lobster计算投影以获取COHP，（如果你是我所在课题组的成员，课题组内106节点服务器已配置lobster，其他节点如224待测试，使用前需要<code>module load lobster</code>，建议直接使用后面的提交任务脚本在队列系统使用）对于其他课题组，建议寻求组内帮助，或联系超算管理员。</p>
+            <p><strong>2025-4-10更新：课题组内服务器224和105已配置lobster，导入方法和106节点相同。</strong></p>
             <p>在使用lobster时需要准备一个输入文件<code>lobsterin</code>，一个常见的模板为：</p>
             <pre><code>
 # 设置起止能量（eV）
