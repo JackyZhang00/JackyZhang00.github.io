@@ -68,10 +68,10 @@
                         <li onclick="showContent('sec:输入')">4.3 输入</li>
                         <li onclick="showContent('sec:判断语句')">4.4 判断语句</li>
                         <li onclick="showContent('sec:case分支语句')">4.5 case分支语句</li>
-                        <li onclick="showContent('sec:循环')">【NEW!!!!!】4.6 循环</li>
-                        <li onclick="showContent('sec:循环控制')">【NEW!!!!!】4.7 循环控制</li>
-                        <li onclick="showContent('sec:函数')">【NEW!!!!!】4.8 *函数</li>
-                        <li onclick="showContent('sec:数组')">【NEW!!!!!】4.9 *数组</li>
+                        <li onclick="showContent('sec:循环')">4.6 循环</li>
+                        <li onclick="showContent('sec:循环控制')">4.7 循环控制</li>
+                        <li onclick="showContent('sec:函数')">4.8 *函数</li>
+                        <li onclick="showContent('sec:数组')">4.9 *数组</li>
                     </ul>
                 </div>
             </div>
@@ -79,6 +79,17 @@
         <div id="vasp" class="section">
             <button class="toggle" onclick="toggleChapters('vasp')">VASP教程</button>
             <div class="chapters" id="vaspChapters" style="display: none;">
+                <div class="chapter" onclick="toggleSubChapters('relax')">
+                    <h3>【NEW!!!!!】结构优化</h3>
+                    <ul id="relaxSubChapters" style="display: none;">
+                        <li onclick="showContent('sec:为什么要进行结构优化')">【NEW!!!!!】为什么要进行结构优化</li>
+                        <li onclick="showContent('sec:对坐标进行优化ISIF=2')">【NEW!!!!!】对坐标进行优化ISIF=2</li>
+                        <li onclick="showContent('sec:对晶格常数进行优化ISIF=3')">【NEW!!!!!】对晶格常数进行优化ISIF=3</li>
+                        <li onclick="showContent('sec:固定某些原子的优化')">【NEW!!!!!】固定某些原子的优化</li>
+                        <li onclick="showContent('sec:一些结构优化的策略与加速方法')">【NEW!!!!!】一些结构优化的策略与加速方法</li>
+                    </ul>
+                </div>
+
                 <div class="chapter" onclick="toggleSubChapters('band')">
                     <h3>能带计算</h3>
                     <ul id="bandSubChapters" style="display: none;">
@@ -3747,8 +3758,520 @@ echo "My name is ${data["name"]}, and I love ${data["band"]}."
         
         </div>
 
+        <div id="sec:为什么要进行结构优化" class="chapter-content" style="display: none;">
+            
+            <h2>为什么要进行结构优化</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>为什么要进行结构优化</li>
+            <li>结构优化的原理</li>
+            </ul>
+
+            <p>在计算科学领域，一个广为流传的话是“Garbage In, Garbage Out!”，即<strong>错误的输入会得到错误的结果</strong>。因此，对材料计算而言，在进行任何材料计算之前，都需要保证输入的正确性，包括<strong>参数设置</strong>的正确以及<strong>结构</strong>的正确。其中，参数设置的正确性将取决于研究问题和研究经验，结构的正确则首先取决于<strong>结构优化</strong>。本章我们将介绍关于结构优化的一些设置方法与技巧。</p>
+
+            <div class="attention">
+                <p>在任何时候，开始一个新的体系进行计算，都需要进行本章所介绍的结构优化，哪怕这个材料是实验测得的或者数据库所给的。</p>
+            </div>
+
+            <h3 id="subsec:为什么要进行结构优化-为什么要进行结构优化">为什么要进行结构优化</h3>
+
+            <p>结构优化是指对整个输入体系的坐标进行调整，得到一个相对稳定的基态结构。例如，在计算材料的吸附性质时，我们需要通过结构优化得到一个“稳定”的吸附结构，从而测得吸附距离和其他稳定时的性质。如果需要确认材料的稳定性（例如计算声子谱），则显然需要首先进行结构优化以确保结构的“稳定”（甚至需要更高的精度）。</p>
+
+            <p>也许你会有一个疑问：<strong>如果结构已经实验测得，还需要结构优化吗</strong>？答案是<strong>需要</strong>，这是因为计算软件本身是考虑了许多近似情况，有时实验测得的结构和计算所使用的稳定结构有“细微”的区别。例如，对于氧气分子而言，使用数据库（CCCBDB）内的数据，其键长为1.2075 Å. 当我们使用不同的近似（考虑不同类型的赝势）进行结构优化<sup>1</sup>，得到的键长是不同的。使用O和O_s的赝势，在设置截断能为600 eV的情况下，计算得到的键长分别为1.23828 Å和1.29688 Å.</p>
+
+            <p>上面的键长变化可以极好说明对于不同的参数设置以及近似条件，所得到的结构可能是不同的。因此，哪怕是实验测得的或者数据库所给的，在开始计算时也需要进行结构优化。</p>
+
+            <h3 id="subsec:为什么要进行结构优化-结构优化原理">结构优化原理</h3>
+
+            <p>一个完整的结构优化计算，可以分为<strong>电子弛豫</strong>和<strong>离子弛豫</strong>两部分。首先，程序会计算许多步电子弛豫，以确定当前结构下稳定的波函数。基于密度泛函理论的基本原理，利用波函数可以得到体系的能量，判断能量是否达到极值点（大多数情况是判断原子平均受力）；如果原子平均受力小于某一个设定的值，则认为结构已经“稳定”，否则会按照一定的算法对原子坐标进行移动，得到一个新的结构，再重复上述步骤，直到寻找到“稳定”结构。</p>
+
+            <div class="attention">
+                <p>上面我们所说的“稳定”，指的是能量达到一个“极值点”。而利用基本的数学与物理相关知识可以知道，真正的稳定结构（基态）应当对应结构能量的“最小值”，而寻找到的“极值点”不一定是最小值。</p>
+
+                <p>上述情况则会导致在有些情况下结构优化会得到一个“非最小值的极值点”，因此在实际计算时，可能还需要使用不同的初始结构进行结构优化，并通过能量比较确定最终的结构。一个典型的例子是计算吸附时需要考虑多个吸附位点，优化得到不同的结构，并通过能量比较确定最终的稳定吸附位点。</p>
+            </div>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">这里我们仅作为示例给出结论，并不提供完整的输入文件。</li>
+                </ol>
+            </footer>
+        </div>
+
+        <div id="sec:对坐标进行优化ISIF=2" class="chapter-content" style="display: none;">
+            
+            <h2>对坐标进行优化<code>ISIF=2</code></h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何构建分子结构</li>
+            <li>如何对原子坐标进行结构优化</li>
+            </ul>
+
+            <p>本节，我们将实现<a href="#subsec:为什么要进行结构优化-为什么要进行结构优化">为什么要进行结构优化-为什么要进行结构优化</a>中所介绍的氧气分子结构优化。首先，我们需要构建分子结构，并利用VASP进行结构优化，同时，我们将介绍如何查看关于结构优化的输出文件。需要特别注意的是，这一节的例子非常简单，但所介绍的内容（尤其是关于输出文件的理解）将有可能贯穿本章。</p>
+
+            <h3 id="subsec:对坐标进行优化ISIF=2-构建氧气分子结构">构建氧气分子结构</h3>
+
+            <p>在VASP中，构建的所有结构都是需要基于<strong>晶胞</strong>进行构建，即所有结构默认都是<strong>周期性结构</strong>。有时，我们希望限制材料维数（例如二维材料、一维材料或分子、团簇），则需要在其他方向设置所谓的“真空层”以避免由于周期性所导致的材料之间的相互作用。</p>
+
+            <p>对于本节我们所考虑的氧气分子，由于是分子，因此在空间中可以是“孤立”存在的。在构建晶胞时在三个方向均设置较大的值以避免分子与分子之间的相互作用。在本例中，我们设置晶格常数为5 Å.</p>
+
+            <div class="attention">
+                <p>VASP在POSCAR中没有<strong>晶系</strong>的概念，构建的晶胞参数是基于“绝对空间坐标系”设置的。对于分子而言，晶系的设置不影响计算结果，我们可以设置为如三方晶系或更普通的三斜晶系等。但考虑到后续原子坐标设置方便，通常我们会将其设置为立方晶系。</p>
+
+                <p>但如果需要考虑其他体系，例如材料吸附气体等情况，为后续能量具有可比较性，晶胞的设置需要参考其他材料（例如，根据衬底材料的晶胞设置气体分子所使用的晶胞）</p>
+            </div>
+
+            <p>我们已经知道数据库内O<sub>2</sub>分子的键长为1.2075 Å，因此，设置的<code>POSCAR</code>文件如下所示：</p>
+
+            <pre><code>
+O2
+1.0
+5.0 0.0 0.0
+0.0 5.0 0.0
+0.0 0.0 5.0
+O
+2
+Cartesian
+0 0 0
+0 0 1.2075
+        </code></pre>
+
+            <p>这里为了设置方便，使用笛卡尔坐标设置原子坐标。在实际应用时，有时可能会借助其他软件如Materials Studio或者VESTA生成<code>POSCAR</code>文件，此时使用分数坐标（<code>Direct</code>）也是可以的。</p>
+
+            <div class="extend">
+                <p>如果你将上面的<code>POSCAR</code>文件放到VESTA文件进行预览的话，可能会发现有8个氧气分子（如图所示）。这并不是因为输入文件设置错了，而是因为VESTA在显示时考虑了周期性，8个氧气分子实际上是等价的。</p>
+
+                <img src="fig/氧气分子.png" alt="氧气分子" width="50%">
+            </div>
+
+            <h3 id="subsec:对坐标进行优化ISIF=2-INCAR设置"><code>INCAR</code>设置</h3>
+
+            <p>下面是一个简单的<code>INCAR</code>文件</p>
+
+            <pre><code>
+ENCUT  =  600
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+PREC   = Accurate
+NSW    =  300
+ISMEAR =  0
+SIGMA  =  0.05
+IBRION =  2
+ISIF   =  2
+EDIFFG = -0.01
+            </code></pre>
+
+            <ul>
+                <li> <code>ENCUT</code>：截断能（单位：eV），根据所使用的<code>POTCAR</code>文件所决定，需要大于所使用<code>POTCAR</code>当中所有元素<code>ENMAX</code>的最大值，且通常至少为1.3倍的<code>ENMAX</code>。在本例中我们设置为600 eV；</li>
+                <li> <code>LWAVE</code>和<code>LCHARG</code>：是否输出<code>WAVECAR</code>和<code>CHGCAR</code>文件（分别为波函数和电荷密度）。由于结构优化时通常不关心这些文件，因此设置为<code>.FALSE.</code>节省硬盘空间；</li>
+                <li><code>PREC</code>：计算精度，在进行结构优化时，为确保结构合理，通常设置为<code>Accurate</code></li>
+                <li><code>NSW</code>：离子弛豫的最大步数。如<a href="#subsec:为什么要进行结构优化-结构优化原理">为什么要进行结构优化-结构优化原理</a>中所介绍的那样，结构优化需要进行多步离子弛豫直到收敛。若离子弛豫步数达到<code>NSW</code>则直接停止（哪怕没有收敛）；</li>
+                <li> <code>ISMEAR</code>：决定在布里渊区积分时，如何计算分布函数。当设置为0时表示使用Gaussian展宽，其展宽宽度由<code>SIGMA</code>参数决定（单位：eV）；</li>
+                <li> <code>ISIF</code>：设置为2表示仅优化原子坐标，不优化晶格；</li>
+                <li> <code>EDIFFG</code>：当设置为正值时表示能量收敛标准，当设置为负值时表示原子之间的作用力收敛标准。</li>
+            </ul>
+
+            <p>在本例中，我们设置<code>ISIF=2</code>，这是由于我们所优化的结构为分子体系，并不希望优化外面的晶格参数。除此之外，<code>ISIF</code>还有其他参数（常见的可能设置为3，在下一节介绍）。同时，通过设置<code>EDIFFG</code>决定收敛精度，通常设置为<code>-0.01</code>就已经达到了一般研究所需要的精度，但对于更高精度需求（例如计算声子谱），则可能需要到<code>-1E-3</code>的精度。</p>
+
+            <p>在实际使用时，可以考虑使用VASPKIT，使用<code>vaspkit-101-LR</code>或者<code>vaspkit-101-SR</code>，其中前者默认设置<code>ISIF=3</code>，而后者设置<code>ISIF=2</code></p>
+
+            <h3 id="subsec:对坐标进行优化ISIF=2-其他输入文件">其他输入文件</h3>
+
+            <p>由于计算的是分子体系，不需要考虑周期性，因此在计算时<code>KPOINTS</code>的设置仅使用Gamma点即可。在生成时可以使用<code>vaspkit-102-2-0</code>生成Gamma点的<code>KPOINTS</code>。调用这个命令的同时也会生成默认的<code>POTCAR</code>文件。</p>
+
+            <h3 id="subsec:对坐标进行优化ISIF=2-计算结果分析">计算结果分析</h3>
+
+            <p>对于结构优化，我们重点关注<code>OSZICAR</code>和<code>CONTCAR</code>文件。执行上面的任务，所得到的<code>OSZICAR</code>文件如下所示（仅供参考）：</p>
+
+            <p>（为排版方便，对小数点进行了截断处理）</p>
+
+            <pre><code>
+        N       E                     dE             d eps       ncg     rms          rms(c)
+DAV:   1     0.281908272337E+02    0.28191E+02   -0.56622E+03   192   0.105E+02
+DAV:   2    -0.903395442264E+01   -0.37225E+02   -0.37218E+02   288   0.201E+01
+DAV:   3    -0.907739062911E+01   -0.43436E-01   -0.43400E-01   192   0.111E+00
+DAV:   4    -0.907742563069E+01   -0.35002E-04   -0.35001E-04   384   0.308E-02
+DAV:   5    -0.907742563010E+01    0.58537E-09   -0.20560E-10   192   0.244E-05    0.457E+00
+DAV:   6    -0.882350546712E+01    0.25392E+00   -0.36319E-01   288   0.584E-01    0.232E+00
+DAV:   7    -0.876665612077E+01    0.56849E-01   -0.21667E-01   288   0.455E-01    0.528E-01
+DAV:   8    -0.876722043380E+01   -0.56431E-03   -0.29377E-03   192   0.633E-02    0.946E-02
+DAV:   9    -0.876743337124E+01   -0.21294E-03   -0.36429E-04   192   0.156E-02    0.840E-02
+DAV:  10    -0.876745195297E+01   -0.18582E-04   -0.10996E-04   384   0.396E-03
+    1 F= -.87674520E+01 E0= -.87392430E+01  d E =-.876745E+01
+        N       E                     dE             d eps       ncg     rms          rms(c)
+DAV:   1    -0.808025287647E+01    0.68718E+00   -0.16093E+02   192   0.127E+01    0.305E+00
+DAV:   2    -0.795453762419E+01    0.12572E+00   -0.39880E-01   192   0.592E-01    0.127E+00
+DAV:   3    -0.794549043084E+01    0.90472E-02   -0.60348E-02   192   0.231E-01    0.485E-01
+DAV:   4    -0.794766566379E+01   -0.21752E-02   -0.75618E-03   288   0.399E-02    0.116E+00
+DAV:   5    -0.794386208834E+01    0.38036E-02   -0.20840E-03   192   0.313E-02    0.976E-02
+DAV:   6    -0.794680317652E+01   -0.29411E-02   -0.26287E-04   192   0.224E-02    0.617E-02
+DAV:   7    -0.794688859816E+01   -0.85422E-04   -0.60875E-05   384   0.439E-03
+    2 F= -.79468886E+01 E0= -.79186800E+01  d E =0.820563E+00
+        N       E                     dE             d eps       ncg     rms          rms(c)
+DAV:   1    -0.889539988611E+01   -0.94860E+00   -0.11596E+02   192   0.109E+01    0.256E+00
+DAV:   2    -0.881026749441E+01    0.85132E-01   -0.25112E-01   192   0.539E-01    0.109E+00
+DAV:   3    -0.880256066279E+01    0.77068E-02   -0.51306E-02   288   0.214E-01    0.822E-01
+DAV:   4    -0.880096355131E+01    0.15971E-02   -0.13725E-02   192   0.253E-02    0.593E-01
+DAV:   5    -0.880239330538E+01   -0.14298E-02   -0.25530E-03   192   0.526E-02    0.508E-02
+DAV:   6    -0.880262470351E+01   -0.23140E-03   -0.19288E-04   192   0.153E-02    0.654E-02
+DAV:   7    -0.880264094151E+01   -0.16238E-04   -0.68975E-05   192   0.261E-03
+    3 F= -.88026409E+01 E0= -.87744321E+01  d E =-.351890E-01
+        N       E                     dE             d eps       ncg     rms          rms(c)
+DAV:   1    -0.880299916057E+01   -0.37446E-03   -0.21780E-02   192   0.152E-01    0.391E-02
+DAV:   2    -0.880298590664E+01    0.13254E-04   -0.11371E-04   288   0.121E-02
+    4 F= -.88029859E+01 E0= -.87747765E+01  d E =-.355340E-01
+        N       E                     dE             d eps       ncg     rms          rms(c)
+DAV:   1    -0.880299994411E+01   -0.78354E-06   -0.94840E-04   192   0.314E-02    0.592E-02
+DAV:   2    -0.880305353569E+01   -0.53592E-04   -0.50512E-04   192   0.455E-03
+    5 F= -.88030535E+01 E0= -.87748689E+01  d E =-.356016E-01    
+            </code></pre>
+
+            <p>其中每一个<code>DAV</code>开头的行表示<strong>电子步</strong>，当电子步达到收敛条件时则会计算<strong>离子步</strong>。在本例中，程序一共计算了5个离子步而达到收敛条件，从而结束计算。</p>
+
+            <div class="extend">
+                <p>在本例中，我们没有提供电子步的收敛条件。在VASP中，电子步的收敛是由<code>EDIFF</code>参数决定，默认为<code>1E-4</code>，单位为eV。</p>
+            </div>
+
+            <div class="attention">
+                <p>由于<code>NSW</code>参数，对于一些复杂的或者初始结构不合理的结构，有可能计算离子步达到<code>NSW</code>所设置的最大值仍未收敛。因此，可以通过查看<code>OUTCAR</code>文件中是否输出“reached required accuracy - stopping structural energy minimisation”从而确定结构优化是否收敛。</p>
+
+                <p>可以使用<code>grep "reached required" OUTCAR</code>命令查看。</p>
+            </div>
+
+            <p>结构优化的结果在<code>CONTCAR</code>文件中，你可以将其复制为<code>POSCAR</code>进行后续计算，也可以将其导出至如VESTA软件进行可视化分析。本例所计算得到的<code>CONTCAR</code>如下所示（仅供参考）：</p>
+
+            <pre><code>
+O2                                      
+    1.000000000000000     
+    5.0000000000000000    0.0000000000000000    0.0000000000000000
+    0.0000000000000000    5.0000000000000000    0.0000000000000000
+    0.0000000000000000    0.0000000000000000    5.0000000000000000
+O 
+    2
+Direct
+-0.0000000005038475  0.0000000006063874 -0.0030779335361196
+0.0000000005038475 -0.0000000006063874  0.2445779335361217
+
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+        </code></pre>
+
+            <div class="extend">
+                <p>相较于<code>POSCAR</code>，<code>CONTCAR</code>多输出了一部分（如上述文件中的最后两行）。它表示每个原子的初始速度，用于计算分子动力学（AIMD）。通常情况下，全部设置为0表示<strong>静力学计算</strong>。</p>
+            </div>
+        </div>
+
+        <div id="sec:对晶格常数进行优化ISIF=3" class="chapter-content" style="display: none;">
         
+            <h2>对晶格常数进行优化<code>ISIF=3</code></code></h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何对晶格常数进行优化？</li>
+            <li>如何固定晶格常数坐标？</li>
+            </ul>
+
+            <p>在本节，我们将进一步讨论结构优化，考虑非分子、团簇情况，即对<strong>晶体结构</strong>的结构优化。与分子的情况不同，晶体结构需要考虑晶格常数的大小。在VASP当中，我们使用<code>ISIF=3</code>表示对晶格常数的优化。</p>
+
+            <p>首先，我们会展示一个简单的例子——对晶体硅进行结构优化，接着，我们将以二维材料为例，讨论如何对低维材料（如二维材料、一维材料）进行结构优化。其中，后者由于<strong>真空层</strong>的设置，在优化时可能需要一些其他设置。</p>
+
+            <h3 id="subsec:对晶格常数进行优化ISIF=3-三维材料结构优化">三维材料结构优化</h3>
+
+            <p>首先，我们需要构建Si的晶体结构。借助于Materials Project网站，可以下载到对应晶体的cif文件，并使用如VESTA等软件将其导出至<code>POSCAR</code>文件。作为练习，你可以参考下面的文件创建你的<code>POSCAR</code>文件：</p>
+
+            <pre><code>
+Si2
+1.0
+        3.8669745922         0.0000000000         0.0000000000
+        1.9334872961         3.3488982326         0.0000000000
+        1.9334872961         1.1162994109         3.1573715331
+    Si
+    2
+Direct
+        0.750000000         0.750000000         0.750000000
+        0.500000000         0.500000000         0.500000000
+            </code></pre>
+
+            <p>可以发现，晶体Si为三方晶系（满足<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>a</mi><mo>=</mo><mi>b</mi><mo>=</mo><mi>c</mi><mo>,</mo><mi>α</mi><mo>=</mo><mi>β</mi><mo>=</mo><mi>γ</mi><mo>≠</mo><msup><mn>90</mn><mo>∘</mo></msup></math>）。与优化分子不同，晶体需要同时进行原子坐标优化和<strong>晶格常数</strong>优化。与优化原子坐标类似，如果需要优化晶格常数，需要设置<code>ISIF=3</code>（其他参数可以参考<a href="#sec:对坐标进行优化ISIF=2">对坐标进行优化ISIF=2</a>一节中的<code>INCAR</code>设置。下面给了一个可以直接使用的<code>INCAR</code>文件：</p>
+
+            <pre><code>
+ENCUT  =  600
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+PREC   = Accurate
+NSW    =  300
+ISMEAR =  0
+SIGMA  =  0.05
+IBRION =  2
+ISIF   =  3
+EDIFFG = -0.01
+        </code></pre>
+
+            <p>可以直接使用<code>vaspkit-101-LR</code>生成。</p>
+
+            <div class="attention">
+                <p>也可以使用<code>vaspkit-101-SR</code>生成<code>INCAR</code>文件，但需要将<code>ISIF</code>设置为3（vaspkit在这一选项下默认设置为2）</p>
+            </div>
+
+            <p>与分子不同，对于晶格我们需要设置更多的k点（体现在<code>KPOINTS</code>文件中），通常在一个方向上的k点个数与晶格常数近似为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi><mi>a</mi><mo>∼</mo><mn>20</mn></math>即可。而在实际使用时，我们完全可以借助于vaspkit脚本，使用<code>vaspkit-102-2</code>生成以Gamma为中心的K点，输入需要使用的K点密度即可生成对应的<code>KPOINTS</code>文件（同时使用默认配置生成<code>POTCAR</code>）。我们使用0.06生成的<code>KPOINTS</code>如下：</p>
+
+            <pre><code>
+K-Spacing Value to Generate K-Mesh: 0.060
+0
+Gamma
+5   5   5
+0.0  0.0  0.0
+        </code></pre>
+
+            <p>提交上述任务，完成后输出的<code>CONTCAR</code>文件为：</p>
+
+            <pre><code>
+Si2                                     
+1.00000000000000     
+    3.8715704308906274   -0.0000000000000000    0.0000000000000000
+    1.9357852154453137    3.3528783456576567    0.0000000000000420
+    1.9357852154453137    1.1176261152526314    3.1611240196775290
+Si
+    2
+Direct
+0.7500000000000000  0.7500000000000000  0.7500000000000000
+0.5000000000000000  0.5000000000000000  0.5000000000000000
+
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+        </code></pre>
+
+            <p>可以发现，晶格常数相较于初始<code>POSCAR</code>发生了变化。同时，Si-Si键长从2.368 Å变为2.371 Å.</p>
+
+            <div class="attention">
+                <p>从原子坐标上看，似乎原子位置没有优化，但由于我们使用的是<strong>分数坐标</strong>，对于同样的原子坐标，不同晶格常数对应不同的键长与原子间相对位置。</p>
+            </div>
+
+            <h4>*关于vaspkit的k点设置</h4>
+
+            <div class="extend">
+                <p>无论你是计算新手还是有一定经验的“老手”，在使用vaspkit时可能产生过疑问：<strong>设置k点时输入的密度（例如0.06）到底是什么</strong>？上面的示例中为什么生成的k点个数就是<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>5</mn><mo>×</mo><mn>5</mn><mo>×</mo><mn>5</mn></math>？这一部分我们试图回答这一问题。</p>
+
+                <p>首先，k点所针对的是倒空间，而我们所使用的<code>POSCAR</code>都是针对于<strong>实空间</strong>的。通过实空间的晶格基矢，我们可以求得倒空间的基矢。例如，倒空间基矢<math xmlns="http://www.w3.org/1998/Math/MathML" ><msub><mi mathvariant="bold">b</mi><mn>1</mn></msub></math>就可以用下面的方式计算：</p>
+
+                <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi mathvariant="bold">b</mi><mn>1</mn></msub><mo>=</mo><mn>2</mn><mi>π</mi><mfrac><mrow><msub><mi>α</mi><mn>2</mn></msub><mo>×</mo><msub><mi>α</mi><mn>3</mn></msub></mrow><mrow><msub><mi>α</mi><mn>1</mn></msub><mo>⋅</mo><mo stretchy="false">(</mo><msub><mi>α</mi><mn>2</mn></msub><mo>×</mo><msub><mi>α</mi><mn>3</mn></msub><mo stretchy="false">)</mo></mrow></mfrac></math>
+
+                <p>因此，我们可以通过实空间的晶格基矢长度，计算得到倒空间的基矢长度。例如，在本例中，基矢长度就是1.99. </p>
+
+                <p>而我们输入的密度<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>，则可以定义为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>=</mo><mi>b</mi><mrow><mo>/</mo></mrow><mn>2</mn><mi>π</mi><mi>k</mi></math>，其中<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>b</mi></math>为倒空间基矢的长度。例如，在本例中，倒空间基矢长度为1.99，则可以带入得到当<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi><mo>=</mo><mn>0.06</mn></math>时，可得<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi><mo>≈</mo><mn>5</mn></math>.</p>
+
+                <p>或者，可以将密度解释为<strong>在<math xmlns="http://www.w3.org/1998/Math/MathML" ><mi>b</mi><mrow><mo>/</mo></mrow><mn>2</mn><mi>π</mi></math>中平均撒入<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi></math>个点，相邻两点的距离。</strong></p>
+            </div>
+
+            <h3 id="subsec:对晶格常数进行优化ISIF=3-固定某一晶格常数的优化">固定某一晶格常数的优化</h3>
+
+            <p>对于低维材料（本节后续均以二维材料举例），为了避免层与层之间的相互作用，在构建结构时需要在垂直于平面方向的晶格常数设置较大的值（真空层）。以二维TiS<sub>2</sub>为例，在<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>方向设置长度为15 Å的真空层，构建得到的<code>POSCAR</code>如下所示：</p>
+
+            <pre><code>
+"Ti1 S2"
+1.0
+        3.4143800735         0.0000000000         0.0000000000
+        -1.7071904305         2.9569396545         0.0000000000
+        0.0000000000         0.0000000000         15.000000000
+    Ti    S
+    1    2
+Direct
+        0.000000000         0.000000000         0.500000000
+        0.666670024         0.333330005         0.579720020
+        0.333330005         0.666670024         0.420280010
+                </code></pre>
+
+            <p>如果不加以限制，参考前面关于三维材料的结构优化所使用的设置，可以很容易想到（事实也会如此）：<strong>真空层会发生变化</strong>。这在物理上没有实际意义，因此需要想办法对真空层（<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>c</mi></math>轴）进行固定。</p>
+
+            <h4>使用<code>OPTCELL</code>文件进行固定</h4>
+
+            <div class="extend">
+                <p>使用<code>OPTCELL</code>之前需要对VASP进行再编译，特别是需要重写文件<code>constr_cell_relax.F</code>。具体的编译原理请参考刘锦程博士的博客<sup>1</sup>，在此不再赘述。</p>
+
+                <p>如果无法配置，请联系你所在课题组的服务器运维人员。</p>
+            </div>
+
+            <p>在使用<code>OPTCELL</code>进行固定时，需要创建一个名为<code>OPTCELL</code>的文件，内部为<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn><mo>×</mo><mn>3</mn></math>的矩阵，例如，在本例中我们希望对真空层进行固定，则所创建的文件如下所示：</p>
+
+            <pre><code>
+100
+110
+000
+        </code></pre>
+
+            <p>其中，<strong>1表示对某个坐标分量进行优化，而0表示固定</strong>（不优化）。</p>
+
+            <div class="attention">
+                <p>在<code>OPTCELL</code>当中，所有数字之间没有空格，这与下面要介绍的<code>IOPTCELL</code>不同。</p>
+            </div>
+
+            <h4>使用<code>IOPTCELL</code>进行固定</h4>
+
+            <p>肖承诚博士在github上提供了一个补丁<sup>2</sup>，可以通过在<code>INCAR</code>中设置<code>IOPTCELL</code>参数实现对晶格的固定。其基本原理是对通过构建力矩阵实现固定，假设原始的晶格常数构成一个<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn><mo>×</mo><mn>3</mn></math>的矩阵<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>A</mi><mtext>old</mtext></msub></math>，<code>IOPTCELL</code>的作用就是设置一个<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn><mo>×</mo><mn>3</mn></math>的力矩阵<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi></math>，使得优化后得到的新晶格常数<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>A</mi><mtext>new</mtext></msub><mo>=</mo><msub><mi>A</mi><mtext>old</mtext></msub><mo>×</mo><mi>F</mi></math>在需要固定的方向上元素值为0.</p>
+
+            <p>还是以上面的TiS<sub>2</sub>为例，当设置力矩阵<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi></math>为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>F</mi><mo>=</mo><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mtable columnalign="" columnspacing="1em" rowspacing="4pt"><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo data-mjx-texclass="CLOSE">)</mo></mrow></math>
+            时，可以实现新的晶格常数矩阵为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>A</mi><mtext>new</mtext></msub><mo>=</mo><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mtable columnalign="" columnspacing="1em" rowspacing="4pt"><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>1</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo data-mjx-texclass="CLOSE">)</mo></mrow><mi>×</mi><mrow data-mjx-texclass="INNER"><mo data-mjx-texclass="OPEN">(</mo><mtable columnalign="" columnspacing="1em" rowspacing="4pt"><mtr><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>2</mn></mtd><mtd><mn>1</mn></mtd><mtd><mn>0</mn></mtd></mtr><mtr><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd><mtd><mn>0</mn></mtd></mtr></mtable><mo data-mjx-texclass="CLOSE">)</mo></mrow></math>
+            从而实现对真空层的固定。</p>
+
+            <p>在设置时，在<code>INCAR</code>里面提供参数<code>IOPTCELL</code>，按照<strong>列顺序</strong>书写（先写第一列，再写第二列，最后写第三列）。一共9个数字<strong>写在同一行</strong>且中间<strong>用空格分隔</strong>。例如，本例则可以设置为<code>IOPTCELL=1 1 0 0 1 0 0 0 0</code></p>
+
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                    <li id="ftnt1"><a href="https://blog.shishiruqi.com//2019/05/05/constr/">https://blog.shishiruqi.com//2019/05/05/constr/</a></li>
+                    <li id="ftnt2"><a href="https://github.com/Chengcheng-Xiao/VASP_OPT_AXIS">https://github.com/Chengcheng-Xiao/VASP_OPT_AXIS</a></li>
+                </ol>
+            </footer>
+
+        </div>
+
+        <div id="sec:固定某些原子的优化" class="chapter-content" style="display: none;">
+        
+            <h2>固定某些原子的优化</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何在优化过程中固定某些原子</li>
+            </ul>
+
+            <p>在对某些结构进行优化时，我们可能希望仅优化个别原子以加速优化过程。例如，对于气体吸附的过程，在没有确定最终吸附位置时，我们可能会希望先只优化气体分子的位置而将下方的衬底作为“背景”固定，从而找到一个近似合理的位置。在本节，我们将讨论这一类问题的实现方法。</p>
+
+            <h3 id="subsec:固定某些原子的优化-如何固定原子坐标">如何固定原子坐标</h3>
+
+            <p>无论是<code>ISIF=2</code>或者<code>ISIF=3</code>，优化过程都包括对原子坐标的优化。如果希望固定某个原子的坐标，则需要按照如下步骤操作：</p>
+
+            <ol>
+                <li>在<code>POSCAR</code>的原子个数下面一行添加<code>Selective dynamics</code>（只要保证首字母为S或s即可）；</li>
+                <li>在下方每个原子坐标后面使用三个逻辑值（<code>T</code>或<code>F</code>）表示是否对这一坐标分量优化（或固定）（中间使用空格分隔）</li>
+            </ol>
+
+            <p>还是以前面<a href="#sec:对坐标进行优化ISIF=2">对坐标进行优化ISIF=2</a>一节中关于O<sub>2</sub>分子的优化例子，如果我们希望固定某一个氧原子，而让另一个氧原子只在<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>方向优化，则可以将<code>POSCAR</code>写成下面的样子：</p>
+
+            <pre><code>
+O2
+1.0
+5.0 0.0 0.0
+0.0 5.0 0.0
+0.0 0.0 5.0
+O
+2
+Selective dynamics
+Cartesian
+0 0 0 F F F
+0 0 1.2075 F F T
+            </code></pre>
+
+            <p>其中，第10行使用三个<code>F</code>表示三个坐标分量<strong>均不进行优化</strong>，第111行使用<code>F</code>和<code>T</code>表示<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math>坐标分量<strong>均不进行优化</strong>，而仅优化<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>坐标分量<strong>优化</strong>。</p>
+
+            <p>使用的<code>INCAR</code>和<code>KPOINTS</code>与<a href="#sec:对坐标进行优化ISIF=2">对坐标进行优化ISIF=2</a>相同，这里仅列举如下而不做解释（方便读者直接阅读本节）：</p>
+
+            <pre><code>
+ENCUT  =  600
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+PREC   = Accurate
+NSW    =  300
+ISMEAR =  0
+SIGMA  =  0.05
+IBRION =  2
+ISIF   =  2
+EDIFFG = -0.01
+        </code></pre>
+
+            <pre><code>
+K-Spacing Value to Generate K-Mesh: 0.000
+0
+Gamma
+    1   1   1
+0.0  0.0  0.0
+        </code></pre>
+
+            <p>优化得到的<code>CONTCAR</code>如下：</p>
+
+            <pre><code>
+O2                                      
+1.00000000000000     
+    5.0000000000000000    0.0000000000000000    0.0000000000000000
+    0.0000000000000000    5.0000000000000000    0.0000000000000000
+    0.0000000000000000    0.0000000000000000    5.0000000000000000
+O 
+    2
+Selective dynamics
+Direct
+0.0000000000000000  0.0000000000000000  0.0000000000000000   F   F   F
+0.0000000000000000  0.0000000000000000  0.2476911285012822   F   F   T
+
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+0.00000000E+00  0.00000000E+00  0.00000000E+00
+        </code></pre>
+
+            <p>其中，氧原子的键长变为1.2385 Å，与之前所优化得到的键长（1.23828 Å）接近。同时需要特别注意的是：优化后第一个原子<strong>仍然在原点位置</strong>，而第二个原子<strong>仅<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>坐标发生变化</strong>，从而实现了<strong>固定某些原子坐标</strong>的目的。</p>
+
+        </div>
+
+        <div id="sec:一些结构优化的策略与加速方法" class="chapter-content" style="display: none;">
+        
+            <h2>一些结构优化的策略与加速方法</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>为什么要进行分步优化</li>
+            <li>一些分步优化时需要注意的参数与方法</li>
+            </ul>
+
+            <p>如果你所研究的材料是很简单的材料，甚至是数据库或实验已经测得的，当你用这一结构进行结构优化时，其速度往往是很快的（至少相较于后面所要讨论的那些而言）但如果这个结构是不确定的，例如，你需要研究一种经过某种方式调控的材料，或者是两种组分相互作用形成的体系（例如气体吸附），现成的数据往往不足以构建一个完全符合实际的结构。因此，你需要通过<strong>结构优化</strong>这一步寻找合理的体系结构并进行后续的计算。</p>
+
+            <p>但是，一个初始不合理的结构，其优化时长通常可能以小时或天计，而且其优化结果不一定合理，从而耽误后续计算。因此，在这一节，我们将介绍一种结构优化策略——<strong>分步优化</strong>。通过逐步提高精度，快速找到体系的合理结构。</p>
+
+            <h3 id="subsec:一些结构优化的策略与加速方法-使用Gamma点">使用Gamma点</h3>
+
+            <p>在优化周期性结构时，我们通常会使用一定大小的k点来提高计算精度。但对于初始而言，这种密度往往会造成不必要的时长，而且在初始结构不合理的时候，使用一个较小的K点也足以帮助我们找到一个大致正确的结构。此时一个较合理的方法是<strong>使用Gamma点</strong>。</p>
+
+            <p>如果是使用vaspkit生成的<code>KPOINTS</code>，只需使用<code>vaspkit-102-2-0</code>即可生成仅有Gamma点的<code>KPOINTS</code>。可以比较发现，使用这一方法可以较大提高计算速度。</p>
+
+            <div class="extend">
+                <p>如果只使用Gamma点计算，在vasp计算版本中可以使用<code>vasp_gam</code>版本计算。修改方法通常在提交任务脚本中。例如，以我所在课题组为例，对于105、106和224节点，只需要在已有提交脚本中找到<code>vasp_std</code>并将其修改为<code>vasp_gam</code>即可。</p>
+            </div>
+
+            <h3 id="subsec:一些结构优化的策略与加速方法-固定相互作用较弱的原子">固定相互作用较弱的原子</h3>
+
+            <p>对于某些体系，例如气体吸附，气体分子与靠近气体分子的一层原子的相互作用应当明显大于远离气体分子的那一层原子。因此，在进行低精度结构优化时，可以优先将相互作用较弱的原子进行固定，而只优化相互作用较强的原子，从而使其快速找到合适位置。</p>
+
+            <p>以气体吸附为例，在初始结构不合理的时候，可以将吸附衬底固定而只优化气体分子所在位置，从而将其移动到大致正确的位置，再进行后续高精度优化。</p>
+
+            <h3 id="subsec:一些结构优化的策略与加速方法-使用低精度参数">使用低精度参数</h3>
+
+            <p>如果你所需要的优化精度（如<code>EDIFF</code>,<code>EDIFFG</code>等）较高，可以优先使用低精度进行优化，再将其逐渐提升到高精度，从而使其快速收敛到合适位置。</p>
+
+            <p>在必要的时候，稍微调大<code>POTIM</code>参数从而增大迭代步长进行快速优化也是合理的，但其参数的调整需要人为“监控”以避免出现不合理的情况（例如，步长过大导致迭代不收敛）。</p>
+
+            <p>在调整<code>EDIFF</code>和<code>EDIFFG</code>时，如果<code>EDIFF</code>设置精度较低而<code>EDIFFG</code>设置精度较高，有可能会发生力难以收敛的情况。因此，在提高二者精度时，可以先提高<code>EDIFF</code>的精度，再提高<code>EDIFFG</code>的精度<sup>1</sup>。</p>
+
+            <p>此外，在进行结构优化参数设置时，一些与结构可能无关的参数初始也可以不设置（例如，对于没有范德华作用体系的结构，考虑范德华作用则是多余的）。但是，<strong>磁性考虑与否可能会影响结构</strong>，因此，在进行分步优化时，应当考虑磁性（<code>ISPIN=2</code>）以避免磁性对结构的影响。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                    <li id="ftnt1">这一部分只是个人经验之谈。</li>
+                </ol>
+            </footer>
+        </div>
+
+
 
     </div>
+
+</div>
 </body>
 </html>
