@@ -67,6 +67,7 @@
     <select class="mobile-nav" onchange="showContentMobile(this.value)">
         <option value="">导航菜单</option>
         <option value="2024-12-23-1">【置顶】关于杂谈的内容</option>
+        <option value="2025-7-2">【NEW!!!!!】【材料计算】使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</option>
         <option value="2025-6-16">【BanG Dream!】Roselia Live 「Sei stark」返图</option>
         <option value="2025-4-9">【材料计算】使用lobster进行COHP分析</option>
         <option value="2025-3-12">【桌游】日麻系列教程1：日麻役种常见一览</option>
@@ -87,6 +88,7 @@
             <button class="toggle" onclick="toggleChapters('contents')">全部内容</button>
             <div class="chapters" id="contentsChapters" style="display: none;">
                 <li onclick="showContent('2024-12-23-1')">【置顶】关于杂谈的内容</li>
+                <li onclick="showContent('2025-7-2')">【NEW!!!!!】使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</li>
                 <li onclick="showContent('2025-6-16')">Roselia Live 「Sei stark」返图</li>
                 <li onclick="showContent('2025-4-9')">使用lobster进行COHP分析</li>
                 <li onclick="showContent('2025-3-12')">日麻系列教程1：日麻役种常见一览</li>
@@ -104,6 +106,7 @@
                     <h3>材料计算</h3>
                     <ul id="materialsSubChapters" style="display: none;">
                         <!-- 材料计算杂谈 -->
+                        <li onclick="showContent('2025-7-2')">【NEW!!!!!】使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</li>
                         <li onclick="showContent('2025-4-9')">使用lobster进行COHP分析</li>
                         <li onclick="showContent('2024-12-25')">Linux当中<code>for</code>与VASPKIT“联动”</li>
                     </ul>
@@ -152,6 +155,36 @@
         </div>
     </div>
     <div class="content">
+        <div id="2025-7-2" class="chapter-content" style="display: none;">
+            <h2>使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</h2>
+            <p>时间：2025-07-02  作者：Jiaqi Z.</p>
+            <p>分类：材料计算</p>
+            <hr>
+            <p>在材料计算的教程中，我们介绍了关于使用Linux的sed命令进行文本替换，其基本格式为<code>sed -i "s/[原字符串]/[替换字符串]/g [文件路径名]</code>。利用这个方法，我们可以对<code>INCAR</code>文件中的参数进行替换。例如，我们希望将<code>EDIFF</code>从<code>1E-5</code>改成<code>1E-6</code>，可以使用命令<code>sed -i "s/1E-5/1E-6/g" INCAR</code>。</p>
+            <p>当然，这种方式有一个缺陷：**如果INCAR的参数有多个相同的值，如何让命令只修改对应的参数？**例如，我们希望修改自旋极化开关<code>ISPIN</code>让其从1变成2，但这个过程可能会使得其他参数（如<code>ISTART</code>）也会发生变化，这显然不是我们想要的结果。</p>
+            <p>也许……把关键字也加到命令里是可行的……</p>
+            <p>例如，我们尝试<code>sed -i "s/ISPIN=1/ISPIN=2/g" INCAR</code>，这种方法确实可以只修改<code>ISPIN</code>参数。但是，<strong>它忽略了等号两端的空格</strong>。对于一些工具（如vaspkit），在生成文件时会带有空格。那么，如果我们直接把空格加上呢？显然也是不行的，因为我们不知道有多少个空格。</p>
+            <p><em>注：在<code>INCAR</code>中查看有多少个空格，直接输入在命令中是一种“下策”，因为我们希望将这个功能“普适化”，以便在更多的场景下适用（无论有多少个空格）。甚至，以后可以将其用于for循环或者脚本中（我们后面会给一个脚本的使用例子）</em></p>
+            <p>答案是使用<strong>正则表达式</strong>。</p>
+            <h3>关于正则表达式</h3>
+            <p>在正则表达式中，使用<code>\s</code>符号表示<strong>所有空白符</strong>，使用<code>\t</code>表示<strong>制表符</strong>等。显然，空格应当是使用<code>\s</code>表示。但是，<strong>如何解决多个空格的问题呢</strong>？在正则表达式中，我们可以使用<code>+</code>表示<strong>前面的字符出现一次或多次</strong>，使用<code>*</code>表示<strong>前面的字符出现零次或多次</strong></p>
+            <p><strong>注意：这里的<code>*</code>不是“通配符”的那个符号。另外，这里的<code>\</code>实际上就是其他大多数程序语言中所表示的“转义字符”</strong></p>
+            <p>因此，如果我们想要匹配类似于<code>ISPIN  =  1</code>这样的字符串，可以用正则表达式写作<code>ISPIN\s+=\s+1</code>（可以自己尝试理解它）。在<code>sed</code>当中使用它，需要使用参数<code>-E</code>（因为像<code>+</code>这种符号属于<strong>扩展正则表达式</strong>）。综合一下，如果我们希望将<code>ISPIN</code>从1改成2，则可以写作<code>sed -E -i "s/ISPIN\s+=\s+1/ISPIN = 2/g" INCAR</code></p>
+            <p>进一步，像上面这样仅使用正则表达式匹配空格算是“中策”，而“上策”则是使用不考虑初始数值，只使用关键字。例如，在设计脚本时，如果在用户使用时还需要提供原来的值，会稍显多余。简单的方法是无论后面的值是多少，直接改成我们想要的数值即可。在正则表达式中，使用<code>\S</code>表示<strong>非空白字符</strong>（还有<code>\w</code>，表示<strong>数字、字母和下划线</strong>，二者是不同的，前者范围更大）</p>
+            <p>如果考虑这种方法，可以将命令写成下面这样：<code>sed -E -i "s/ENCUT\s+=\s+\S+/ENCUT = 600/g" INCAR</code>。这种方式可以将<code>ENCUT</code>设置为600（无论原先的数值是400、520还是800还是其他数值）</p>
+            <h3>一个扩展脚本</h3>
+            <p>我们下面提供一个示例脚本，用户可以直接在当前目录下运行这个脚本，输入要修改的参数和想要的值，脚本会自动修改：</p>
+            <pre><code>
+#!/bin/bash
+# 修改INCAR参数
+read -p "Parameter: " keyWord
+read -p "Value: " value
+sed -E -i "s/$keyWord\s+=\s+\S+/$keyWord = $value/g" INCAR
+echo "Done!"
+            </code></pre>
+            <p>你可以将这个程序集成到更大的程序中（类似于vaspkit带有菜单功能引导）</p>
+        </div>
+
         <div id="2025-6-16" class="chapter-content" style="display: none;">
             <h2>Roselia Live 「Sei stark」返图</h2>
             <p>时间：2025-06-16</p>
