@@ -80,13 +80,23 @@
             <button class="toggle" onclick="toggleChapters('vasp')">VASP教程</button>
             <div class="chapters" id="vaspChapters" style="display: none;">
                 <div class="chapter" onclick="toggleSubChapters('relax')">
-                    <h3>【NEW!!!!!】结构优化</h3>
+                    <h3>结构优化</h3>
                     <ul id="relaxSubChapters" style="display: none;">
-                        <li onclick="showContent('sec:为什么要进行结构优化')">【NEW!!!!!】为什么要进行结构优化</li>
-                        <li onclick="showContent('sec:对坐标进行优化ISIF=2')">【NEW!!!!!】对坐标进行优化ISIF=2</li>
-                        <li onclick="showContent('sec:对晶格常数进行优化ISIF=3')">【NEW!!!!!】对晶格常数进行优化ISIF=3</li>
-                        <li onclick="showContent('sec:固定某些原子的优化')">【NEW!!!!!】固定某些原子的优化</li>
-                        <li onclick="showContent('sec:一些结构优化的策略与加速方法')">【NEW!!!!!】一些结构优化的策略与加速方法</li>
+                        <li onclick="showContent('sec:为什么要进行结构优化')">为什么要进行结构优化</li>
+                        <li onclick="showContent('sec:对坐标进行优化ISIF=2')">对坐标进行优化ISIF=2</li>
+                        <li onclick="showContent('sec:对晶格常数进行优化ISIF=3')">对晶格常数进行优化ISIF=3</li>
+                        <li onclick="showContent('sec:固定某些原子的优化')">固定某些原子的优化</li>
+                        <li onclick="showContent('sec:一些结构优化的策略与加速方法')">一些结构优化的策略与加速方法</li>
+                    </ul>
+                </div>
+
+                <div class="chapter" onclick="toggleSubChapters('scf')">
+                    <h3>【NEW!!!!!】静态自洽与电荷密度</h3>
+                    <ul id="scfSubChapters" style="display: none;">
+                        <li onclick="showContent('sec:什么是静态自洽')">【NEW!!!!!】什么是静态自洽</li>
+                        <li onclick="showContent('sec:能量计算')">【NEW!!!!!】能量计算</li>
+                        <li onclick="showContent('sec:磁矩计算')">【NEW!!!!!】磁矩计算</li>
+                        <li onclick="showContent('sec:电荷密度与差分电荷密度')">【NEW!!!!!】电荷密度与差分电荷密度</li>
                     </ul>
                 </div>
 
@@ -4270,6 +4280,559 @@ Direct
             </footer>
         </div>
 
+        <div id="sec:什么是静态自洽" class="chapter-content" style="display: none;">
+            <h2>什么是静态自洽</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>什么是静态自洽</li>
+            <li>为什么要进行静态自洽</li>
+            </ul>
+
+            <p>在本章，我们将开始讨论电子性质的计算。电子性质的计算范围非常大，小到体系的能量，大到计算体系的能带、态密度等都是对材料电子性质进行计算。一些复杂的计算如能带、态密度等我们放到后面的章节单独介绍，而一些简单的性质将在本章进行说明。</p>
+
+            <h3 id="subsec:什么是静态自洽-什么是静态自洽">什么是静态自洽</h3>
+
+            <p>在<a href="#chap:结构优化">结构优化</a>中介绍过，在进行任何材料的计算前，都需要进行<strong>结构优化</strong>。结构优化是VASP计算的第一步，旨在通过调整输入体系的坐标，得到一个相对稳定的基态结构。这个过程包括<strong>原子迟豫</strong>和<strong>电子迭代</strong>两个嵌套的过程。每次计算中都进行原子迟豫和电子迭代计算，直到达到自动中断或者最大原子迟豫步数。</p>
+
+            <p>相比之下，静态自洽计算（self-consistent field method, SCF）是在结构优化的基础上进行的。此时，<strong>原子位置保持不动，只对电子进行自洽计算，以达到体系的最低能量</strong>。静态自洽计算前需要使用结构优化输出的<code>CONTCAR</code>文件，并将其拷贝成新的POSCAR文件。</p>
+
+            <div class="extend">
+                <p>在VASP计算中（甚至包括其他大多数材料计算软件），自洽方法的基本思想都是先按照某种方法给出波函数的一个估计，然后利用这个估计来计算电子密度，再通过电子密度来得到哈密顿量中与粒子间相互作用有关的项，再进行薛定谔方程的求解得到一组改进的估计。</p>
+            </div>
+
+            <h3 id="subsec:什么是静态自洽-为什么要进行静态自洽计算">为什么要进行静态自洽计算</h3>
+
+            <p>计算静态自洽的本质是为了得到体系的电子性质，在以下几种情况下，你可能会需要计算静态自洽：</p>
+
+            <ol>
+                <li>计算能量、磁矩等性质：要得到体系的能量，首先需要得到能量最低时的电子密度（这是“密度泛函理论”的基本假设）；虽然在计算结构优化时也可以得到一个能量，但有时结构优化为了提高计算效率，可能会忽略一些与结构影响无关的近似（如范德华校正等），但这些近似会影响计算的能量值。在实际计算时，我们可能会在自洽计算过程中考虑更多的近似；</li>
+                <li>计算态密度、能带等电子性质：其本质上也是为了计算得到电子结构性质；</li>
+                <li>计算电荷密度图等性质：这种直接计算电荷密度的性质，也必然要进行自洽计算。</li>
+            </pl>
+
+            <p>在本章，我们主要讨论能量、磁矩、电荷密度（特别是常见的“差分电荷密度”）的计算方法。它们的计算大多只需要一些简单的物理知识即可说明清楚。一些更深入的电子性质（如bader电荷转移、电子局域函数ELF、晶体轨道布居COHP等）将在后面的章节进行讨论，它们有些需要更复杂的物理知识，甚至可能需要一些更复杂的计算（借助其他程序包）。</p>
+        </div>
+
+        <div id="sec:能量计算" class="chapter-content" style="display: none;"> 
+            <h2>能量计算</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何计算体系的能量</li>
+            <li>K点与截断能测试</li>
+            </ul>
+
+            <p>在本节，我们将讨论在计算中最重要的一个物理量——<strong>能量</strong>。如果你是要计算吸附或类似的（两个体系相互作用的能量），肯定需要计算两个体系的能量（甚至可能还需要计算更多）。此外，在实际计算的时候，为节省机时，选择合适的精度也很重要（尤其是对那些花钱买机时的课题组而言更是如此）。而考虑精度是否合适的一个标准，就是计算能量的精度。</p>
+
+            <h3 id="subsec:能量计算-自洽计算能量">自洽计算能量</h3>
+
+            <p>让我们直接看一个例子——计算单晶Si的能量。首先，我们需要构建Si的结构，也就是<code>POSCAR</code>文件。在<a href="#sec:对晶格常数进行优化ISIF=3">对晶格常数进行优化ISIF=3</a>一节中我们已经构建了它的结构，这里直接写出其<code>POSCAR</code>文件：</p>
+
+            <pre><code>
+Si2
+1.0
+        3.8669745922         0.0000000000         0.0000000000
+        1.9334872961         3.3488982326         0.0000000000
+        1.9334872961         1.1162994109         3.1573715331
+    Si
+    2
+Direct
+        0.750000000         0.750000000         0.750000000
+        0.500000000         0.500000000         0.500000000
+            </code></pre>
+
+            <p>首先需要进行<strong>结构优化</strong>，具体方法详见<a href="#sec:对晶格常数进行优化ISIF=3">对晶格常数进行优化ISIF=3</a>，这里不再赘述。假设你已经优化完成了，得到了<code>CONTCAR</code>文件，将其复制到一个新目录下<sup>1</sup>，将其命名为<code>POSCAR</code>。我们后续的大多数计算都是围绕这个结构来的。</p>
+
+            <p>在此基础上，自洽计算所使用的<code>INCAR</code>如下：</p>
+
+            <pre><code>
+ISTART =  1
+ISPIN  =  1
+LREAL  = .FALSE.
+ENCUT  =  600
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+ADDGRID= .TRUE.
+LASPH  = .TRUE.
+PREC   = Accurate
+ISMEAR =  0
+SIGMA  =  0.05
+NELM   =  60
+EDIFF  =  1E-5
+        </code></pre>
+
+            <p>其中，有一些参数需要解释一下：</p>
+
+            <ul>
+                <li><code>ISPIN</code>：表示<strong>自旋极化</strong>开关，当设置为<code>1</code>时表示不开启自旋极化，当设置为<code>2</code>时表示开启。这一选项是进行磁性材料计算的重要参数，我们将在<a href="#sec:磁矩计算">磁矩计算</a>一节详细介绍；</li>
+                <li><code>NELM</code>：表示最大自洽迭代次数，当达到最大次数时，vasp将停止计算；</li>
+                <li><code>EDIFF</code>：表示自洽迭代的精度，单位为eV，当两次自洽前后能量差小于其数值时，表示达到收敛精度，结束计算。默认值为<code>1E-4</code></li>
+            </ul>
+
+            <p>其他参数与结构优化保持一致，完成后查看<code>OUTCAR</code>文件中在靠近最后的位置有类似下面的输出内容：</p>
+
+            <pre><code>
+FREE ENERGIE OF THE ION-ELECTRON SYSTEM (eV)
+---------------------------------------------------
+free  energy   TOTEN  =       -10.78671596 eV
+
+energy  without entropy=      -10.78671596  energy(sigma-&gt;0) =      -10.78671596
+        </code></pre>
+
+            <p>可以看到，这里面有三个能量。通常来说，由于我们的计算能量更多是讨论它们的相对值而不是绝对值，因此在实际计算时选择某一个特定的能量，并采用同一标准进行计算即可。通常来说，<strong>我们使用第三个能量<code>energy(sigma-&gt;0)</code>作为体系能量</strong>。</p>
+
+            <div class="attention">
+                <p>在这里你也许已经注意到了，从这一部分开始，我们可能不会在所有地方给出全部的输入文件了。例如，在这里我们并没有给出<code>KPOINTS</code>文件。这也是为了给读者更多的能动性（Your task your way，你的计算任务你做主）。</p>
+                
+                <p>也正因如此，后面有些具体的数值可能与你计算结果不相同，但大体趋势应当是一致的。</p>
+
+                <p>另外，你也应当注意的是，在计算任务中使用的截断能（<code>ENCUT</code>）应当始终保持一致。我们的例子可能会给出具体的截断能数值，你完全可以按照你的参数选择你想要的数值。这无所谓，但是，在后面我们会提到一个截断能的最小值。无论是你的还是我的，设置的<code>ENCUT</code>都不应当小于这个最小值。</p>
+            </div>
+
+            <div class="extend">
+                <p>既然已经讨论到这里了，我们就简单介绍一下三个能量表示的含义。其中，<code>free energy TOTEN</code>表示自由能（吉布斯自由能），其表达式为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>F</mi><mo>=</mo><mi>E</mi><mo>−</mo><mi>T</mi><mi>S</mi></math>，由于我们的计算不考虑温度（绝对零度），因此按理来说，无论熵怎么变化，对能量的影响都没有影响。而事实上，由于我们的计算采用Gaussian展宽（<code>ISMEAR=0</code>），在实际计算时会引入在费米能级附近变化的电子态，从而引入了误差（具体来说，是引入了“温度”）</p>
+
+                <p><code>energy without entropy</code>表示<strong>不考虑熵时的自由能</strong>，<code>energy(sigma-&gt;0)</code>表示当展宽趋向于0时的能量。在本例中，这三个能量值相等，但这不总是绝对的。之所以如此，是因为我们计算的Si是半导体，且设置的展宽合理，从而导致电子占据与实际情况接近（在<code>OUTCAR</code>中，我们可以看到电子的占据情况（<code>occupation</code>）。如果展宽过大（例如在本例中，如果设置<code>SIGMA=1</code>，再次计算能量，则有可能有下面的情况：</p>
+
+                <pre><code>
+FREE ENERGIE OF THE ION-ELECTRON SYSTEM (eV)
+---------------------------------------------------
+free  energy   TOTEN  =       -10.83981213 eV
+
+energy  without entropy=      -10.66813608  energy(sigma-&gt;0) =      -10.75397411        
+        </code></pre>
+
+                <p>可以发现，三个能量是不相等的。但一般来说，第三个能量（展宽为0时的能量）总是等于前两个能量的平均值。</p>
+
+                <p>此外，当我们使用<code>ISMEAR=-5</code>（表示正四面体方法时），其计算严格按照费米能级定义，此时的三个能量应该相等。也正因如此，在计算半导体或绝缘体时，由于存在费米能级（电子填充的最高态），因此使用<code>ISMEAR=-5</code>会得到更准确的结果。但这是以计算效率为代价。也正因如此，<strong>在计算导体时，千万不要使用<code>ISMEAR=-5</code>计算</strong>！</p>
+            </div>
+
+            <div class="attention">
+                <p>在能量计算的时候，通常绝对值是没有意义的，因为这个数值涉及到零点的选择。类似于普通物理（电磁学）中对带电粒子能量的讨论，通常我们选择无穷远处为零势能面，其能量为0，从而得到带电粒子的能量。在这里情况是类似的——能量的零点是可以自由设置的，因此我们没有办法讨论具体的能量值。但<strong>能量的相对值是确定的</strong>。例如，我们永远无法说一个物体的势能是多少（这涉及到零势能面选取），但当讨论势能变化时，无论怎么选取零势能面，其结果都是确定的。</p>
+
+                <p>正因如此，在论文中，我们需要尽量避免出现绝对能量，而使用相对能量（如吸附能、结合能等都是通过<strong>体系能量差值</strong>定义的）</p>
+            </div>
+
+            <h3 id="subsec:能量计算-使用能量进行收敛性测试">使用能量进行收敛性测试</h3>
+
+            <p>在计算一个体系之前，首先是需要对体系进行收敛性测试，以选择合适的参数，从而兼顾效率和精度。通常涉及到的收敛性测试包括截断能和K点，越高的截断能，越精细的K点，计算得到的精度越高，但这会带来更多的计算机时成本。因此，在进行计算前应该想办法找到合适的精度，这一方法就是<strong>收敛性测试</strong>。</p>
+
+            <p>具体来说，所谓收敛性测试，就是通过改变参数做自洽计算，得到体系能量随参数的变化。通常来说，<strong>每原子能量变化在1 meV以下时，表示体系精度收敛</strong>，可以进行后续计算。</p>
+
+            <h4>截断能测试</h4>
+
+            <p>同样还是前面的Si单晶，在实际计算时，我们都是先进行收敛性测试。因此，我们使用最开始的<code>POSCAR</code>。创建若干个截断能测试目录，并将计算任务复制到里面，改变截断能参数（在这里，我们取200、250、300、350、400、450、500、550、600、650、700），分别计算这些任务，并考察能量变化。</p>
+
+            <div class="extend">
+                <p>在创建测试目录时，你当然可以直接创建，但更简单的方法是使用<code>for</code>循环。具体的方法在讲解Linux时的<a href="#subsec:简单for循环-一些for循环使用例">简单for循环-一些for循环使用例</a>一节有详细介绍，这里不赘述。如果你看到这里再回头看那一部分就会发现，当时的例子就是为了解决这一问题。</p>
+            </div>
+
+            <p>计算完之后查看能量随截断能的变化，处理数据如图<a href="#fig:能量计算-截断能收敛性测试">能量计算-截断能收敛性测试</a>所示。可以发现，随着截断能的增大，体系能量逐渐减小（蓝线），但在400 eV之后能量减小得更慢，甚至已经达到了前面所说的收敛标准（每原子能量变化在1 meV以下，见红线），因此，在后续计算时，使用400 eV作为截断能就足够了。</p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlIpo9kunf4NoJLDMpWDdu4RdQ2NgTAACDSIAAliAsFej0FluQoSnhzYE.png" alt="截断能收敛性测试.png" width="50%" />
+
+            <div class="attention">
+                <p>在截断能的选择上，通常有一个理论最小值，也就是你所选择的赝势中<code>ENMAX</code>的最大值。设置的截断能必须比这个数值大才有可能保证准确性。例如，在本例中，如果查看我们使用的Si的赝势，里面有<code>ENMAX = 245.345</code>，表明我们计算时所使用的截断能必须比这个数值大。通常情况下，使用<code>ENMAX</code>的1.3倍到1.5倍是合适的。</p>
+            </div>
+
+            <div class="extend">
+                <p>虽然我们多次说明：在计算时应当指定截断能，但事实上<code>ENCUT</code>本身是有默认值的，这个默认值就是赝势文件中<code>ENMAX</code>的最大值。尽管如此，对于不同的体系可能会有不同的默认值，在计算时为了统一，还是应当设置<code>ENCUT</code>。</p>
+            </div>
+
+            <h4>K点测试</h4>
+
+            <p>关于K点的测试，方法与截断能完全类似，这里只给出最终结果如图所示。可以发现，当K点取<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>9</mn><mo>×</mo><mn>9</mn><mo>×</mo><mn>9</mn></math>时，体系能量收敛。</p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlIto9kwZgqJ6WTBzTTmXw7fH4Ia75QACECIAAliAsFdklzYh-xemczYE.png" alt="K点收敛性测试.png" width="50%"/>
+
+            <div class="attention">
+                <p>上述收敛性测试的例子仅是一个参考，实际情况还需要结合机时与计算时间综合考虑。此外，在这里我们所给出的结果是计算前用来做参数测试的步骤，在后续教程中，我们都不会进行这一步。其中有一些情况是结合经验选择的参数，有些是做过收敛性测试。在实际计算时，应结合实际情况选择参数。</p>
+            </div>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">建议这样做，当然，如果你原意直接在当前目录下继续计算，覆盖原有的<code>POSCAR</code>也没错。</li>
+                </ol>
+            </footer>
+        
+        </div>
+
+        <div id="sec:磁矩计算" class="chapter-content" style="display: none;"> 
+            <h2>磁矩计算</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何计算体系磁矩</li>
+            <li>如何根据能量确定磁基态</li>
+            <li>如何查看磁矩分布</li>
+            <li>绘制自旋密度图</li>
+            </ul>
+
+            <p>这一节，我们将介绍如何计算磁性材料，主要考察它们的磁性，以及磁矩分布等问题。结合前面的能量计算，我们还有可能接触到一点关于铁磁和反铁磁的性质讨论。</p>
+
+            <h3 id="subsec:磁矩计算-计算体系磁矩ISPIN=2">计算体系磁矩<code>ISPIN=2</code></h3>
+
+            <p>下面这个例子，计算了一个单原子Si的磁矩。之所以先计算单原子，是因为单原子的磁矩比较容易分析。首先，我们先构建只有一个Si原子的<code>POSCAR</code></p>
+
+           <pre><code>
+Si
+1.0
+    5.0 0.0 0.0
+    0.0 5.0 0.0
+    0.0 0.0 5.0
+Si    
+1
+Direct
+0.5 0.5 0.5
+        </code></pre>
+
+            <p>接下来构建<code>INCAR</code>文件</p>
+
+            <pre><code>
+ISTART =  1
+ISPIN  =  2
+LREAL  = .FALSE.
+ENCUT  =  600
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+ADDGRID= .TRUE.
+LASPH  = .TRUE.
+PREC   = Accurate
+ISMEAR =  0
+SIGMA  =  0.05
+NELM   =  60
+EDIFF  =  1E-5
+        </code></pre>
+
+            <p>这个参数与<a href="#sec:能量计算">能量计算</a>一节所使用的几乎完全相同，唯一有一个不同的地方是<code>ISPIN</code>设置为2，表示<strong>开启自旋极化</strong>。此外，由于我们是计算单原子（不考虑重复单元），与计算分子类似，使用<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>1</mn><mo>×</mo><mn>1</mn><mo>×</mo><mn>1</mn></math>的<code>KPOINTS</code>。</p>
+
+            <div class="attention">
+                <p>由于是计算单原子，因此也不存在结构优化这回事。毕竟一个原子无论从晶格还是坐标都没有可优化的地方（哪怕分数坐标从0.5变成0.6也没有任何意义）。</p>
+
+                <p>这件事与计算分子不同，分子需要进行坐标优化（涉及到键长），也就是<a href="#sec:对坐标进行优化ISIF=2">对坐标进行优化ISIF=2</a>一节所介绍的例子。</p>
+            </div>
+
+            <p>当计算完成后，我们考察<code>OSZICAR</code>文件，与<code>ISPIN=1</code>不同的地方在于，每一个离子步后面多了一个<code>mag</code>表示体系磁矩。<strong>关注最后一行的<code>mag</code></strong>，其数值就表示体系的磁矩。在本例中，最后一行的<code>OSZICAR</code>如下所示：</p>
+
+            <pre><code>
+1 F= -.44168179E+00 E0= -.42239900E+00  d E =-.385656E-01  mag=     2.0000
+        </code></pre>
+
+            <p>表示体系的磁矩为2.0，单位为玻尔磁子$\mu_\text{B}$，这一结论与Si原子的电子排布结论相同\footnote{正如原子物理或者高中化学所介绍的那样，Si有两个3p孤立电子，从而表现为磁矩为2.0 $\mu_\text{B}$}。但是，如果我们考察一下VASP计算得到的电子占据（无论从<code>EIGENVAL</code>文件读取还是从<code>OUTCAR</code>最后查看不同能量的电子排布），都会发现类似下面的情况（我们这里以<code>OUTCAR</code>为例）：</p>
+
+            <pre><code>
+spin component 1
+
+k-point     1 :       0.0000    0.0000    0.0000
+band No.  band energies     occupation
+    1      -9.4957      1.00000
+    2      -2.2461      0.66667
+    3      -2.2461      0.66667
+    4      -2.2461      0.66667
+    5       0.7529      0.00000
+    6       3.1135      0.00000
+    7       3.1135      0.00000
+（略一部分）
+spin component 2
+
+k-point     1 :       0.0000    0.0000    0.0000
+band No.  band energies     occupation
+    1      -7.7339      1.00000
+    2      -0.4696      0.00000
+    3      -0.4696      0.00000
+    4      -0.4696      0.00000
+    5       1.5279      0.00000
+    6       4.1230      0.00000
+（下略）
+        </code></pre>
+
+            <p>可以看到，对于spin为1的状态，电子占据数出现了0.66667这样的小数，这显然是不合理的。之所以出现这个结果，是因为在计算时出现了“简并”，即出现了三个能量是-2.2461的轨道，且由这三个轨道均分两个电子，从而每个轨道分得0.66667（也就是三分之二）个电子。</p>
+
+            <div class="attention">
+                <p>在这里我们说<strong>spin为1的状态</strong>，并没有特指自旋向上或向下。事实上，自旋方向是人为定义的，你可以说spin为1是自旋向上，也可以说它是自旋向下。</p>
+
+                <p>在本教程中，若无特殊说明，我们默认spin为1表示自旋向上，磁矩为正表示自旋向上。</p>
+            </div>
+
+            <p>之所以产生这个问题，一个原因是<strong>我们所使用的晶格常数对称性太高了</strong>。如果我们想办法减小一点对称性，将<code>POSCAR</code>中的晶格常数改为5.0 5.5 5.9，再次进行计算，结果在保持磁矩为2.0不变的前提下，电子占据也会变得正常：</p>
+
+            <pre><code>
+spin component 1
+
+k-point     1 :       0.0000    0.0000    0.0000
+band No.  band energies     occupation
+    1     -10.0597      1.00000
+    2      -3.3334      1.00000
+    3      -3.1172      1.00000
+    4      -2.6324      0.00000
+    5      -0.0094      0.00000
+    6       2.0529      0.00000
+    7       2.6188      0.00000
+
+（略一部分）
+spin component 2
+
+k-point     1 :       0.0000    0.0000    0.0000
+band No.  band energies     occupation
+    1      -8.5155      1.00000
+    2      -1.9085      0.00000
+    3      -1.3910      0.00000
+    4      -1.0711      0.00000
+    5       0.6883      0.00000
+    6       2.8908      0.00000
+（下略）
+        </code></pre>
+
+            <p>此时自旋向上有3个电子，自旋向下有1个电子，与实际排布情况相同<sup>1</sup>。</p>
+
+            <h3 id="subsec:磁矩计算-使用MAGMOM设置初始磁矩">使用<code>MAGMOM</code>设置初始磁矩</h3>
+
+            <p>下面我们将进一步讨论多原子体系，讨论两个Cr原子组成的体系，其<code>POSCAR</code>如下所示<sup>2</sup>：</p>
+
+            <pre><code>
+Cr2
+1.0
+    2.9688993551160281    0.0000000000000000    0.0000000000000002
+    -0.0000000000000002    2.9688993551160281    0.0000000000000002
+    0.0000000000000000    0.0000000000000000    2.9688993551160281
+Cr
+2
+direct
+    0.0000000000000000    0.0000000000000000    0.0000000000000000 Cr0+
+    0.5000000000000000    0.5000000000000000    0.5000000000000000 Cr0+
+            </code></pre>
+
+            <p>与单原子不同的地方在于，首先需要对体系进行结构优化（使用<code>ISIF=3</code>）。但与<a href="#sec:对晶格常数进行优化ISIF=3">对晶格常数进行优化ISIF=3</a>不同的地方在于，对磁性材料进行结构优化时也应当开启<code>ISPIN=2</code>。</p>
+
+            <div class="attention">
+                <p>自旋极化打开与否是会影响体系结构的，甚至不同的磁性都有可能产生不同的结构。</p>
+            </div>
+
+            <p>完成后进行静态自洽计算，与前面的讨论接近，使用如下的<code>INCAR</code>：</p>
+
+            <pre><code>
+ISTART =  1
+ISPIN  =  2
+LREAL  = .FALSE.
+ENCUT  =  450
+LWAVE  = .FALSE.
+LCHARG = .FALSE.
+ADDGRID= .TRUE.
+LASPH  = .TRUE.
+PREC   = Accurate
+ISMEAR =  0
+SIGMA  =  0.05
+LORBIT =  11
+NELM   =  60
+EDIFF  =  1E-5
+        </code></pre>
+
+            <p>有一点不同的地方，在于设置了<code>LORBIT</code>参数。当<code>LORBIT=10</code>时表示将轨道投影到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>s</mi><mo>,</mo><mi>p</mi><mo>,</mo><mi>d</mi></math>，而<code>LORBIT=11</code>则可以进一步将轨道投影至如<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>p</mi><mi>x</mi></msub><mo>,</mo><msub><mi>p</mi><mi>y</mi></msub><mo>,</mo><msub><mi>p</mi><mi>z</mi></msub></math>等。在本例中，使用<code>LORBIT=10</code>或<code>LORBIT=11</code>均不影响结果。</p>
+
+            <p>计算完成后，查看<code>OSZICAR</code>，发现体系磁矩为0，表示体系没有磁性。当设置<code>LORBIT</code>之后，我们可以通过<code>OUTCAR</code>查看每个原子的磁矩。在接近最后的位置，可以有如下输出内容：</p>
+
+            <pre><code>
+magnetization (x)
+
+# of ion       s       p       d       tot
+------------------------------------------
+    1        0.000  -0.000  -0.000  -0.000
+    2        0.000  -0.000  -0.000  -0.000
+--------------------------------------------------
+tot          0.000  -0.000  -0.000  -0.000
+        </code></pre>
+
+            <p>其中原子编号是按照<code>POSCAR</code>顺序，里面的<code>tot</code>一列表示原子的总磁矩（沿<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>轴方向），可以发现，每个原子的磁矩都为0.</p>
+
+            <div class="extend">
+                <p>我们这里所说是沿着<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>轴方向的磁矩，但实际计算时当然可以指定具体方向，具体来说，这个过程涉及到非共线计算（<code>LNONCOLLINEAR</code>设置为<code>.TRUE.</code>，同时设置<code>LSORBIT</code>为<code>.TRUE.</code>开启自旋轨道耦合（Spin-orbit coupling, SOC），并在<code>SAXIS</code>里设置量化轴方向。</p>
+
+                <p>此外，在计算SOC时，还应当使用非共线版本的vasp（目前默认使用的都是vasp_std），需要将“std”改为“ncl”。</p>
+            </div>
+
+            <p>但是，事实真的如此吗？如果是从Materials Project下载的数据，可以看一下上面对磁性的描述，是<strong>Antiferromagnetic</strong>，也就是<strong>反铁磁</strong>。所谓“反铁磁”，指的是“在没有外部磁场的情况下，材料内部相邻原子的磁矩相互抵消，形成反平行排列的状态。这种排列使得材料在宏观上不表现出磁性，即净磁矩为零”。但是，我们如何想办法得到这个反铁磁态呢？就需要在计算时设置<code>MAGMOM</code>参数给定初始磁矩。</p>
+
+            <p>在这里，我们假定每个原子的磁矩是6，这是我们已知的原子磁矩。在原先的<code>INCAR</code>中添加<code>MAGMOM = 9 9</code>表示<strong>设置第一个原子的磁矩为9，第二个原子的磁矩为9</strong>。</p>
+
+            <p>在设置<code>MAGMOM</code>时，你可以像这里这样直接给出每个原子的磁矩（按照<code>POSCAR</code>顺序），如果原子数较多，也可以使用<code>*</code>批量设置，其格式为<code>[number]*[mag]</code>，其<strong>符号前后没有空格</strong>，但每一组之间用空格分隔。例如，<code>MAGMOM=16*0 1*2</code>表示前十六个原子磁矩为0，后一个原子磁矩为2.</p>
+
+            <div class="attention">
+                <p>在这里我们设置的磁矩是初始磁矩，VASP会有方法将其收敛到合适的值。通常来说，我们要给的初始值应当比真实值大，在这里我们设置为9，当然设置为其他数值也是可以的。但不同的初始值可能会计算到不同的磁矩。</p>
+
+                <p>此外，正如前面所说的那样，不同的磁矩会影响不同的结构，因此在设置<code>MAGMOM</code>时需要从结构优化开始。</p>
+            </div>
+
+            <p>无论你是怎样设置的磁矩，在计算后得到的磁矩与上面的<code>OUTCAR</code>接近。查看体系的能量，发现约为-19.03 eV。如果我们尝试设置为反铁磁态（即两个原子的磁矩相反），例如，设置<code>MAGMOM=-9 9</code>，重复上面的结构优化与自洽计算，会发现能量为-19.06 eV，比前面的能量更低。这一结论表明<strong>后面的状态为更稳定的基态</strong>（有时也管这种状态叫<strong>磁基态</strong>）。当我们进一步考察其<code>OUTCAR</code>时，可以发现结果为：</p>
+
+            <pre><code>
+magnetization (x)
+
+# of ion       s       p       d       tot
+------------------------------------------
+    1       -0.014  -0.008  -1.078  -1.100
+    2        0.014   0.008   1.078   1.100
+--------------------------------------------------
+tot          0.000   0.000   0.000   0.000 
+        </code></pre>
+
+            <p>其中<strong>第一个原子和第二个原子磁矩大小相同，方向相反，总磁矩表现为0</strong>（在<code>OSZICAR</code>中可以查看），这种状态就是<strong>反铁磁</strong>。</p>
+
+            <div class="attention">
+                <p>我们在这里只讨论<code>MAGMOM=9 9</code>和<code>MAGMOM=-9 9</code>的情况，对于另外两种情况（-9 -9和9 -9），其本质与前面两种相同。正如前面所说的，自旋方向是相对的，两个都自旋向上，与两个都自旋向下，结果是一样的。</p>
+            </div>
+
+            <div class="extend">
+                <p>我们在这里介绍了<code>MAGMOM</code>的两种设置方法，除此之外还有第三种，即设置原子沿每个轴的磁矩。这一设置需要使用前面所介绍的“非共线计算”（<code>LNONCOLLINEAR=.TRUE.</code>）。这里暂不介绍，如有需要，可查看VASP对<code>MAGMOM</code>的介绍<sup>3</sup>。</p>
+            </div>
+
+            <h3 id="subsec:磁矩计算-自旋密度图可视化">自旋密度图可视化</h3>
+
+            <p>在前面的计算中，我们已经找到了Cr的磁矩分布，但在论文中，有时为了强调磁矩的分布情况（如具体是哪个原子提供磁矩，磁矩方向如何等），我们会考虑绘制<strong>自旋密度图</strong>。具体的计算方法与上面所讨论的类似，但唯一需要修改的一个参数是<code>LCHARG=.TRUE.</code>生成<code>CHGCAR</code>文件。具体来说，下面是一个完整的自洽计算的<code>INCAR</code>例子：</p>
+
+            <pre><code>
+ISTART =  1
+ISPIN  =  2
+MAGMOM =  -9 9
+LREAL  = .FALSE.
+ENCUT  =  450
+LWAVE  = .FALSE.
+LCHARG = .TRUE.
+ADDGRID= .TRUE.
+LASPH  = .TRUE.
+PREC   = Accurate
+ISMEAR =  0
+SIGMA  =  0.05
+LORBIT =  11
+NELM   =  60
+EDIFF  =  1E-5
+        </code></pre>
+
+            <p>具体的绘制方法，使用<code>vaspkit-312</code>的“Spin Density”功能处理，之后生成<code>SPIN.vasp</code>文件，将其拖动到可视化软件<code>VESTA</code>当中，稍微调整一下等值面（在“Properties”-“Isosurfaces”当中），这里设置为0.01，如图所示：</p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlJto9k9IX1psYXTJrwOU7p0UjjPmJgACLyIAAliAsFc2myHE4BNAATYE.png" alt="Cr自旋密度图.png" width="50%"/>
+
+            <p>可以发现，中间的原子与角上的原子自旋方向不同，与我们的结论一致。</p>
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">我们这里讨论的是价电子，具体的电子排布式写作[Ne]3s<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi></mi><mn>2</mn></msup></math>3p<math xmlns="http://www.w3.org/1998/Math/MathML"><msup><mi></mi><mn>2</mn></msup></math></li>
+                <li id="ftnt2">你可以在Materials Project里下载这个结构：<a href=https://next-gen.materialsproject.org/materials/mp-90>https://next-gen.materialsproject.org/materials/mp-90</a></li>
+                <li><a href="https://vasp.at/wiki/MAGMOM">https://vasp.at/wiki/MAGMOM</a></li>
+                </ol>
+            </footer>
+        
+        </div>
+
+        <div id="sec:电荷密度与差分电荷密度" class="chapter-content" style="display: none;"> 
+            <h2>电荷密度与差分电荷密度</h2>
+            <p><strong>作者：</strong> Jiaqi Z.</p>
+
+            <h3>知识点</h3>
+            <ul>
+            <li>如何绘制电荷密度图</li>
+            <li>如何绘制差分电荷密度图</li>
+            </ul>
+
+            <p>这一节的内容并不难，但却是很多文献里都会放的一部分。在本节，我们将介绍如何绘制差分电荷密度图，很多文献都会通过这张图判断两个原子之间的成键性质，以及电荷转移情况。</p>
+
+            <h3 id="subsec:电荷密度与差分电荷密度-使用LCHARG绘制电荷密度">使用<code>LCHARG</code>绘制电荷密度</h3>
+
+            <p>本节我们要讨论的例子是NaCl这一典型材料，正如你在中学或大学了解到的那样，NaCl是离子晶体，其成键性质表现为Na失电子而Cl得电子。首先，我们需要构建出它的结构<sup>1</sup>：</p>
+
+            <pre><code>
+Na4 Cl4
+1.0
+    5.5881264354399347    0.0000000000000000    0.0000000000000003
+    -0.0000000000000003    5.5881264354399347    0.0000000000000003
+    0.0000000000000000    0.0000000000000000    5.5881264354399347
+Na Cl
+4 4
+direct
+    0.00  0.00  0.00 Na+
+    0.00  0.50  0.50 Na+
+    0.50  0.00  0.50 Na+
+    0.50  0.50  0.00 Na+
+    0.00  0.00  0.50 Cl-
+    0.00  0.50  0.00 Cl-
+    0.50  0.00  0.00 Cl-
+    0.50  0.50  0.50 Cl-
+            </code></pre>
+
+            <p>首先进行考虑晶格常数的优化。完成后进行自洽计算，使用的<code>INCAR</code>如下所示：</p>
+
+            <pre><code>
+ISTART =  1
+ISPIN  =  1
+LREAL  = .FALSE.
+ENCUT  =  350
+PREC   =  Accurate
+LWAVE  = .FALSE.
+LCHARG = .TRUE.
+ADDGRID= .TRUE.
+ISMEAR =  0
+SIGMA  =  0.05
+NELM   =  60
+EDIFF  =  1E-5
+        </code></pre>
+
+            <p>与前面的自洽计算相比，要注意<code>LCHARG</code>参数需要设置为<code>.TRUE.</code>表示<strong>输出<code>CHGCAR</code>文件</strong>。计算完成后会得到<code>CHGCAR</code>文件。将其下载并在VESTA中打开，调整等值面大小（例如设置为0.05）并修改颜色，得到的电荷密度图如图所示。可以发现，对NaCl而言，电子主要集中在Cl原子附近，这与我们前面对NaCl的认识一致。</p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlKZo9lHECrxwuFAFHSWbWq6LmW8VbwACRSIAAliAsFeNf5dBhOEyYjYE.png" alt="NaCl电荷密度.png" width="50%"/>
+
+            <p>从数据的可视化角度出发，当然也可以使用二维数据，如图所示，其结论与上面一致。只是从可视化角度可能更直观一点。</p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlKdo9lH832j_JSHaZHZqtvm42ifkYwACSCIAAliAsFclTBrv9jzA_DYE.png" alt="二维NaCl电荷密度.png" width="50%"/>
+
+            <h3 id="subsec:电荷密度与差分电荷密度-绘制差分电荷密度图">绘制差分电荷密度图</h3>
+
+            <p>下面我们要绘制差分电荷密度图，在绘制之前，我们首先需要明确；<strong>什么是差分电荷密度</strong>。如果一个体系由两部分A和B组成，其总电荷分布为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ρ</mi></math>，当仅存在A体系时的电荷分布为<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>ρ</mi><mi>A</mi></msub></math>，类似地仅存在B体系时地电荷分布为<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>ρ</mi><mi>B</mi></msub></math>。则差分电荷密度定义为</p>
+
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi mathvariant="normal">Δ</mi><mi>ρ</mi><mo>=</mo><mi>ρ</mi><mo>−</mo><msub><mi>ρ</mi><mi>A</mi></msub><mo>−</mo><msub><mi>ρ</mi><mi>B</mi></msub></math>
+
+            <p>可以发现，<strong>当某个地方的电荷数增多时，差分电荷为正，反之，当电荷减少时，差分电荷为负</strong>。也可以发现，在计算差分电荷密度之前，我们首先需要有三个体系的电荷密度（AB体系、A体系、B体系）。每一个体系的差分电荷计算都如上面所介绍的方法一样。采用类似的方法，得到三个体系的电荷密度。</p>
+
+            <div class="attention">
+                <p>在计算不同体系的电荷密度时，不需要进行结构优化，而直接在AB体系中删去另一个体系的原子即可。</p>
+
+                <p>此外，在计算时应当保持参数一样，尤其是k点密度。</p>
+            </div>
+
+            <p>在本例中，A、B体系分别是Na原子和Cl原子组成的体系，计算得到电荷密度后可以直接使用<code>vaspkit-314</code>“Charge-Density Difference”功能，分别输入AB体系、A体系和B体系的<code>CHGCAR</code>文件（使用相对路径<sup>2</sup>），会得到<code>CHGDIFF.vasp</code>文件，将其用VESTA打开，调整可视化选项，即可得到差分电荷密度图如图所示。可以发现，在Cl原子附近电荷增多，表现为得电子。</p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlKlo9lH8nLlx4Xp285khlaCe9CieYgACSiIAAliAsFfNvttqAphfoTYE.png" alt="NaCl差分电荷密度.png" width="50%"/>
+
+            <p>与电荷密度类似，这里也可以绘制二维甚至一维差分电荷密度图（也可以叫<strong>平面平均差分电荷密度图</strong>）。</p>
+
+            <h4>*如何绘制平面平均差分电荷密度图</h4>
+
+            <p><strong>平面平均差分电荷密度图</strong>，指的是对某一平面内的差分电荷密度做平均计算，并绘制沿另一个方向（通常是<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>轴）的变化曲线。例如，在二维材料里（比如异质结），通过这种方法可以看出不同材料之间在界面处的电荷转移情况（如图所示<sup>3</sup>）。</p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlKho9lH8WXFROB4uXAy1I1Kg4ICOrwACSSIAAliAsFdSoDmzx25zITYE.png" alt="平面平均差分电荷密度图.png" width="50%"/>
+
+            <div class="attention">
+                <p>一般来说，平面平均差分电荷密度图用于二维材料相互作用，且绘制方向通常沿着真空层方向。在本例中，我们尽管可以绘制某种平面平均差分电荷密度图，但没有什么明显结论，仅作为步骤演示，不展示结果。</p>
+            </div>
+
+            <p>在绘制的时候，首先需要在当前计算差分电荷密度的目录（即有<code>CHGDIFF.vasp</code>文件的目录），使用<code>vaspkit-316</code>“1D Planar-Average Charge Density”功能，选择<code>3-Specified Charge Density File</code>并输入<code>CHGDIFF.vasp</code>（差分电荷密度文件），完成后会生成<code>PLANER_AVERAGE.dat</code>文件，将其放入origin作图即可。</p>
+
+            
+
+            <footer>
+                <p>注解：</p>
+                <ol>
+                <li id="ftnt1">Materials Project链接：<a href="https://next-gen.materialsproject.org/materials/mp-22862">https://next-gen.materialsproject.org/materials/mp-22862</a></li>
+                <li>也许你已经忘记相对路径是什么了，可以回到Linux部分的<a href="#subsec:认识Linux目录-绝对路径和相对路径">认识Linux目录-绝对路径和相对路径</a>一节。</li>
+                <li>参考文献：Xia, C. et al. J. Mater. Chem. A 5, 13400–13410 (2017). <a href="https://doi.org/10.1039/C7TA02109G">https://doi.org/10.1039/C7TA02109G</a><a class="easyScholarDOI" target="_blank" href="https://www.sci-hub.vg/10.1039/C7TA02109G"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0" href="data:image/png;base64,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"></image></svg></a></li>
+                </ol>
+            </footer>
+        
+        </div>
 
 
     </div>
