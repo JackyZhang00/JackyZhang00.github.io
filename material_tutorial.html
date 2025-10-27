@@ -4229,6 +4229,16 @@ Direct
 
             <p>其中，氧原子的键长变为1.2385 Å，与之前所优化得到的键长（1.23828 Å）接近。同时需要特别注意的是：优化后第一个原子<strong>仍然在原点位置</strong>，而第二个原子<strong>仅<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>z</mi></math>坐标发生变化</strong>，从而实现了<strong>固定某些原子坐标</strong>的目的。</p>
 
+            <h4>如何使用vaspkit快速固定特定原子的特定坐标</h4>
+
+            <p>在<code>vaspkit</code>中，可以使用402-“Fix Selected Atoms”来固定特定的原子坐标。具体来说，在使用402后，选择1或2分别表示对<code>POSCAR</code>或<code>CONTCAR</code>进行操作（也可以使用<code>3</code>指定具体的文件，但这通常用不上。你总不能真有个文件叫<code>YUKINACAR</code>吧）</p>
+
+            <p>假设我们对<code>POSCAR</code>里面的特定原子进行固定，在选择文件后会让选择<strong>要怎样选择固定原子</strong>。通常来说使用<code>1</code>即可（即按照<code>POSCAR</code>里的原子编号固定）。例如，我们选择固定前12个原子，则在这里选择<code>1-12</code>。如果是固定第1个和第3个原子，则写作<code>1 3</code>，<strong>中间用空格分隔</strong>。</p>
+
+            <p>之后，会让选择固定坐标，其中1-3分别表示<strong>固定x，y，z坐标</strong>，可以多选（使用空格分隔）。特别地，如果你希望固定所有坐标，则直接输入<code>all</code>也行。完成后会生成一个以<code>_FIX.vasp</code>结尾的文件（如果是使用<code>POSCAR</code>生成的，则会生成<code>POSCAR_FIX.vasp</code>文件），将其复制为你要处理的文件即可（无论是改成<code>POSCAR</code>或者下载到本地使用VESTA打开都可以）</p>
+
+            <p>当固定坐标优化完成后，可能会需要释放约束让其进一步优化，则直接使用<code>sed</code>命令把<code>F</code>修改为<code>T</code>即可。关于<code>sed</code>命令如何使用，在Linux部分的“高级Linux命令-<code>sed</code>文本替换”里有详细介绍，这里就不说了。</p>
+
         </div>
 
         <div id="sec:一些结构优化的策略与加速方法" class="chapter-content" style="display: none;">
