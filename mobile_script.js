@@ -44,7 +44,13 @@ window.onload = function() {
         document.querySelector('.sidebar').style.display = 'none';
         document.querySelector('.mobile-nav').selectedIndex = 0;
     } else {
-        //showContent('');
+        const visibleSection = document.querySelector('.section[style*="display: block"]');
+        const visibleChapter = document.querySelector('.chapter-content[style*="display: block"]');
+
+        // 如果都没有可见的，就加载默认页面
+        if (!visibleSection && !visibleChapter) {
+            // showSection('home'); // 或 showContent('chapter1')
+        }
     }
 };
 
