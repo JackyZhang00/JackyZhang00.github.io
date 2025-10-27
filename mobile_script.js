@@ -44,7 +44,7 @@ window.onload = function() {
         document.querySelector('.sidebar').style.display = 'none';
         document.querySelector('.mobile-nav').selectedIndex = 0;
     } else {
-        showContent('');
+        //showContent('');
     }
 };
 
