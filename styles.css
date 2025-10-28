@@ -42,6 +42,7 @@ code {
     height: 100%;
     background-color: #DDDDFF90;
     overflow: auto;
+    font-size: 20px;
 }
 
 .section {
@@ -54,12 +55,14 @@ code {
     padding: 10px;
     border: none;
     cursor: pointer;
+    font-size: 20px;
 }
 
 .chapters {
     background-color: #DDDDFF90;
     display: none;
     padding: 0;
+    font-size: 20px;
 }
 
 .chapter {
@@ -89,6 +92,7 @@ code {
 .content {
     margin-left: 12%;
     padding: 20px;
+    font-size: 20px;
 }
 
 .chapter-content {
