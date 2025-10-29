@@ -68,7 +68,8 @@
     <select class="mobile-nav" onchange="showContentMobile(this.value)">
         <option value="">导航菜单</option>
         <option value="2024-12-23-1">【置顶】关于杂谈的内容</option>
-        <option value="2025-10-27-1">【NEW!!!!!】【材料计算】如何结合CP2K+Multiwfn做ELF拓扑分析</option>
+        <option value="2025-10-29">【NEW!!!!!】【材料计算】如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></option>
+        <option value="2025-10-27-1">【材料计算】如何结合CP2K+Multiwfn做ELF拓扑分析</option>
         <option value="2025-10-27-2">【BanG Dream!】祝Roselia主唱凑友希那生日快乐！！</option>
         <option value="2025-10-20">【BanG Dream!】志崎桦音照片（2）</option>
         <optiom value="2025-9-10">【材料计算】服务器终端程序MobaXterm安装包</li>
@@ -94,7 +95,8 @@
             <button class="toggle" onclick="toggleChapters('contents')">全部内容</button>
             <div class="chapters" id="contentsChapters" style="display: none;">
                 <li onclick="showContent('2024-12-23-1')">【置顶】关于杂谈的内容</li>
-                <li onclick="showContent('2025-10-27-1')">【NEW!!!!!】如何结合CP2K+Multiwfn做ELF拓扑分析</li>
+                <li onclick="showContent('2025-10-29')">【NEW!!!!!】如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></li>
+                <li onclick="showContent('2025-10-27-1')">如何结合CP2K+Multiwfn做ELF拓扑分析</li>
                 <li onclick="showContent('2025-10-27-2')"><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></li>
                 <li onclick="showContent('2025-10-20')">志崎桦音照片（2）</li>
                 <li onclick="showContent('2025-9-10')">服务器终端程序MobaXterm安装包</li>
@@ -117,7 +119,8 @@
                     <h3>材料计算</h3>
                     <ul id="materialsSubChapters" style="display: none;">
                         <!-- 材料计算杂谈 -->
-                        <li onclick="showContent('2025-10-27-1')">【NEW!!!!!】如何结合CP2K+Multiwfn做ELF拓扑分析</li>
+                        <li onclick="showContent('2025-10-29')">【NEW!!!!!】如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></li>
+                        <li onclick="showContent('2025-10-27-1')">如何结合CP2K+Multiwfn做ELF拓扑分析</li>
                         <li onclick="showContent('2025-9-10')">服务器终端程序MobaXterm安装包</li>
                         <li onclick="showContent('2025-7-2')">使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</li>
                         <li onclick="showContent('2025-4-9')">使用lobster进行COHP分析</li>
@@ -171,6 +174,44 @@
         </div>
     </div>
     <div class="content">
+        <div id="2025-10-29" class="chapter-content" style="display: none;"> 
+            <h2>如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></h2>
+            <p>时间：2025-10-29  作者：Jiaqi Z.</p>
+            <p>分类：小教程-材料计算</p>
+            <hr>
+            <p>在使用VASP计算过程中，如果你设置<code>LWAVE=.TRUE.</code>的话，在计算结果中会生成一个<code>WAVECAR</code>文件。一方面来说，生成WAVECAR可以生成一个初始波函数，方便后续计算收敛。但在大多数情况下，这一过程是没有必要的（可能在之前的VASP计算教程里明确提及这一点的地方，也仅仅是在计算HSE能带时用到了）。因此，很多时候我们都会默认设置<code>INCAR</code>里面的参数<code>LWAVE=.FALSE.</code>。</p>
+            <p>而事实上，总会有一些人（当然也包括我。。）在写输入文件时忘记这一点，而生成了非常非常大的<code>WAVECAR</code>文件，如果提前意识到，直接使用<code>rm</code>命令删掉当然可以。但如果忘记了呢？你会继续下去一直计算，而这时候大概率你也不会想起来要删除它。计算目录越来越多……计算文件越来越大……而这时候，当你下载目录到本地时……你会意识到<code>WAVECAR</code>（也可能会有<code>CHGCAR</code>）浪费了你大多数的时间</p>
+            <p>更严重的情况，如果你长时间不删除这些文件的话，服务器硬盘总是会满的……往小了说，对于超算来说存储空间也是花钱买来的；往大了说，如果是用自己课题组的服务器，硬盘满了，自己和别人都算不了了（无法写入文件）……</p>
+            <p>这时，你可能会想删除掉所有的<code>WAVECAR</code>。但是，一个一个删太慢，有没有一次性的方法删除？</p>
+            <h3>什么是<code>find</code>命令？</h3>
+            <p>在Linux当中，<code>find</code>命令可以用来在指定目录下查找文件和目录。一个基本的格式是<code>find [路径] [条件] [动作]</code>。</p>
+            <p>其中，<strong>路径</strong>表示你要查找的目录路径，例如，在当前目录下查找，可以使用<code>find . [条件] [动作]</code>表示（事实上，直接执行也表示当前目录）</p>
+            <p><strong>条件</strong>可以用来指定要查找的文件，有好几种可以使用的选项，我们下面列举几个可能会用到的：</p>
+            <ul>
+            <li><code>-name</code>表示<strong>要查找的文件名</strong>，可以使用通配符，例如<code>find . -name roselia</code>表示在当前目录下寻找<strong>名字叫做<code>roselia</code></strong>的文件。<code>find . -name *.txt</code>表示在当前目录下寻找后缀名为<code>.txt</code>的所有文件。如果希望查找多个文件，可以使用<code>-o</code>分隔（表示或），例如，<code>find . -name yukina -o -name rinrin</code>表示在当前目录下查找<strong>文件名为<code>yukina</code>或<code>rinrin</code>的文件</strong>（等价于查找两个文件）</li>
+            </ul>
+            <p>（不要问我怎么查找同时满足名字为<code>yukina</code>和<code>rinrin</code>的文件…… 除非你的文件是类似薛定谔的猫那样的状态……）</p>
+            <ul>
+            <li><code>type</code>表示<strong>文件类型</strong>，包括<code>f</code><strong>普通文件</strong>，<code>d</code><strong>目录</strong>等</li>
+            </ul>
+            <p>在目前的使用场景下，这些已经足够大多数情况了，如果还需要其他的参数（如<code>-size</code>, <code>-user</code>等），可以去网上查找相关资料。另外，上面两个参数可以混合使用，例如<code>find ./roselia -name nonchan -type f</code>表示在<strong>当前目录下的<code>roselia</code>子目录下</strong>查找<strong>名字叫<code>nonchan</code><strong>的</strong>文件</strong></p>
+            <h3>一个现在你就可以用的场景——查找任务目录</h3>
+            <p>如果你在计算时有记录的习惯，可能会记录任务的队列号（在提交任务时，通常队列系统会在当前目录下生成一个含有队列号的文件，表示队列系统的输出信息，以<code>slurm</code>系统为例，可能会生成<code>slurm-[JOBID].out</code>文件）借助这个文件，我们就可以<strong>通过队列号查找到计算的目录</strong>，从而方便我们快速进入到对应目录而不用一次次<code>cd</code>了。</p>
+            <p>方法很简单，使用<code>find ~ -name slurm-[JOBID].out</code>即可输出文件所在的目录。把<code>[JOBID]</code>替换为你的队列号。例如，队列号为<code>1441</code>，则将其替换为<code>slurm-1441.out</code>（或者你也可以简单使用<code>*-1441.out</code>，但前提是没有其他类似的文件）。上述命令表示<strong>在家目录下寻找任务号为<code>[JOBID]</code>的输出文件</strong>。关于为什么是在家目录下寻找——你不可能每次查找的文件都在当前目录向下可以找到。</p>
+            <h3>关于<code>find</code>命令的<strong>动作</strong>参数</h3>
+            <p>当执行动作时，通常前面需要有一个选项<code>-exec</code>表示<strong>执行命令</strong>，在选项后面为要执行的命令，你可以使用<code>{ }</code>表示<strong>查找到的文件</strong>（占位符），使用<code>\;</code>表示命令结束。</p>
+            <p>在这个基础上，我们就可以解决最开始的问题了：<strong>如何删除当前目录中所有的<code>WAVECAR</code>文件</strong>？</p>
+            <p><font color="red"><strong>（如果你想直接知道最开始的结果，可以看这里了！！但我强烈建议看明白前面，不然你很可能一会儿就忘了）</strong></font></p>
+            <p>执行下面的命令：<code>find . -name WAVECAR -type f -exec rm {} \;</code>，具体原理结合上面的说明，应该很容易理解。类似的，如果希望删除<code>CHGCAR</code>和<code>CHG</code>文件，则可以使用<code>find . -name CHG* -type f -exec rm {} \;</code>（使用了通配符<code>*</code>表示<code>CHG</code>和<code>CHGCAR</code>文件）</p>
+            <p><strong>务必注意：<code>\;</code>前面要有空格！！</strong></p>
+            <hr>
+            <p><em><strong>前方小高能！！</strong>下面的内容作为补充，有点难，可以尝试理解一下</em></p>
+            <p>那如何同时删除<code>WAVECAR</code>和<code>CHGCAR</code>呢？借助<code>-o</code>命令，使用下面的命令：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">find . \( -name WAVECAR -o -name CHGCAR \) -type f -exec rm {} \;
+            </span></code></pre>
+            <p>这里面使用<code>\( \)</code>作为括号<strong>提高优先级</strong>，也就是<code>\( A -o B \) C</code>表示 <strong>(A或B)且C</strong>，按照布尔运算规则也就是<strong>A或C且B或C</strong>。但如果没有这个括号的话，就会识别为<strong>A或(B且C)</strong>。</p>
+        </div>
+
         <div id="2025-10-27-2" class="chapter-content" style="display: none;">
             <h2><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></h2>
             <p>时间：2025-10-26</p>
