@@ -55,10 +55,10 @@
         height:auto;
         position:static;
         display:block;
-        font-size: 200%;
+        font-size: 30px;
       }
-      .sidebar li li{font-size:150%;}
-      .content{margin-left:0;padding:10px;font-size: 150%;}
+      .sidebar li li{font-size:20px;}
+      .content{margin-left:0;padding:10px;font-size: 30px;}
       /* .mobile-nav{display:block;} */
       body{
         background-image:url('background_mobile.png');
@@ -68,13 +68,13 @@
         background-blend-mode:multiply;
       }
       .content code {
-        font-size: 150%;
+        font-size: 35px;
       }
     }
 
     /* 分页按钮区域 */
     .content .stats {
-      font-size: 100%;
+      font-size: 30px;
     }
     .pagination{
       display:flex;
@@ -92,7 +92,7 @@
       cursor:pointer;
       transition:all .3s;
       min-width:40px;
-      font-size: 100%;
+      font-size: 30px;
     }
     .pagination button:hover:not(:disabled){
       background:#3344AA;
