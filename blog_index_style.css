@@ -67,6 +67,9 @@
         background-size:cover;
         background-blend-mode:multiply;
       }
+      .content code {
+        font-size: 150%;
+      }
     }
 
     /* 分页按钮区域 */
