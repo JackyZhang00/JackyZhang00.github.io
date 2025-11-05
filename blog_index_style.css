@@ -55,8 +55,10 @@
         height:auto;
         position:static;
         display:block;
+        font-size: 200%;
       }
-      .content{margin-left:0;padding:10px;}
+      .sidebar li li{font-size:150%;}
+      .content{margin-left:0;padding:10px;font-size: 150%;}
       /* .mobile-nav{display:block;} */
       body{
         background-image:url('background_mobile.png');
@@ -68,6 +70,9 @@
     }
 
     /* 分页按钮区域 */
+    .content .stats {
+      font-size: 100%;
+    }
     .pagination{
       display:flex;
       justify-content:center;
@@ -84,6 +89,7 @@
       cursor:pointer;
       transition:all .3s;
       min-width:40px;
+      font-size: 100%;
     }
     .pagination button:hover:not(:disabled){
       background:#3344AA;
