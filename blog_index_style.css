@@ -48,7 +48,7 @@
 
     /* 移动端导航 */
     .mobile-nav{display:none;width:100%;padding:12px;background:#3344AA;color:white;border:none;font-size:16px;}
-    @media (max-width:768px){
+    @media (orientation: portrait){
       .sidebar{
         background-color: #DDDDFF00;
         width:100%;
