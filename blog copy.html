@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小七の杂谈</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="mobile_script.js" defer></script>
+    <style>
+        body {
+          background-image: url('background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        /* background-color: #DDDDFFAA; */
+        }
+        nav {
+            background-color: #DDDDFF00;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 10%;
+            height: 100%;
+            background-color: #DDDDFFF0;
+            overflow: auto;
+            font-size: 20px;
+        }
+        /* .content {
+            background: #ffffff50;
+        } */
+        .content h3 {
+            color: #3344AA;
+        }
+        .articles {
+            margin-left: 12%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">返回主页</a>
+    </nav>
+    <marquee bgcolor="#DDDDFFEE" scrollamount="10"><font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</font></marquee>
+    <select class="mobile-nav" onchange="showContentMobile(this.value)">
+        <option value="">导航菜单</option>
+        <option value="2024-12-23-1">【置顶】关于杂谈的内容</option>
+        <option value="2025-10-29">【NEW!!!!!】【材料计算】如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></option>
+        <option value="2025-10-27-1">【材料计算】如何结合CP2K+Multiwfn做ELF拓扑分析</option>
+        <option value="2025-10-27-2">【BanG Dream!】祝Roselia主唱凑友希那生日快乐！！</option>
+        <option value="2025-10-20">【BanG Dream!】志崎桦音照片（2）</option>
+        <optiom value="2025-9-10">【材料计算】服务器终端程序MobaXterm安装包</li>
+        <option value="2025-7-26">【BanG Dream!】non酱の照片1</option>
+        <option value="2025-7-2">【材料计算】使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</option>
+        <option value="2025-6-16">【BanG Dream!】Roselia Live 「Sei stark」返图</option>
+        <option value="2025-4-9">【材料计算】使用lobster进行COHP分析</option>
+        <option value="2025-3-12">【桌游】日麻系列教程1：日麻役种常见一览</option>
+        <option value="2025-2-20">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</option>
+        <option value="2025-2-16">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</option>
+        <option value="2025-1-31-1">【科普】【快报】从刘谦魔术看排列组合与冒泡算法</option>
+        <option value="2025-1-13-1">【机器学习与人工智能】如何从零开始进行程序设计</option>
+        <option value="2025-1-8-1">【小教程】双曲型、抛物型和椭圆型偏微分方程的区别</option>
+        <option value="2024-12-25">【材料计算】Linux当中<code>for</code>与VASPKIT“联动”</option>
+        <option value="2024-12-23-2">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</option>
+    </select>
+    <!-- <nav>
+        <a href="index.html">返回主页</a>
+    </nav> -->
+    <h1 align="center">小七の杂谈</h1>
+    <div class="sidebar">
+        <h2>分类</h2>
+        <ul>
+            <li>小教程
+            <ul>
+                <li>材料计算</li>
+                <li>机器学习</li>
+            </ul></li>
+            <li>科普</li>
+            <li>BanG Dream!</li>
+            <li>桌游</li>
+            <li>音乐</li>
+            <li>游戏</li>
+            <li>杂谈</li>
+        </ul>
+    </div>
+    <div id="articles">
+        <div class="stats" id="stats"></div>
+        <div class="article">
+          <h3>【置顶】关于杂谈的内容</h3>
+          <p>创建时间：2024-12-23<br>分类：杂谈</p>
+        </div>
+        <div class="article">
+          <h3>如何使用 <code>find</code> 查找文件并删除 <code>WAVECAR</code></h3>
+          <p>创建时间：2025-10-29<br>分类：材料计算</p>
+        </div>
+        <div class="article">
+          <h3>如何结合CP2K+Multiwfn做ELF拓扑分析</h3>
+          <p>创建时间：2025-10-27<br>分类：材料计算</p>
+        </div>
+        <div class="article">
+          <h3><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></h3>
+          <p>创建时间：2025-10-26<br>分类：BanG Dream!</p>
+        </div>
+        <div class="article">
+          <h3>志崎桦音照片（2）</h3>
+          <p>创建时间：2025-10-20<br>分类：BanG Dream!</p>
+        </div>
+        <div class="article">
+          <h3>服务器终端程序MobaXterm安装包</h3>
+          <p>创建时间：2025-09-10<br>分类：材料计算</p>
+        </div>
+        <div class="article">
+          <h3>non酱の照片1</h3>
+          <p>创建时间：2025-07-26<br>分类：BanG Dream!</p>
+        </div>
+        <div class="article">
+          <h3>VASP计算技巧总结</h3>
+          <p>创建时间：2025-06-15<br>分类：材料计算</p>
+        </div>
+        <div class="article">
+          <h3>BanG Dream!演唱会回顾</h3>
+          <p>创建时间：2025-05-20<br>分类：BanG Dream!</p>
+        </div>
+        <div class="article">
+          <h3>Linux系统管理技巧</h3>
+          <p>创建时间：2025-04-10<br>分类：技术分享</p>
+        </div>
+      </div>
+    
+      <!-- 分页容器 -->
+      <div class="article-container" id="articleContainer"></div>
+    
+      <!-- 分页控制 -->
+      <div class="pagination" id="pagination">
+        <button id="firstPage">首页</button>
+        <button id="prevPage">上一页</button>
+        <div class="page-numbers" id="pageNumbers"></div>
+        <button id="nextPage">下一页</button>
+        <button id="lastPage">末页</button>
+      </div>
+    </body>
+    <script>
+        class SmoothPagination {
+          constructor(){
+            this.sourceArticles=Array.from(document.querySelectorAll('#articles .article'));
+            this.itemsPerPage=5;
+            this.totalPages=Math.ceil(this.sourceArticles.length/this.itemsPerPage);
+            this.currentPage=this.getPageFromUrl();
+            this.container=document.getElementById('articleContainer');
+            this.maxVisiblePages=5;
+            this.pages=[];
+            this.init();
+          }
+          init(){
+            this.createPages();
+            this.bindEvents();
+            this.showPage(this.currentPage);
+            window.addEventListener('popstate',()=>this.showPage(this.getPageFromUrl()));
+          }
+          getPageFromUrl(){
+            const p=new URLSearchParams(location.search);
+            const page=parseInt(p.get('page'))||1;
+            return Math.max(1,Math.min(page,this.totalPages));
+          }
+          setPageToUrl(page){
+            const url=new URL(location.href);
+            url.searchParams.set('page',page);
+            window.history.pushState({page},'',url);
+          }
+          createPages(){
+            this.sourceArticles.forEach(a=>a.remove());
+            for(let i=0;i<this.totalPages;i++){
+              const pageDiv=document.createElement('div');
+              pageDiv.className='article-page';
+              const start=i*this.itemsPerPage;
+              const end=start+this.itemsPerPage;
+              this.sourceArticles.slice(start,end).forEach(art=>pageDiv.appendChild(art.cloneNode(true)));
+              this.container.appendChild(pageDiv);
+              this.pages.push(pageDiv);
+            }
+          }
+          showPage(page){
+            if(page<1||page>this.totalPages)return;
+            this.pages.forEach(p=>p.classList.remove('active'));
+            const target=this.pages[page-1];
+            target.classList.add('active');
+            this.container.style.height=target.offsetHeight+'px';
+            this.currentPage=page;
+            this.setPageToUrl(page);
+            this.updateControls();
+            this.updateStats();
+            window.scrollTo({top:0,behavior:'smooth'});
+          }
+          updateControls(){
+            document.getElementById('firstPage').disabled=this.currentPage===1;
+            document.getElementById('prevPage').disabled=this.currentPage===1;
+            document.getElementById('nextPage').disabled=this.currentPage===this.totalPages;
+            document.getElementById('lastPage').disabled=this.currentPage===this.totalPages;
+            this.renderPageNumbers();
+          }
+          renderPageNumbers(){
+            const container=document.getElementById('pageNumbers');
+            container.innerHTML='';
+            const pages=this.getPageNumbers();
+            pages.forEach(p=>{
+              if(p==='ellipsis'){
+                const span=document.createElement('span');
+                span.className='ellipsis';
+                span.textContent='...';
+                container.appendChild(span);
+              }else{
+                const btn=document.createElement('button');
+                btn.textContent=p;
+                btn.classList.toggle('active',p===this.currentPage);
+                btn.addEventListener('click',()=>this.showPage(p));
+                container.appendChild(btn);
+              }
+            });
+          }
+          getPageNumbers(){
+            const pages=[];
+            const half=Math.floor(this.maxVisiblePages/2);
+            let start=Math.max(1,this.currentPage-half);
+            let end=Math.min(this.totalPages,start+this.maxVisiblePages-1);
+            if(end-start+1<this.maxVisiblePages)start=Math.max(1,end-this.maxVisiblePages+1);
+            if(start>1){pages.push(1);if(start>2)pages.push('ellipsis');}
+            for(let i=start;i<=end;i++)pages.push(i);
+            if(end<this.totalPages){
+                if(end<this.totalPages-1)pages.push('ellipsis');
+                pages.push(this.totalPages);
+            }
+            return pages;
+            }
+            updateStats(){
+            const start=(this.currentPage-1)*this.itemsPerPage+1;
+            const end=Math.min(start+this.itemsPerPage-1,this.sourceArticles.length);
+            document.getElementById('stats').textContent=`显示第${start} - ${end}条，共${this.sourceArticles.length}条记录`;
+            }
+            bindEvents(){
+            document.getElementById('firstPage').onclick=()=>this.showPage(1);
+            document.getElementById('prevPage').onclick=()=>this.showPage(this.currentPage-1);
+            document.getElementById('nextPage').onclick=()=>this.showPage(this.currentPage+1);
+            document.getElementById('lastPage').onclick=()=>this.showPage(this.totalPages);
+            }
+            }
+            document.addEventListener('DOMContentLoaded',()=>new SmoothPagination());
+    </script>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小七の杂谈</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../mobile_script.js" defer></script>
+    <style>
+        body {
+          background-image: url('../background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        /* background-color: #DDDDFFAA; */
+        }
+        nav {
+            background-color: #DDDDFF00;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        a{
+            color: #3344AA;
+            text-decoration:none;
+            font-weight:bold;
+        }
+        .content {
+            margin-left: 0%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html">返回主页</a>
+        <a href="../blog.html">查看其他杂谈</a>
+    </nav>
+    <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="10"><font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</font></marquee> -->
+    
+    <!-- <nav>
+        <a href="index.html">返回主页</a>
+    </nav> -->
+    <!-- <h1 align="center">小七の杂谈</h1>
+
+    <p>上一篇：<br>下一篇：<a href="2025-09-10.html">服务器终端程序MobaXterm安装包</a></p> -->
+    
+    <div class="content">
+
+        <div id="2025-4-9" class="chapter-content" style="display: block;">
+            <h2>使用lobster进行COHP分析</h2>
+            <p>时间：2025-04-09  作者：Jiaqi Z.</p> 
+            <p>分类：<a href="../materials_blogs.html">材料计算</a></p>
+            <p>最后一次更新：2025-04-10</p>
+            <hr>
+            <p><em>注：这部分后续可能会加入材料计算系列教程中</em></p>
+            <h3>什么是COHP</h3>
+            <p>晶体轨道哈密顿布居（Crystal Orbital Hamilton Population, <strong>COHP</strong>）是一种用于分析固体材料中原子间化学键性质的工具，由Dronskowski和Blochl在1993年提出<sup>[1]</sup>。其核心思想是通过计算哈密顿量矩阵元在原子轨道基底上的投影，定量评估相邻原子间轨道的成键（bonding）或反键（antibonding）相互作用。 COHP将能带结构能量分解为原子轨道对的相互作用能分布；从化学角度更直观地说，它是相邻原子对之间的​​"键权重"态密度​​。</p>
+            <p>与晶体轨道重叠布居（COOP）不同，COHP直接关联哈密顿量能量而非重叠积分，因此更适用于金属和半导体等强离域体系的键合分析。COHP的计算公式为：<br>
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mtext>COHP</mtext><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false">(</mo><mi>E</mi><mo stretchy="false">)</mo><mo>=</mo><munder><mo data-mjx-texclass="OP">∑</mo><mrow><mi>μ</mi><mo>,</mo><mi>ν</mi></mrow></munder><msubsup><mi>c</mi><mrow><mi>i</mi><mi>μ</mi></mrow><mo>∗</mo></msubsup><msub><mi>c</mi><mrow><mi>j</mi><mi>ν</mi></mrow></msub><msub><mi>H</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>⋅</mo><mi>δ</mi><mo stretchy="false">(</mo><mi>E</mi><mo>−</mo><msub><mi>E</mi><mi>k</mi></msub><mo stretchy="false">)</mo></math>
+            其中，<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>c</mi><mrow><mi>i</mi><mi>μ</mi></mrow></msub></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>c</mi><mrow><mi>j</mi><mi>ν</mi></mrow></msub></math>为原子轨道系数，<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>H</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub></math>为哈密顿量矩阵元。负值COHP表示成键态（降低体系能量），正值则为反键态（升高体系能量）。</p>
+            <p>COHP图谱能明确展示成键（bonding）和反键（antibonding）对能带能量的贡献，通常与态密度（DOS）图并列呈现（DOS仅显示电子分布，而COHP揭示其键合特性）。正如对电子态密度（DOS）积分可得到体系总电子数，对COHP进行能量积分则可量化特定原子接触（"化学键"）对能带能量的贡献：换言之，​​积分COHP（ICOHP）​​的绝对值反映了键强。</p>
+            <h3>如何使用COHP分析成键or反键</h3>
+            <p>计算费米能级以下的COHP积分，<strong>如果积分小于0，则表示成键；如果大于0则表示反键</strong>。</p>
+            <h3>使用VASP计算COHP的方法</h3>
+            <h4>1. 结构优化</h4>
+            <p>如同正常的结构优化一样，在此不赘述。</p>
+            <h4>2. 自洽计算</h4>
+            <p>与一般的自洽类似，但需要注意以下几点：</p>
+            <ul>
+            <li><code>ISYM</code>需要设置为-1</li>
+            <li>由于处理COHP需要读取WAVECAR文件，因此需要保留WAVECAR（<code>LWAVE=.TRUE.</code>）</li>
+            <li>需要设置一个较大的<code>NBANDS</code></li>
+            </ul>
+            <p>其中在设置<code>NBANDS</code>时可以首先忽略掉这个参数，直接提交任务进行自洽计算，在开始时查看OUTCAR中<code>NBANDS</code>的数值（使用grep命令，具体方法请详见<a href="material_tutorial.html">材料计算教程</a>中的“Linux基础-高级Linux命令-grep匹配字符串”一节）。通常来说，默认数值偏小，一般设置为默认数值的1.5-2倍。</p>
+            <p>例如，在计算时默认<code>NBANDS=300</code>，则可以在<code>INCAR</code>中设置<code>NBANDS=500</code>左右。</p>
+            <h4>3. 使用lobster处理COHP</h4>
+            <p>在服务器上使用lobster计算投影以获取COHP，（如果你是我所在课题组的成员，课题组内106节点服务器已配置lobster，其他节点如224待测试，使用前需要<code>module load lobster</code>，建议直接使用后面的提交任务脚本在队列系统使用）对于其他课题组，建议寻求组内帮助，或联系超算管理员。</p>
+            <p><strong>2025-4-10更新：课题组内服务器224和105已配置lobster，导入方法和106节点相同。</strong></p>
+            <p>在使用lobster时需要准备一个输入文件<code>lobsterin</code>，一个常见的模板为：</p>
+            <pre><code>
+# 设置起止能量（eV）
+COHPstartEnergy -10
+COHPendEnergy 5
+
+usebasisset pbeVaspFit2015
+# 设置轨道
+basisfunctions C  2s 2p
+# 考虑两个原子间的COHP
+cohpbetween atom 1 atom 2 orbitalwise
+gaussianSmearingWidth 0.05
+# SkipDOS 跳过DOS计算
+# 保存投影文件
+saveProjectionToFile 
+# loadProjectionFromFile 读取投影文件
+            </code></pre>
+            <p>其中一些参数解释如下：</p>
+            <ul>
+            <li><code>COHPstartEnergy</code>和<code>COHPendEnergy</code>：在绘制COHP时考虑的能量范围，类似于计算态密度时设置的<code>EMIN</code>和<code>EMAX</code></li>
+            <li><code>usebasisset</code>：对于VASP计算而言，使用pbeVaspFit2015总是没错的<sup>[2]</sup>（除此之外还有Budge）</li>
+            <li><code>basisfunctions</code>：设置电子轨道，这一部分需要参考你所使用的赝势POTCAR文件。**注意：不同的赝势版本对应不同的轨道，例如，<code>Ti_pv</code>和<code>Ti</code>相比，前者多了3p轨道；<code>Ti_sv</code>又比<code>Ti_pv</code>多了3s轨道。<strong>你所使用的轨道需要根据POTCAR对应版本设置（使用<code>grep TIT POTCAR</code>查看每个元素对应版本）</strong>，具体所考虑的轨道可以参考网站<a href="https://www.vasp.at/wiki/index.php/Choosing_pseudopotentials">https://www.vasp.at/wiki/index.php/Choosing_pseudopotentials</a>里的<strong>Recommended PAW potentials</strong></li>
+            <li><code>cohpbetween</code> atom <m> atom <n> <code>orbitalwise</code>：考虑第m个原子和第n个原子之间的cohp，其编号根据POSCAR文件排序（可以借助VESTA软件在可视化当中查看原子编号。双击原子在下方会有如“Atom: 1”的字样，表明这是第1个原子。<code>orbitalwise</code>表示计算投影cohp（类似于PDOS一样可以查看每个轨道的贡献）</n></m></li>
+            <li><code>gaussianSmearingWidth</code>：高斯展宽。如果VASP中设置<code>ISMEAR=0</code>，则需要在这里设置展宽（<code>INCAR</code>中的<code>SIGMA</code>）；如果使用的是<code>ISMEAR=-5</code>（正四面体方法），则可以忽略这个参数</li>
+            <li><code>SkipDOS</code>：跳过DOS计算，lobster可以计算处理DOS，但相比其他脚本如Vaspkit，功能不是太好，因此一般可以选择忽略DOS</li>
+            <li><code>saveProjectionToFile</code>：保存投影文件，cohp在计算投影时可能耗费的时间较多，因此将其保存下来可以方便之后使用<code>loadProjectionFromFile</code>读取而加快处理速度。</li>
+            </ul>
+            <p>将文件设置完成后执行<code>lobster</code>即可得到处理后的文件。在输出结果中需要关注<code>abs. charge spilling</code>表示spilling误差，如果误差小于5%则表示计算正常（5%是官方给的数据，一般建议为2%）。</p>
+            <h4>4. 绘图与后处理</h4>
+            <p>在绘制cohp时需要使用wxDragon，可以在官网下载，也可以直接点击<a href="blog_file/2025-4-9/wxDragon_Windows.zip" download="wxDragon_Windows.zip">这里</a>下载（<font color="red">注意：测试发现官网上的新版本在导出xy格式时有问题，需要“回调”至老版本。如果你没有安装，可以直接在这里下载可用于数据导出的老版本；如果你已经安装，无论是官网或者2025年4月10日之前在本篇文章对应链接下载的，需要删除原有安装包与解压文件，重新解压新文件</font>）。下载完成后打开，将服务器上的COHPCAR.lobster下载到本地并导入软件中，选择合适的轨道进行可视化，完成后将数据导出为XY格式的文件并使用Origin进行绘图。（wxDragon的UI界面比较老）</p>
+            <p><strong>注意：注意！注意！在开始时我们所说COHP在费米能级以下积分为负表示成键，积分为正表示反键。但在使用wxDragon绘制COHP时，为了和COOP相对应，在绘制COHP时通常设置为相反数（即-COHP），此时积分为正表示成键，积分为负表示反键！</strong></p>
+            <h3>提交任务脚本</h3>
+            <p>下面是一个在slurm队列系统提交lobster任务的一个简单脚本（sub.lobster），对于我所在课题组内的成员而言可以直接使用（如提交vasp任务一样提交即可，使用sbatch sub.lobster），对于其他课题组而言，也可根据下面的格式进行修改以适配不同的队列系统（如pbs等），具体请咨询你的导师、你的课题组同学或者超算相关管理员。</p>
+            <p>你可以在这里直接下载脚本文件到本地，<a href="blog_file/2025-4-9/sub.lobster" download="sub.lobster">点击下载</a></p>
+            <pre><code>
+#!/bin/bash
+SBATCH -n 56
+SBATCH -N 1
+
+打印任务信息
+cho "Starting job $SLURM_JOB_ID at " `date`
+cho "SLURM_SUBMIT_DIR is $SLURM_SUBMIT_DIR"
+cho "Running on nodes: $SLURM_NODELIST"
+
+# 执行任务
+## 载入lobster
+module load lobster
+##unlimited the stack size
+#ulimit -s unlimited
+lobster &gt; lobster.out 2&gt;lobster.err
+
+# 任务结束
+echo "Job $SLURM_JOB_ID done at " `date`
+            </code></pre>
+            <footer> 
+                <h3>注释</h3>
+                <p>[1] Dronskowski, R. & Bloechl, P. E. Crystal orbital Hamilton populations (COHP): energy-resolved visualization of chemical bonding in solids based on density-functional calculations. J. Phys. Chem. 97, 8617–8624 (1993). <a href="https://doi.org/10.1021/j100135a014">https://doi.org/10.1021/j100135a014</a><a class="easyScholarDOI" target="_blank" href="https://www.sci-hub.ru/10.1021/j100135a014"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0" href="data:image/png;base64,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"></image></svg></a></p>
+            <p>[2] 关于pbeVaspFit2015，可以参考文献Maintz, S., Deringer, V. L., Tchougréeff, A. L. & Dronskowski, R. LOBSTER: A tool to extract chemical bonding from plane‐wave based DFT. J Comput Chem 37, 1030–1035 (2016). <a href="https://doi.org/10.1002/jcc.24300">https://doi.org/10.1002/jcc.24300</a><a class="easyScholarDOI" target="_blank" href="https://www.sci-hub.ru/10.1002/jcc.24300"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0" href="data:image/png;base64,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"></image></svg></a></p>
+            </footer>
+        </div>
+
+        <hr>
+        <p>上一篇：<a href="2025-03-12.html">日麻系列教程1：日麻役种常见一览</a><br>
+            下一篇：<a href="2025-06-16.html">Roselia Live 「Sei stark」返图</a></p>
+        <p>同分类上一篇：<a href="2024-12-25.html">Linux当中<code>for</code>与VASPKIT“联动”</a><br>
+            同分类下一篇：<a href="2025-07-02.html">使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</a></p>
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小七の杂谈</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../mobile_script.js" defer></script>
+    <style>
+        body {
+          background-image: url('../background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        /* background-color: #DDDDFFAA; */
+        }
+        nav {
+            background-color: #DDDDFF00;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        a{
+            color: #3344AA;
+            text-decoration:none;
+            font-weight:bold;
+        }
+        .content {
+            margin-left: 0%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html">返回主页</a>
+        <a href="../blog.html">查看其他杂谈</a>
+    </nav>
+    <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="10"><font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</font></marquee> -->
+    
+    <!-- <nav>
+        <a href="index.html">返回主页</a>
+    </nav> -->
+    <!-- <h1 align="center">小七の杂谈</h1> -->
+    
+    <div class="content">
+
+        <div id="2025-10-27-1" class="chapter-content" style="display: block;">
+            <h2>如何结合CP2K+Multiwfn做ELF拓扑分析</h2>
+            <p>时间：2025-10-27  作者：Jiaqi Z.</p>
+            <p>分类：<a href="../materials_blogs.html">材料计算</a></p>
+            <hr>
+            <p>本文以NO2为例，介绍一下如何借助CP2K计算软件与Multiwfn处理ELF拓扑分析（后面也会稍微介绍一下电荷密度拓扑分析）</p>
+            <p><em>注：具体关于Multiwfn的使用方法在sob老师的Multiwfn手册里有详细的说明（<a href="http://sobereva.com/multiwfn/">http://sobereva.com/multiwfn/</a>），此外，用Multiwfn做拓扑分析在博文（<a href="http://sobereva.com/108">http://sobereva.com/108</a>）内也有说明。</em></p>
+            <h3>使用Multiwfn构建CP2K的输入程序</h3>
+            <p>首先，构建体系结构。在这里我们构建的是分子结构，分子结构的信息可以在网站cccbdb当中找到（网站链接：<a href="https://cccbdb.nist.gov/exp1x.asp">https://cccbdb.nist.gov/exp1x.asp</a>，在教程网站的首页下滑就有）。假设现在构建得到的NO2结构<code>POSCAR</code>如下所示：</p>
+            <pre><code>
+NO2
+1.00000
+20.0 0.0 0.0
+0.0 20.0 0.0
+0.0 0.0 20.0
+N O
+1 2
+Cartesians
+10.0000 10.0000 10.0000
+10.0000 11.0989 10.4653
+10.0000 8.9011 10.4653
+            </code></pre>
+            <p>将这个结构文件导出为cif格式，在本地运行Multiwfn，导入cif文件后按照下面的内容输入（括号里面是说明注释）：</p>
+            <ul>
+            <li>cp2k （生成cp2k输入文件）</li>
+            <li>NO2-relax.inp （生成输入文件名）</li>
+            <li>-1（选择计算任务）</li>
+            <li>3（对原子进行结构优化）</li>
+            <li>2（选择基组）</li>
+            <li>10（使用全电子基组——6-31G*）</li>
+            <li>8（设置K点）</li>
+            <li>1,1,1 （使用Gamma点）</li>
+            <li>-7（设置周期性）</li>
+            <li>NONE（体系没有周期性）</li>
+            <li>0（生成输入文件）</li>
+            </ul>
+            <p>生成的文件比较大，整个文件包括结构信息，基组信息和选择的计算参数。在前面的部分找到<code>&amp;CELL</code> ，后面的三行表示晶格常数。可能会和最开始的<code>POSCAR</code>文件有区别，之所以如此，是因为在使用Multiwfn设置参数的时候，如果选择有方向不是周期性（在本例设置为三个），那Multiwfn会设置真空层大小。为了确保计算正确性（因为下面的原子坐标可能会超出晶格范围），我们可以修改晶格常数（改回原来的20）</p>
+            <h3>提交计算任务</h3>
+            <p><strong>在提交计算任务之前，请首先确保服务器内安装有CP2K。如果没有，请联系服务器管理员安装（需要root权限）。</strong></p>
+            <p>对于我所在的课题组服务器而言，最新确认的是201服务器已经安装CP2K，在提交任务时使用下面的脚本提交到计算队列（这是针对slurm队列系统的提交任务脚本，如果是使用其他的队列系统，参考着这个，结合你所使用的系统修改指令就行。）</p>
+            <p><strong>不要在本地登录节点跑任务，这对于超算使用来说不是好习惯！尤其是使用外面的超算集群更是如此！通常登录节点的性能有限，全给你跑任务，别人根本没法用。哪怕是在localhost节点，在跑任务的同时后面有人提交任务的话，计算性能也不会得到充分发挥！！</strong></p>
+            <pre><code>
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 104
+
+cd $SLURM_SUBMIT_DIR
+
+module load CP2K
+mpirun cp2k.psmp -i NO2-relax.inp >cp2k.out 2>cp2k.err
+            </code></pre>
+            <p><strong>注意，这里面的<code>NO2-relax.inp</code>为当前计算的输入文件，你需要根据实际情况修改它。当然，如果你愿意的话，设置一个固定的输入文件名作为cp2k计算也行。例如，使用<code>yukina.inp</code>。另外，核数也必须根据实际情况修改，不然你在64核的机器上排104核的任务，肯定算不了。</strong></p>
+            <p>将刚才的输入文件（<code>NO2-relax.inp</code>）和提交任务脚本放在同一个目录下，提交任务等待结果（按照上面脚本设置的，输出文件在<code>cp2k.out</code>里，当然你要更改也行，毕竟<code>&gt;</code>表示重定向输出（见计算教程的Linux部分“高级Linux命令-管道与重定向”一节）。</p>
+            <p>优化完成查看输出文件<code>cp2k.out</code>（或者你设置的输出文件名），在最后找到收敛精度的表示如下，当四个全是<code>YES</code>时，表示结构优化达到收敛：</p>
+            <pre><code>
+ OPT| Maximum step size                                             0.0029693064
+ OPT| Convergence limit for maximum step size                       0.0030000000
+ OPT| Maximum step size is converged                                         YES
+ OPT|
+ OPT| RMS step size                                                 0.0013574324
+ OPT| Convergence limit for RMS step size                           0.0015000000
+ OPT| RMS step size is converged                                             YES
+ OPT|
+ OPT| Maximum gradient                                              0.0001631261
+ OPT| Convergence limit for maximum gradient                        0.0004500000
+ OPT| Maximum gradient is converged                                          YES
+ OPT|
+ OPT| RMS gradient                                                  0.0001049782
+ OPT| Convergence limit for RMS gradient                            0.0003000000
+ OPT| RMS gradient is converged                                              YES
+            </code></pre>
+            <h3>计算自洽</h3>
+            <p>将计算得到的<code>NO2-relax-1.restart</code>文件下载到本地，使用Multiwfn打开，按照下面的方式设置输入参数：</p>
+            <ul>
+            <li>cp2k（生成cp2k输入文件）</li>
+            <li>NO2-scf.inp（输入文件名）</li>
+            <li>-1 （选择计算任务）</li>
+            <li>1（计算能量）</li>
+            <li>-7（设置周期性）</li>
+            <li>NONE （不设置周期性结构）</li>
+            <li>2（设置基组）</li>
+            <li>10（选择6-31G*基组）</li>
+            <li>8 （设置K点）</li>
+            <li>1,1,1（Gamma点）</li>
+            <li>-2（很重要！生成molden文件！）</li>
+            <li>0（生成输入文件）</li>
+            </ul>
+            <h3>进行ELF拓扑分析</h3>
+            <p>完成后与结构优化类似将<code>NO2-scf.inp</code>文件作为输入文件上传至服务器，计算后得到后缀名为<code>*.molden</code>的文件，将其下载到本地后用Multiwfn打开，选择<code>2</code>进行拓扑分析，在<code>-11</code>里选择需要进行分析的内容（使用CP2K计算完成后可以直接处理ELF、波函数等数据）。我们是要进行ELF拓扑分析，于是选择<code>9</code>。</p>
+            <p>然后选择<code>6</code>寻找CP点。对于我们这种小分子体系，直接使用默认即可（1000个点），如果体系比较大，可以在<code>11</code>里设置每个球里寻找的点的个数。完成设置后使用<code>-1</code>可以以每个原子为中心寻找CP点；如果体系比较大，原子数比较多的话可以使用<code>-2</code>指定球心对应的原子。</p>
+            <p>按照sob老师的介绍，Multiwfn对拓扑计算的效率很高。在本例中，我们使用四核本地计算机处理，仅用了一两秒钟就结束了。完成后<code>-9</code>返回，并使用<code>0</code>查看拓扑点，如图所示。<strong>由于对ELF而言我们主要关注(3,-3)点，也就是ELF的极大值点</strong>，在旁边的复选框把其他点给去掉，可以发现，NO2除了在化学键上有类似于<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>π</mi></math>键的成键外，在原子外面也有孤对电子。在网站上（<a href="https://zh.webqc.org/lewis-structure-of-NO2.html">https://zh.webqc.org/lewis-structure-of-NO2.html</a>）可以查到NO2的路易斯结构式，与计算结果一致。</p>
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAED7RJo_4jgG4t66PDq8fiOcEOuSRATPAACKScAAkg6-VdvQcliQwSZeTYE.png" alt="ELF-topo.png" width="50%"/>
+            <h3>进行电子密度拓扑分析</h3>
+            <p>类似地，我们也可以对电子密度进行拓扑分析，首先关闭现有的窗口（按RETURN）返回命令行，在<code>-11</code>选择计算模式中选择<code>1</code>（电子密度），重复上面的步骤（找点、可视化）。与ELF相比，电子密度拓扑的速度更快（这是因为它的CP点更少），我们得到的所有CP点如图所示（为了可视化清楚，使用棍状模型，紫色点表示(3,-3)CP点，在电子密度中表示<strong>原子核</strong>；而橙色表示(3,-1)，对应于<strong>键心</strong>。除此之外还有：</p>
+            <ul>
+            <li>(3,+1)表示<strong>环心</strong></li>
+            <li>(3,+3)表示<strong>笼心</strong></li>
+            </ul>
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAED7Rho_4khobV8LnA1W5llZPsJODrxOgACLycAAkg6-VeNgEvCIH6noTYE.png" alt="Density-topo.png" width="50%"/>
+            <p><strong>注意：在寻找拓扑结构时，有一个Poincare-Hopf关系，即原子核-键心+环心-笼心=1</strong>，如果满足这个关系，则表明所有CP点已经找到。在生成图片后，Multiwfn会自动计算，并生成如下的内容：</p>
+            <pre><code>
+The number of critical points of each type:
+(3,-3):     3,   (3,-1):     2,   (3,+1):     0,   (3,+3):     0
+Poincare-Hopf verification:     3  -     2  +     0  -     0  =     1
+Fine, Poincare-Hopf relationship is satisfied, all CPs may have been found
+            </code></pre>
+            <p>对于ELF拓扑分析而言，大概率不会找到全部的点，这并无所谓，只要对所研究的内容是没错的就行——主要关注(3,-3)点，而对于其他点通常不关心，也就没有必要关注是否满足上面的等式了。如果实在担心是否找全所有的点，可以切换球半径或点数，进一步查找。</p>
+            <p>除此之外，如果关心具体的CP点的信息（例如对应的电子密度多大），可以使用拓扑分析里的<code>7</code>功能，选择要研究的CP点查看。具体的在Multiwfn手册2.6、2.7小节。此外，借助<code>8</code>功能可以连接在(3,-3)和(3,-1)之间生成拓扑路径，通常表示<strong>化学键</strong>，具体的介绍可以查看网站（<a href="http://sobereva.com/108%EF%BC%89">http://sobereva.com/108</a>）</p>
+        </div>
+
+        <hr>
+        <p>上一篇：<a href="2025-10-26.html"><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></a><br>
+            下一篇：<a href="2025-10-29.html">如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></a></p>
+        <p>同分类上一篇：<a href="2025-09-10.html">服务器终端程序MobaXterm安装包</a><br>
+            同分类下一篇：<a href="2025-10-29.html">如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></a></p>
+
+    </div>
+</body>
+</html>

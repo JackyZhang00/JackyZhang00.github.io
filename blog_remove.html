@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小七の杂谈</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="mobile_script.js" defer></script>
+    <style>
+        body {
+          background-image: url('background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        /* background-color: #DDDDFFAA; */
+        }
+        nav {
+            background-color: #DDDDFF00;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="index.html">返回主页</a>
+    </nav>
+    <marquee bgcolor="#DDDDFFEE" scrollamount="10"><font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</font></marquee>
+    <select class="mobile-nav" onchange="showContentMobile(this.value)">
+        <option value="">导航菜单</option>
+        <option value="2024-12-23-1">【置顶】关于杂谈的内容</option>
+        <option value="2025-10-29">【NEW!!!!!】【材料计算】如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></option>
+        <option value="2025-10-27-1">【材料计算】如何结合CP2K+Multiwfn做ELF拓扑分析</option>
+        <option value="2025-10-27-2">【BanG Dream!】祝Roselia主唱凑友希那生日快乐！！</option>
+        <option value="2025-10-20">【BanG Dream!】志崎桦音照片（2）</option>
+        <optiom value="2025-9-10">【材料计算】服务器终端程序MobaXterm安装包</li>
+        <option value="2025-7-26">【BanG Dream!】non酱の照片1</option>
+        <option value="2025-7-2">【材料计算】使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</option>
+        <option value="2025-6-16">【BanG Dream!】Roselia Live 「Sei stark」返图</option>
+        <option value="2025-4-9">【材料计算】使用lobster进行COHP分析</option>
+        <option value="2025-3-12">【桌游】日麻系列教程1：日麻役种常见一览</option>
+        <option value="2025-2-20">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</option>
+        <option value="2025-2-16">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</option>
+        <option value="2025-1-31-1">【科普】【快报】从刘谦魔术看排列组合与冒泡算法</option>
+        <option value="2025-1-13-1">【机器学习与人工智能】如何从零开始进行程序设计</option>
+        <option value="2025-1-8-1">【小教程】双曲型、抛物型和椭圆型偏微分方程的区别</option>
+        <option value="2024-12-25">【材料计算】Linux当中<code>for</code>与VASPKIT“联动”</option>
+        <option value="2024-12-23-2">【BanG Dream!】Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</option>
+    </select>
+    <!-- <nav>
+        <a href="index.html">返回主页</a>
+    </nav> -->
+    <h1 align="center">小七の杂谈</h1>
+    <div class="sidebar">
+        <div id="linux" class="section">
+            <button class="toggle" onclick="toggleChapters('contents')">全部内容</button>
+            <div class="chapters" id="contentsChapters" style="display: none;">
+                <li onclick="showContent('2024-12-23-1')">【置顶】关于杂谈的内容</li>
+                <li onclick="showContent('2025-10-29')">【NEW!!!!!】如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></li>
+                <li onclick="showContent('2025-10-27-1')">如何结合CP2K+Multiwfn做ELF拓扑分析</li>
+                <li onclick="showContent('2025-10-27-2')"><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></li>
+                <li onclick="showContent('2025-10-20')">志崎桦音照片（2）</li>
+                <li onclick="showContent('2025-9-10')">服务器终端程序MobaXterm安装包</li>
+                <li onclick="showContent('2025-7-26')">non酱の照片1</li>
+                <li onclick="showContent('2025-7-2')">使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</li>
+                <li onclick="showContent('2025-6-16')">Roselia Live 「Sei stark」返图</li>
+                <li onclick="showContent('2025-4-9')">使用lobster进行COHP分析</li>
+                <li onclick="showContent('2025-3-12')">日麻系列教程1：日麻役种常见一览</li>
+                <li onclick="showContent('2025-2-20')">Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</li>
+                <li onclick="showContent('2025-2-16')">Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</li>
+                <li onclick="showContent('2025-1-31-1')">【快报】从刘谦魔术看排列组合与冒泡算法</li>
+                <li onclick="showContent('2025-1-13-1')">如何从零开始进行程序设计</li>
+                <li onclick="showContent('2025-1-8-1')">双曲型、抛物型和椭圆型偏微分方程的区别</li>
+                <li onclick="showContent('2024-12-25')">Linux当中<code>for</code>与VASPKIT“联动”</li>
+                <li onclick="showContent('2024-12-23-2')">Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</li>
+            </div>
+            <button class="toggle" onclick="toggleChapters('tutorial')">小教程</button>
+            <div class="chapters" id="tutorialChapters" style="display: none;">
+                <div class="chapter" onclick="toggleSubChapters('materials')">
+                    <h3>材料计算</h3>
+                    <ul id="materialsSubChapters" style="display: none;">
+                        <!-- 材料计算杂谈 -->
+                        <li onclick="showContent('2025-10-29')">【NEW!!!!!】如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></li>
+                        <li onclick="showContent('2025-10-27-1')">如何结合CP2K+Multiwfn做ELF拓扑分析</li>
+                        <li onclick="showContent('2025-9-10')">服务器终端程序MobaXterm安装包</li>
+                        <li onclick="showContent('2025-7-2')">使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</li>
+                        <li onclick="showContent('2025-4-9')">使用lobster进行COHP分析</li>
+                        <li onclick="showContent('2024-12-25')">Linux当中<code>for</code>与VASPKIT“联动”</li>
+                    </ul>
+                </div>
+                <div class="chapter" onclick="toggleSubChapters('AI')">
+                    <h3>机器学习与人工智能</h3>
+                    <ul id="AISubChapters" style="display: none;">
+                        <!-- 机器学习杂谈 -->
+                        <li onclick="showContent('2025-1-13-1')">如何从零开始进行程序设计</li>
+                    </ul>
+                </div>
+                <!-- 小教程杂谈 -->
+                <li onclick="showContent('2025-1-8-1')">双曲型、抛物型和椭圆型偏微分方程的区别</li>
+            </div>
+            <button class="toggle" onclick="toggleChapters('kepu')">科普</button>
+            <div class="chapters" id="kepuChapters" style="display: none;">
+                <!-- 科普杂谈 -->
+                <li onclick="showContent('2025-1-31-1')">【快报】从刘谦魔术看排列组合与冒泡算法</li>
+            </div>
+            <button class="toggle" onclick="toggleChapters('bangdream')">BanG Dream!</button>
+            <div class="chapters" id="bangdreamChapters" style="display: none;">
+                <!-- 邦杂谈 -->
+                <li onclick="showContent('2025-10-27-2')"><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></li>
+                <li onclick="showContent('2025-10-20')">志崎桦音照片（2）</li>
+                <li onclick="showContent('2025-7-26')">non酱の照片1</li>
+                <li onclick="showContent('2025-6-16')">Roselia Live 「Sei stark」返图</li>
+                <li onclick="showContent('2025-2-20')">Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</li>
+                <li onclick="showContent('2025-2-16')">Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</li>
+                <li onclick="showContent('2024-12-23-2')">Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</li>
+            </div>
+            <button class="toggle" onclick="toggleChapters('boardgame')">桌游</button>
+            <div class="chapters" id="boardgameChapters" style="display: none;">
+                <!-- 桌游杂谈 -->
+                <li onclick="showContent('2025-3-12')">日麻系列教程1：日麻役种常见一览</li>
+            </div>
+            <button class="toggle" onclick="toggleChapters('music')">音乐</button>
+            <div class="chapters" id="musicChapters" style="display: none;">
+                <!-- 音乐杂谈 -->
+            </div>
+            <button class="toggle" onclick="toggleChapters('game')">游戏</button>
+            <div class="chapters" id="gameChapters" style="display: none;">
+                <!-- 游戏杂谈 -->
+            </div>
+            <button class="toggle" onclick="toggleChapters('other')">杂谈</button>
+            <div class="chapters" id="otherChapters" style="display: none;">
+                <!-- 其他内容杂谈 -->
+                <li onclick="showContent('2024-12-23-1')">关于杂谈的内容</li>
+            </div>
+        </div>
+    </div>
+    <div class="content">
+        <div id="2025-10-29" class="chapter-content" style="display: none;"> 
+            <h2>如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></h2>
+            <p>时间：2025-10-29  作者：Jiaqi Z.</p>
+            <p>分类：小教程-材料计算</p>
+            <p><a href="blog_share/2025-10-29.html">分享链接</a></p>
+            <hr>
+            <p>在使用VASP计算过程中，如果你设置<code>LWAVE=.TRUE.</code>的话，在计算结果中会生成一个<code>WAVECAR</code>文件。一方面来说，生成WAVECAR可以生成一个初始波函数，方便后续计算收敛。但在大多数情况下，这一过程是没有必要的（可能在之前的VASP计算教程里明确提及这一点的地方，也仅仅是在计算HSE能带时用到了）。因此，很多时候我们都会默认设置<code>INCAR</code>里面的参数<code>LWAVE=.FALSE.</code>。</p>
+            <p>而事实上，总会有一些人（当然也包括我。。）在写输入文件时忘记这一点，而生成了非常非常大的<code>WAVECAR</code>文件，如果提前意识到，直接使用<code>rm</code>命令删掉当然可以。但如果忘记了呢？你会继续下去一直计算，而这时候大概率你也不会想起来要删除它。计算目录越来越多……计算文件越来越大……而这时候，当你下载目录到本地时……你会意识到<code>WAVECAR</code>（也可能会有<code>CHGCAR</code>）浪费了你大多数的时间</p>
+            <p>更严重的情况，如果你长时间不删除这些文件的话，服务器硬盘总是会满的……往小了说，对于超算来说存储空间也是花钱买来的；往大了说，如果是用自己课题组的服务器，硬盘满了，自己和别人都算不了了（无法写入文件）……</p>
+            <p>这时，你可能会想删除掉所有的<code>WAVECAR</code>。但是，一个一个删太慢，有没有一次性的方法删除？</p>
+            <h3>什么是<code>find</code>命令？</h3>
+            <p>在Linux当中，<code>find</code>命令可以用来在指定目录下查找文件和目录。一个基本的格式是<code>find [路径] [条件] [动作]</code>。</p>
+            <p>其中，<strong>路径</strong>表示你要查找的目录路径，例如，在当前目录下查找，可以使用<code>find . [条件] [动作]</code>表示（事实上，直接执行也表示当前目录）</p>
+            <p><strong>条件</strong>可以用来指定要查找的文件，有好几种可以使用的选项，我们下面列举几个可能会用到的：</p>
+            <ul>
+            <li><code>-name</code>表示<strong>要查找的文件名</strong>，可以使用通配符，例如<code>find . -name roselia</code>表示在当前目录下寻找<strong>名字叫做<code>roselia</code></strong>的文件。<code>find . -name *.txt</code>表示在当前目录下寻找后缀名为<code>.txt</code>的所有文件。如果希望查找多个文件，可以使用<code>-o</code>分隔（表示或），例如，<code>find . -name yukina -o -name rinrin</code>表示在当前目录下查找<strong>文件名为<code>yukina</code>或<code>rinrin</code>的文件</strong>（等价于查找两个文件）</li>
+            </ul>
+            <p>（不要问我怎么查找同时满足名字为<code>yukina</code>和<code>rinrin</code>的文件…… 除非你的文件是类似薛定谔的猫那样的状态……）</p>
+            <ul>
+            <li><code>type</code>表示<strong>文件类型</strong>，包括<code>f</code><strong>普通文件</strong>，<code>d</code><strong>目录</strong>等</li>
+            </ul>
+            <p>在目前的使用场景下，这些已经足够大多数情况了，如果还需要其他的参数（如<code>-size</code>, <code>-user</code>等），可以去网上查找相关资料。另外，上面两个参数可以混合使用，例如<code>find ./roselia -name nonchan -type f</code>表示在<strong>当前目录下的<code>roselia</code>子目录下</strong>查找<strong>名字叫<code>nonchan</code><strong>的</strong>文件</strong></p>
+            <h3>一个现在你就可以用的场景——查找任务目录</h3>
+            <p>如果你在计算时有记录的习惯，可能会记录任务的队列号（在提交任务时，通常队列系统会在当前目录下生成一个含有队列号的文件，表示队列系统的输出信息，以<code>slurm</code>系统为例，可能会生成<code>slurm-[JOBID].out</code>文件）借助这个文件，我们就可以<strong>通过队列号查找到计算的目录</strong>，从而方便我们快速进入到对应目录而不用一次次<code>cd</code>了。</p>
+            <p>方法很简单，使用<code>find ~ -name slurm-[JOBID].out</code>即可输出文件所在的目录。把<code>[JOBID]</code>替换为你的队列号。例如，队列号为<code>1441</code>，则将其替换为<code>slurm-1441.out</code>（或者你也可以简单使用<code>*-1441.out</code>，但前提是没有其他类似的文件）。上述命令表示<strong>在家目录下寻找任务号为<code>[JOBID]</code>的输出文件</strong>。关于为什么是在家目录下寻找——你不可能每次查找的文件都在当前目录向下可以找到。</p>
+            <h3>关于<code>find</code>命令的<strong>动作</strong>参数</h3>
+            <p>当执行动作时，通常前面需要有一个选项<code>-exec</code>表示<strong>执行命令</strong>，在选项后面为要执行的命令，你可以使用<code>{ }</code>表示<strong>查找到的文件</strong>（占位符），使用<code>\;</code>表示命令结束。</p>
+            <p>在这个基础上，我们就可以解决最开始的问题了：<strong>如何删除当前目录中所有的<code>WAVECAR</code>文件</strong>？</p>
+            <p><font color="red"><strong>（如果你想直接知道最开始的结果，可以看这里了！！但我强烈建议看明白前面，不然你很可能一会儿就忘了）</strong></font></p>
+            <p>执行下面的命令：<code>find . -name WAVECAR -type f -exec rm {} \;</code>，具体原理结合上面的说明，应该很容易理解。类似的，如果希望删除<code>CHGCAR</code>和<code>CHG</code>文件，则可以使用<code>find . -name CHG* -type f -exec rm {} \;</code>（使用了通配符<code>*</code>表示<code>CHG</code>和<code>CHGCAR</code>文件）</p>
+            <p><strong>务必注意：<code>\;</code>前面要有空格！！</strong></p>
+            <hr>
+            <p><em><strong>前方小高能！！</strong>下面的内容作为补充，有点难，可以尝试理解一下</em></p>
+            <p>那如何同时删除<code>WAVECAR</code>和<code>CHGCAR</code>呢？借助<code>-o</code>命令，使用下面的命令：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">find . \( -name WAVECAR -o -name CHGCAR \) -type f -exec rm {} \;
+            </span></code></pre>
+            <p>这里面使用<code>\( \)</code>作为括号<strong>提高优先级</strong>，也就是<code>\( A -o B \) C</code>表示 <strong>(A或B)且C</strong>，按照布尔运算规则也就是<strong>A或C且B或C</strong>。但如果没有这个括号的话，就会识别为<strong>A或(B且C)</strong>。</p>
+        </div>
+
+        <div id="2025-10-27-2" class="chapter-content" style="display: none;">
+            <h2><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></h2>
+            <p>时间：2025-10-26</p>
+            <p>分类：BanG Dream!</p>
+            <p><a href="blog_share/2025-10-27-2.html">分享链接</a></p>
+            <hr>
+            <p><font color="#881188" size=6>今天是10.26号，是roselia的主唱凑友希那的生日，转发这条消息到5个群聊，她会像小猫咪一样对你撒娇，我试过了，是假的，但是确实是凑友希那的生日，祝她生日快乐</font></p>
+
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAED7TJo_4uY0fk994l0tHyFL3H9elhNTAACXycAAkg6-Vcdad82ZYpbITYE.jpg" alt="ykn生贺1.jpg" width="50%"/>
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAED7TRo_4ulfg2HeHMZW4n0V64KJxwsmQACYScAAkg6-Vd5oCIESpl2dzYE.jpg" alt="ykn生贺2.jpg" width="50%"/>
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAED7TVo_4uz32sIGizmu41sUaNS_th0IwACYicAAkg6-Vcpc4dWqp4qAzYE.jpg" alt="ykn生贺3.jpg" width="50%"/>
+
+            <p>图片来源（按照图片顺序）：</p>
+            <ol>
+                <li>aiai的推特（X）</li>
+                <li>小红书 @Momo</li>
+                <li>小红书 @瞿淮</li>
+            </ol>
+        </div>
+
+        <div id="2025-10-27-1" class="chapter-content" style="display: none;">
+            <h2>如何结合CP2K+Multiwfn做ELF拓扑分析</h2>
+            <p>时间：2025-10-27  作者：Jiaqi Z.</p>
+            <p>分类：材料计算</p>
+            <hr>
+            <p>本文以NO2为例，介绍一下如何借助CP2K计算软件与Multiwfn处理ELF拓扑分析（后面也会稍微介绍一下电荷密度拓扑分析）</p>
+            <p><em>注：具体关于Multiwfn的使用方法在sob老师的Multiwfn手册里有详细的说明（<a href="http://sobereva.com/multiwfn/">http://sobereva.com/multiwfn/</a>），此外，用Multiwfn做拓扑分析在博文（<a href="http://sobereva.com/108">http://sobereva.com/108</a>）内也有说明。</em></p>
+            <h3>使用Multiwfn构建CP2K的输入程序</h3>
+            <p>首先，构建体系结构。在这里我们构建的是分子结构，分子结构的信息可以在网站cccbdb当中找到（网站链接：<a href="https://cccbdb.nist.gov/exp1x.asp">https://cccbdb.nist.gov/exp1x.asp</a>，在教程网站的首页下滑就有）。假设现在构建得到的NO2结构<code>POSCAR</code>如下所示：</p>
+            <pre><code>
+NO2
+1.00000
+20.0 0.0 0.0
+0.0 20.0 0.0
+0.0 0.0 20.0
+N O
+1 2
+Cartesians
+10.0000 10.0000 10.0000
+10.0000 11.0989 10.4653
+10.0000 8.9011 10.4653
+            </code></pre>
+            <p>将这个结构文件导出为cif格式，在本地运行Multiwfn，导入cif文件后按照下面的内容输入（括号里面是说明注释）：</p>
+            <ul>
+            <li>cp2k （生成cp2k输入文件）</li>
+            <li>NO2-relax.inp （生成输入文件名）</li>
+            <li>-1（选择计算任务）</li>
+            <li>3（对原子进行结构优化）</li>
+            <li>2（选择基组）</li>
+            <li>10（使用全电子基组——6-31G*）</li>
+            <li>8（设置K点）</li>
+            <li>1,1,1 （使用Gamma点）</li>
+            <li>-7（设置周期性）</li>
+            <li>NONE（体系没有周期性）</li>
+            <li>0（生成输入文件）</li>
+            </ul>
+            <p>生成的文件比较大，整个文件包括结构信息，基组信息和选择的计算参数。在前面的部分找到<code>&amp;CELL</code> ，后面的三行表示晶格常数。可能会和最开始的<code>POSCAR</code>文件有区别，之所以如此，是因为在使用Multiwfn设置参数的时候，如果选择有方向不是周期性（在本例设置为三个），那Multiwfn会设置真空层大小。为了确保计算正确性（因为下面的原子坐标可能会超出晶格范围），我们可以修改晶格常数（改回原来的20）</p>
+            <h3>提交计算任务</h3>
+            <p><strong>在提交计算任务之前，请首先确保服务器内安装有CP2K。如果没有，请联系服务器管理员安装（需要root权限）。</strong></p>
+            <p>对于我所在的课题组服务器而言，最新确认的是201服务器已经安装CP2K，在提交任务时使用下面的脚本提交到计算队列（这是针对slurm队列系统的提交任务脚本，如果是使用其他的队列系统，参考着这个，结合你所使用的系统修改指令就行。）</p>
+            <p><strong>不要在本地登录节点跑任务，这对于超算使用来说不是好习惯！尤其是使用外面的超算集群更是如此！通常登录节点的性能有限，全给你跑任务，别人根本没法用。哪怕是在localhost节点，在跑任务的同时后面有人提交任务的话，计算性能也不会得到充分发挥！！</strong></p>
+            <pre><code>
+#!/bin/bash
+#SBATCH -N 1
+#SBATCH -n 104
+
+cd $SLURM_SUBMIT_DIR
+
+module load CP2K
+mpirun cp2k.psmp -i NO2-relax.inp >cp2k.out 2>cp2k.err
+            </code></pre>
+            <p><strong>注意，这里面的<code>NO2-relax.inp</code>为当前计算的输入文件，你需要根据实际情况修改它。当然，如果你愿意的话，设置一个固定的输入文件名作为cp2k计算也行。例如，使用<code>yukina.inp</code>。另外，核数也必须根据实际情况修改，不然你在64核的机器上排104核的任务，肯定算不了。</strong></p>
+            <p>将刚才的输入文件（<code>NO2-relax.inp</code>）和提交任务脚本放在同一个目录下，提交任务等待结果（按照上面脚本设置的，输出文件在<code>cp2k.out</code>里，当然你要更改也行，毕竟<code>&gt;</code>表示重定向输出（见计算教程的Linux部分“高级Linux命令-管道与重定向”一节）。</p>
+            <p>优化完成查看输出文件<code>cp2k.out</code>（或者你设置的输出文件名），在最后找到收敛精度的表示如下，当四个全是<code>YES</code>时，表示结构优化达到收敛：</p>
+            <pre><code>
+ OPT| Maximum step size                                             0.0029693064
+ OPT| Convergence limit for maximum step size                       0.0030000000
+ OPT| Maximum step size is converged                                         YES
+ OPT|
+ OPT| RMS step size                                                 0.0013574324
+ OPT| Convergence limit for RMS step size                           0.0015000000
+ OPT| RMS step size is converged                                             YES
+ OPT|
+ OPT| Maximum gradient                                              0.0001631261
+ OPT| Convergence limit for maximum gradient                        0.0004500000
+ OPT| Maximum gradient is converged                                          YES
+ OPT|
+ OPT| RMS gradient                                                  0.0001049782
+ OPT| Convergence limit for RMS gradient                            0.0003000000
+ OPT| RMS gradient is converged                                              YES
+            </code></pre>
+            <h3>计算自洽</h3>
+            <p>将计算得到的<code>NO2-relax-1.restart</code>文件下载到本地，使用Multiwfn打开，按照下面的方式设置输入参数：</p>
+            <ul>
+            <li>cp2k（生成cp2k输入文件）</li>
+            <li>NO2-scf.inp（输入文件名）</li>
+            <li>-1 （选择计算任务）</li>
+            <li>1（计算能量）</li>
+            <li>-7（设置周期性）</li>
+            <li>NONE （不设置周期性结构）</li>
+            <li>2（设置基组）</li>
+            <li>10（选择6-31G*基组）</li>
+            <li>8 （设置K点）</li>
+            <li>1,1,1（Gamma点）</li>
+            <li>-2（很重要！生成molden文件！）</li>
+            <li>0（生成输入文件）</li>
+            </ul>
+            <h3>进行ELF拓扑分析</h3>
+            <p>完成后与结构优化类似将<code>NO2-scf.inp</code>文件作为输入文件上传至服务器，计算后得到后缀名为<code>*.molden</code>的文件，将其下载到本地后用Multiwfn打开，选择<code>2</code>进行拓扑分析，在<code>-11</code>里选择需要进行分析的内容（使用CP2K计算完成后可以直接处理ELF、波函数等数据）。我们是要进行ELF拓扑分析，于是选择<code>9</code>。</p>
+            <p>然后选择<code>6</code>寻找CP点。对于我们这种小分子体系，直接使用默认即可（1000个点），如果体系比较大，可以在<code>11</code>里设置每个球里寻找的点的个数。完成设置后使用<code>-1</code>可以以每个原子为中心寻找CP点；如果体系比较大，原子数比较多的话可以使用<code>-2</code>指定球心对应的原子。</p>
+            <p>按照sob老师的介绍，Multiwfn对拓扑计算的效率很高。在本例中，我们使用四核本地计算机处理，仅用了一两秒钟就结束了。完成后<code>-9</code>返回，并使用<code>0</code>查看拓扑点，如图所示。<strong>由于对ELF而言我们主要关注(3,-3)点，也就是ELF的极大值点</strong>，在旁边的复选框把其他点给去掉，可以发现，NO2除了在化学键上有类似于<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>π</mi></math>键的成键外，在原子外面也有孤对电子。在网站上（<a href="https://zh.webqc.org/lewis-structure-of-NO2.html">https://zh.webqc.org/lewis-structure-of-NO2.html</a>）可以查到NO2的路易斯结构式，与计算结果一致。</p>
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAED7RJo_4jgG4t66PDq8fiOcEOuSRATPAACKScAAkg6-VdvQcliQwSZeTYE.png" alt="ELF-topo.png" width="50%"/>
+            <h3>进行电子密度拓扑分析</h3>
+            <p>类似地，我们也可以对电子密度进行拓扑分析，首先关闭现有的窗口（按RETURN）返回命令行，在<code>-11</code>选择计算模式中选择<code>1</code>（电子密度），重复上面的步骤（找点、可视化）。与ELF相比，电子密度拓扑的速度更快（这是因为它的CP点更少），我们得到的所有CP点如图所示（为了可视化清楚，使用棍状模型，紫色点表示(3,-3)CP点，在电子密度中表示<strong>原子核</strong>；而橙色表示(3,-1)，对应于<strong>键心</strong>。除此之外还有：</p>
+            <ul>
+            <li>(3,+1)表示<strong>环心</strong></li>
+            <li>(3,+3)表示<strong>笼心</strong></li>
+            </ul>
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAED7Rho_4khobV8LnA1W5llZPsJODrxOgACLycAAkg6-VeNgEvCIH6noTYE.png" alt="Density-topo.png" width="50%"/>
+            <p><strong>注意：在寻找拓扑结构时，有一个Poincare-Hopf关系，即原子核-键心+环心-笼心=1</strong>，如果满足这个关系，则表明所有CP点已经找到。在生成图片后，Multiwfn会自动计算，并生成如下的内容：</p>
+            <pre><code>
+The number of critical points of each type:
+(3,-3):     3,   (3,-1):     2,   (3,+1):     0,   (3,+3):     0
+Poincare-Hopf verification:     3  -     2  +     0  -     0  =     1
+Fine, Poincare-Hopf relationship is satisfied, all CPs may have been found
+            </code></pre>
+            <p>对于ELF拓扑分析而言，大概率不会找到全部的点，这并无所谓，只要对所研究的内容是没错的就行——主要关注(3,-3)点，而对于其他点通常不关心，也就没有必要关注是否满足上面的等式了。如果实在担心是否找全所有的点，可以切换球半径或点数，进一步查找。</p>
+            <p>除此之外，如果关心具体的CP点的信息（例如对应的电子密度多大），可以使用拓扑分析里的<code>7</code>功能，选择要研究的CP点查看。具体的在Multiwfn手册2.6、2.7小节。此外，借助<code>8</code>功能可以连接在(3,-3)和(3,-1)之间生成拓扑路径，通常表示<strong>化学键</strong>，具体的介绍可以查看网站（<a href="http://sobereva.com/108%EF%BC%89">http://sobereva.com/108</a>）</p>
+        </div>
+
+        <div id="2025-10-20" class="chapter-content" style="display: none;">
+            <h2>志崎桦音照片（2）</h2>
+            <p>时间：2025-10-20</p>
+            <p>分类：BanG Dream!</p>
+            <hr>
+            <p><font size=10>好长时间没更新网站了，攒了好多“老婆”的照片，这次发一下。</font></p>
+            <p><img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlF1o9kNDO1jYF_mHTAOjrPhmRbahFwACpyEAAliAsFerebRC-y_qAzYE.jpg" alt="1.jpg" width="30%">
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlFto9kNBH2gdC-e7jrHxdYvAJZsunwACpSEAAliAsFd-0HySW_jO3zYE.jpg" alt="2.jpg" width="30%">
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlGJo9kNJH4pxw2Vb0EvytxuUdXWbWQACrCEAAliAsFfFZli-Ewbr-TYE.jpg" alt="3.jpg" width="30%">
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlF5o9kND1pgTY6QPYm71aZ2_GJggnwACqCEAAliAsFc4D8YgvpRGPTYE.jpg" alt="4.jpg" width="30%">
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlGFo9kNJVY9MlB8P5q4UFcw4RoC8CwACqyEAAliAsFc5ILV0knMmdzYE.png" alt="5.png" width="30%">
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlGBo9kNJXx2sor1VY8avHfLsU8NkXAACqiEAAliAsFc8biRsuoCoUjYE.jpg" alt="6.jpg" width="30%">
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlFxo9kNCtc05OwEq2kw1yWcHGUWpwgACpiEAAliAsFecwdJo05YW7TYE.jpg" alt="8.jpg" width="30%">
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEDlF9o9kNE3tzMUWRFSDaGH4ZZnRsv_gACqSEAAliAsFcSVSCVzokzljYE.jpg" alt="7.jpg" width="30%">
+            </p>
+        </div>
+        <div id="2025-9-10" class="chapter-content" style="display: none;">
+            <h2>服务器终端程序MobaXterm安装包</h2>
+            <p>时间：2025-09-10</p>
+            <p>分类：材料计算 </p>
+            <hr>
+            <p>如题，这是MobaXterm的安装包，你可以直接点击<a href="blog_file/2025-9-10/MobaXterm_Installer_v24.0.zip" download="MobaXterm_Installer_v24.0.zip">这里</a>下载。</p>
+            <p>下载完成后，如正常程序一样解压、安装，安装完成后进入程序，点击上方Session-SSH，输入服务器IP地址（在注册账号时会提供ip地址）</p>
+            <p>完成后双击左侧IP地址进入服务器，输入用户名和密码（注意：密码看不见，屏幕上不显示是正常的）即可。用户名和密码会在创建账户时提供。</p>
+            <img src="blog_fig/2025-9-10/1.png" alt="MobaXterm首页" width="80%">
+        </div>
+        <div id="2025-7-26" class="chapter-content" style="display: none;">
+            <h2>non酱の照片1</h2>
+            <p>时间：2025-07-26</p>
+            <p>分类：BanG Dream! </p>
+            <hr>
+            <p>这是non酱在海宁活动时化妆的照片……好看……老婆……</p>
+            <p>你知道的，non酱一直是我的主人（bushi）</p>
+            <p><img src="blog_fig/2025-7-26/1.jpg" alt="1" width="40%">
+            <img src="blog_fig/2025-7-26/2.jpg" alt="2" width="40%">
+            <img src="blog_fig/2025-7-26/3.jpg" alt="3" width="40%">
+            <img src="blog_fig/2025-7-26/4.jpg" alt="4" width="40%">
+            <img src="blog_fig/2025-7-26/5.jpg" alt="5" width="40%">
+            <img src="blog_fig/2025-7-26/6.jpg" alt="6" width="40%">
+            <img src="blog_fig/2025-7-26/7.jpg" alt="7" width="40%">
+        </p>
+        </div>
+
+        <div id="2025-7-2" class="chapter-content" style="display: none;">
+            <h2>使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</h2>
+            <p>时间：2025-07-02  作者：Jiaqi Z.</p>
+            <p>分类：材料计算</p>
+            <hr>
+            <p>在材料计算的教程中，我们介绍了关于使用Linux的sed命令进行文本替换，其基本格式为<code>sed -i "s/[原字符串]/[替换字符串]/g" [文件路径名]</code>。利用这个方法，我们可以对<code>INCAR</code>文件中的参数进行替换。例如，我们希望将<code>EDIFF</code>从<code>1E-5</code>改成<code>1E-6</code>，可以使用命令<code>sed -i "s/1E-5/1E-6/g" INCAR</code>。</p>
+            <p>当然，这种方式有一个缺陷：<strong>如果INCAR的参数有多个相同的值，如何让命令只修改对应的参数？</strong>例如，我们希望修改自旋极化开关<code>ISPIN</code>让其从1变成2，但这个过程可能会使得其他参数（如<code>ISTART</code>）也会发生变化，这显然不是我们想要的结果。</p>
+            <p>也许……把关键字也加到命令里是可行的……</p>
+            <p>例如，我们尝试<code>sed -i "s/ISPIN=1/ISPIN=2/g" INCAR</code>，这种方法确实可以只修改<code>ISPIN</code>参数。但是，<strong>它忽略了等号两端的空格</strong>。对于一些工具（如vaspkit），在生成文件时会带有空格。那么，如果我们直接把空格加上呢？显然也是不行的，因为我们不知道有多少个空格。</p>
+            <p><em>注：在<code>INCAR</code>中查看有多少个空格，直接输入在命令中是一种“下策”，因为我们希望将这个功能“普适化”，以便在更多的场景下适用（无论有多少个空格）。甚至，以后可以将其用于for循环或者脚本中（我们后面会给一个脚本的使用例子）</em></p>
+            <p>答案是使用<strong>正则表达式</strong>。</p>
+            <h3>关于正则表达式</h3>
+            <p>在正则表达式中，使用<code>\s</code>符号表示<strong>所有空白符</strong>，使用<code>\t</code>表示<strong>制表符</strong>等。显然，空格应当是使用<code>\s</code>表示。但是，<strong>如何解决多个空格的问题呢</strong>？在正则表达式中，我们可以使用<code>+</code>表示<strong>前面的字符出现一次或多次</strong>，使用<code>*</code>表示<strong>前面的字符出现零次或多次</strong></p>
+            <p><strong>注意：这里的<code>*</code>不是“通配符”的那个符号。另外，这里的<code>\</code>实际上就是其他大多数程序语言中所表示的“转义字符”</strong></p>
+            <p>因此，如果我们想要匹配类似于<code>ISPIN  =  1</code>这样的字符串，可以用正则表达式写作<code>ISPIN\s+=\s+1</code>（可以自己尝试理解它）。在<code>sed</code>当中使用它，需要使用参数<code>-E</code>（因为像<code>+</code>这种符号属于<strong>扩展正则表达式</strong>）。综合一下，如果我们希望将<code>ISPIN</code>从1改成2，则可以写作<code>sed -E -i "s/ISPIN\s+=\s+1/ISPIN = 2/g" INCAR</code></p>
+            <p>进一步，像上面这样仅使用正则表达式匹配空格算是“中策”，而“上策”则是使用不考虑初始数值，只使用关键字。例如，在设计脚本时，如果在用户使用时还需要提供原来的值，会稍显多余。简单的方法是无论后面的值是多少，直接改成我们想要的数值即可。在正则表达式中，使用<code>\S</code>表示<strong>非空白字符</strong>（还有<code>\w</code>，表示<strong>数字、字母和下划线</strong>，二者是不同的，前者范围更大）</p>
+            <p>如果考虑这种方法，可以将命令写成下面这样：<code>sed -E -i "s/ENCUT\s+=\s+\S+/ENCUT = 600/g" INCAR</code>。这种方式可以将<code>ENCUT</code>设置为600（无论原先的数值是400、520还是800还是其他数值）</p>
+            <h3>一个扩展脚本</h3>
+            <p>我们下面提供一个示例脚本，用户可以直接在当前目录下运行这个脚本，输入要修改的参数和想要的值，脚本会自动修改：</p>
+            <pre><code>
+#!/bin/bash
+# 修改INCAR参数
+read -p "Parameter: " keyWord
+read -p "Value: " value
+sed -E -i "s/$keyWord\s+=\s+\S+/$keyWord = $value/g" INCAR
+echo "Done!"
+            </code></pre>
+            <p>你可以将这个程序集成到更大的程序中（类似于vaspkit带有菜单功能引导）</p>
+        </div>
+
+        <div id="2025-6-16" class="chapter-content" style="display: none;">
+            <h2>Roselia Live 「Sei stark」返图</h2>
+            <p>时间：2025-06-16</p>
+            <p>分类：BanG Dream! </p>
+            <hr>
+            <p>老婆们……嘿嘿……</p>
+            <p><img src="blog_fig/2025-6-16/1.png" alt="返图1" width="40%">
+            <img src="blog_fig/2025-6-16/2.jpeg" alt="返图2" width="40%">
+            <img src="blog_fig/2025-6-16/3.jpeg" alt="返图3" width="40%">
+            <img src="blog_fig/2025-6-16/4.jpeg" alt="返图4" width="40%">
+            <img src="blog_fig/2025-6-16/5.jpeg" alt="返图5" width="40%">
+            <img src="blog_fig/2025-6-16/6.jpeg" alt="返图6" width="40%">
+            <img src="blog_fig/2025-6-16/7.jpeg" alt="返图7" width="40%">
+            <img src="blog_fig/2025-6-16/8.jpeg" alt="返图8" width="40%">
+            <img src="blog_fig/2025-6-16/9.jpeg" alt="返图9" width="40%">
+            <img src="blog_fig/2025-6-16/10.jpeg" alt="返图10" width="40%">
+            <img src="blog_fig/2025-6-16/11.jpeg" alt="返图11" width="40%">
+            <img src="blog_fig/2025-6-16/12.jpeg" alt="返图12" width="40%">
+            <img src="blog_fig/2025-6-16/13.png" alt="返图13" width="40%">
+        </p>
+        </div>
+
+        <div id="2025-4-9" class="chapter-content" style="display: none;">
+            <h2>使用lobster进行COHP分析</h2>
+            <p>时间：2025-04-09  作者：Jiaqi Z.</p> 
+            <p>分类：材料计算 </p>
+            <p>发布后第一次更新：2025-04-10</p>
+            <hr>
+            <p><em>注：这部分后续可能会加入材料计算系列教程中</em></p>
+            <h3>什么是COHP</h3>
+            <p>晶体轨道哈密顿布居（Crystal Orbital Hamilton Population, <strong>COHP</strong>）是一种用于分析固体材料中原子间化学键性质的工具，由Dronskowski和Blochl在1993年提出<sup>[1]</sup>。其核心思想是通过计算哈密顿量矩阵元在原子轨道基底上的投影，定量评估相邻原子间轨道的成键（bonding）或反键（antibonding）相互作用。 COHP将能带结构能量分解为原子轨道对的相互作用能分布；从化学角度更直观地说，它是相邻原子对之间的​​"键权重"态密度​​。</p>
+            <p>与晶体轨道重叠布居（COOP）不同，COHP直接关联哈密顿量能量而非重叠积分，因此更适用于金属和半导体等强离域体系的键合分析。COHP的计算公式为：<br>
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mtext>COHP</mtext><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></msub><mo stretchy="false">(</mo><mi>E</mi><mo stretchy="false">)</mo><mo>=</mo><munder><mo data-mjx-texclass="OP">∑</mo><mrow><mi>μ</mi><mo>,</mo><mi>ν</mi></mrow></munder><msubsup><mi>c</mi><mrow><mi>i</mi><mi>μ</mi></mrow><mo>∗</mo></msubsup><msub><mi>c</mi><mrow><mi>j</mi><mi>ν</mi></mrow></msub><msub><mi>H</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub><mo>⋅</mo><mi>δ</mi><mo stretchy="false">(</mo><mi>E</mi><mo>−</mo><msub><mi>E</mi><mi>k</mi></msub><mo stretchy="false">)</mo></math>
+            其中，<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>c</mi><mrow><mi>i</mi><mi>μ</mi></mrow></msub></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>c</mi><mrow><mi>j</mi><mi>ν</mi></mrow></msub></math>为原子轨道系数，<math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>H</mi><mrow><mi>μ</mi><mi>ν</mi></mrow></msub></math>为哈密顿量矩阵元。负值COHP表示成键态（降低体系能量），正值则为反键态（升高体系能量）。</p>
+            <p>COHP图谱能明确展示成键（bonding）和反键（antibonding）对能带能量的贡献，通常与态密度（DOS）图并列呈现（DOS仅显示电子分布，而COHP揭示其键合特性）。正如对电子态密度（DOS）积分可得到体系总电子数，对COHP进行能量积分则可量化特定原子接触（"化学键"）对能带能量的贡献：换言之，​​积分COHP（ICOHP）​​的绝对值反映了键强。</p>
+            <h3>如何使用COHP分析成键or反键</h3>
+            <p>计算费米能级以下的COHP积分，<strong>如果积分小于0，则表示成键；如果大于0则表示反键</strong>。</p>
+            <h3>使用VASP计算COHP的方法</h3>
+            <h4>1. 结构优化</h4>
+            <p>如同正常的结构优化一样，在此不赘述。</p>
+            <h4>2. 自洽计算</h4>
+            <p>与一般的自洽类似，但需要注意以下几点：</p>
+            <ul>
+            <li><code>ISYM</code>需要设置为-1</li>
+            <li>由于处理COHP需要读取WAVECAR文件，因此需要保留WAVECAR（<code>LWAVE=.TRUE.</code>）</li>
+            <li>需要设置一个较大的<code>NBANDS</code></li>
+            </ul>
+            <p>其中在设置<code>NBANDS</code>时可以首先忽略掉这个参数，直接提交任务进行自洽计算，在开始时查看OUTCAR中<code>NBANDS</code>的数值（使用grep命令，具体方法请详见<a href="material_tutorial.html">材料计算教程</a>中的“Linux基础-高级Linux命令-grep匹配字符串”一节）。通常来说，默认数值偏小，一般设置为默认数值的1.5-2倍。</p>
+            <p>例如，在计算时默认<code>NBANDS=300</code>，则可以在<code>INCAR</code>中设置<code>NBANDS=500</code>左右。</p>
+            <h4>3. 使用lobster处理COHP</h4>
+            <p>在服务器上使用lobster计算投影以获取COHP，（如果你是我所在课题组的成员，课题组内106节点服务器已配置lobster，其他节点如224待测试，使用前需要<code>module load lobster</code>，建议直接使用后面的提交任务脚本在队列系统使用）对于其他课题组，建议寻求组内帮助，或联系超算管理员。</p>
+            <p><strong>2025-4-10更新：课题组内服务器224和105已配置lobster，导入方法和106节点相同。</strong></p>
+            <p>在使用lobster时需要准备一个输入文件<code>lobsterin</code>，一个常见的模板为：</p>
+            <pre><code>
+# 设置起止能量（eV）
+COHPstartEnergy -10
+COHPendEnergy 5
+
+usebasisset pbeVaspFit2015
+# 设置轨道
+basisfunctions C  2s 2p
+# 考虑两个原子间的COHP
+cohpbetween atom 1 atom 2 orbitalwise
+gaussianSmearingWidth 0.05
+# SkipDOS 跳过DOS计算
+# 保存投影文件
+saveProjectionToFile 
+# loadProjectionFromFile 读取投影文件
+            </code></pre>
+            <p>其中一些参数解释如下：</p>
+            <ul>
+            <li><code>COHPstartEnergy</code>和<code>COHPendEnergy</code>：在绘制COHP时考虑的能量范围，类似于计算态密度时设置的<code>EMIN</code>和<code>EMAX</code></li>
+            <li><code>usebasisset</code>：对于VASP计算而言，使用pbeVaspFit2015总是没错的<sup>[2]</sup>（除此之外还有Budge）</li>
+            <li><code>basisfunctions</code>：设置电子轨道，这一部分需要参考你所使用的赝势POTCAR文件。**注意：不同的赝势版本对应不同的轨道，例如，<code>Ti_pv</code>和<code>Ti</code>相比，前者多了3p轨道；<code>Ti_sv</code>又比<code>Ti_pv</code>多了3s轨道。<strong>你所使用的轨道需要根据POTCAR对应版本设置（使用<code>grep TIT POTCAR</code>查看每个元素对应版本）</strong>，具体所考虑的轨道可以参考网站<a href="https://www.vasp.at/wiki/index.php/Choosing_pseudopotentials">https://www.vasp.at/wiki/index.php/Choosing_pseudopotentials</a>里的<strong>Recommended PAW potentials</strong></li>
+            <li><code>cohpbetween</code> atom <m> atom <n> <code>orbitalwise</code>：考虑第m个原子和第n个原子之间的cohp，其编号根据POSCAR文件排序（可以借助VESTA软件在可视化当中查看原子编号。双击原子在下方会有如“Atom: 1”的字样，表明这是第1个原子。<code>orbitalwise</code>表示计算投影cohp（类似于PDOS一样可以查看每个轨道的贡献）</n></m></li>
+            <li><code>gaussianSmearingWidth</code>：高斯展宽。如果VASP中设置<code>ISMEAR=0</code>，则需要在这里设置展宽（<code>INCAR</code>中的<code>SIGMA</code>）；如果使用的是<code>ISMEAR=-5</code>（正四面体方法），则可以忽略这个参数</li>
+            <li><code>SkipDOS</code>：跳过DOS计算，lobster可以计算处理DOS，但相比其他脚本如Vaspkit，功能不是太好，因此一般可以选择忽略DOS</li>
+            <li><code>saveProjectionToFile</code>：保存投影文件，cohp在计算投影时可能耗费的时间较多，因此将其保存下来可以方便之后使用<code>loadProjectionFromFile</code>读取而加快处理速度。</li>
+            </ul>
+            <p>将文件设置完成后执行<code>lobster</code>即可得到处理后的文件。在输出结果中需要关注<code>abs. charge spilling</code>表示spilling误差，如果误差小于5%则表示计算正常（5%是官方给的数据，一般建议为2%）。</p>
+            <h4>4. 绘图与后处理</h4>
+            <p>在绘制cohp时需要使用wxDragon，可以在官网下载，也可以直接点击<a href="blog_file/2025-4-9/wxDragon_Windows.zip" download="wxDragon_Windows.zip">这里</a>下载（<font color="red">注意：测试发现官网上的新版本在导出xy格式时有问题，需要“回调”至老版本。如果你没有安装，可以直接在这里下载可用于数据导出的老版本；如果你已经安装，无论是官网或者2025年4月10日之前在本篇文章对应链接下载的，需要删除原有安装包与解压文件，重新解压新文件</font>）。下载完成后打开，将服务器上的COHPCAR.lobster下载到本地并导入软件中，选择合适的轨道进行可视化，完成后将数据导出为XY格式的文件并使用Origin进行绘图。（wxDragon的UI界面比较老）</p>
+            <p><strong>注意：注意！注意！在开始时我们所说COHP在费米能级以下积分为负表示成键，积分为正表示反键。但在使用wxDragon绘制COHP时，为了和COOP相对应，在绘制COHP时通常设置为相反数（即-COHP），此时积分为正表示成键，积分为负表示反键！</strong></p>
+            <h3>提交任务脚本</h3>
+            <p>下面是一个在slurm队列系统提交lobster任务的一个简单脚本（sub.lobster），对于我所在课题组内的成员而言可以直接使用（如提交vasp任务一样提交即可，使用sbatch sub.lobster），对于其他课题组而言，也可根据下面的格式进行修改以适配不同的队列系统（如pbs等），具体请咨询你的导师、你的课题组同学或者超算相关管理员。</p>
+            <p>你可以在这里直接下载脚本文件到本地，<a href="blog_file/2025-4-9/sub.lobster" download="sub.lobster">点击下载</a></p>
+            <pre><code>
+#!/bin/bash
+SBATCH -n 56
+SBATCH -N 1
+
+打印任务信息
+cho "Starting job $SLURM_JOB_ID at " `date`
+cho "SLURM_SUBMIT_DIR is $SLURM_SUBMIT_DIR"
+cho "Running on nodes: $SLURM_NODELIST"
+
+# 执行任务
+## 载入lobster
+module load lobster
+##unlimited the stack size
+#ulimit -s unlimited
+lobster &gt; lobster.out 2&gt;lobster.err
+
+# 任务结束
+echo "Job $SLURM_JOB_ID done at " `date`
+            </code></pre>
+            <footer> 
+                <h3>注释</h3>
+                <p>[1] Dronskowski, R. & Bloechl, P. E. Crystal orbital Hamilton populations (COHP): energy-resolved visualization of chemical bonding in solids based on density-functional calculations. J. Phys. Chem. 97, 8617–8624 (1993). <a href="https://doi.org/10.1021/j100135a014">https://doi.org/10.1021/j100135a014</a><a class="easyScholarDOI" target="_blank" href="https://www.sci-hub.ru/10.1021/j100135a014"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0" href="data:image/png;base64,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"></image></svg></a></p>
+            <p>[2] 关于pbeVaspFit2015，可以参考文献Maintz, S., Deringer, V. L., Tchougréeff, A. L. & Dronskowski, R. LOBSTER: A tool to extract chemical bonding from plane‐wave based DFT. J Comput Chem 37, 1030–1035 (2016). <a href="https://doi.org/10.1002/jcc.24300">https://doi.org/10.1002/jcc.24300</a><a class="easyScholarDOI" target="_blank" href="https://www.sci-hub.ru/10.1002/jcc.24300"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0" href="data:image/png;base64,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"></image></svg></a></p>
+            </footer>
+        </div>
+
+        <div id="2025-3-12" class="chapter-content" style="display: none;">
+            <h2>日麻系列教程1：日麻役种常见一览</h2>
+            <p>时间：2025-03-12  作者：Jiaqi Z.</p> 
+            <p>分类：桌游 </p>
+            <hr>
+            <p>这套教程是专门为同学学习日麻所写的，主要是为了帮助他们更容易记住这些役种。在开始学习役种之前，我们需要首先明确几个名词：</p>
+            <ul>
+            <li>门清：没有吃牌、碰牌、明杠、加杠的行为（只有暗杠也算门清）</li>
+            <li>副露：有吃牌、碰牌、明杠、加杠</li>
+            <li>风牌：东、南、西、北</li>
+            <li>三元牌：中、发、白</li>
+            <li>字牌：风牌+三元牌</li>
+            <li>老头牌：数字1和数字9（1万、9万、1索、9索、1筒、9筒）</li>
+            <li>幺九牌：老头牌+字牌</li>
+            </ul>
+            <p>我们首先会列出<strong>常见</strong>的役种列表，在后面会详细说明它们的含义</p>
+            <h3>役种列表与记忆方法</h3>
+            <ul>
+            <li>一番役：【立直】、断幺九、【平和】、【一发】、【门前清自摸】、【一杯口】、役牌</li>
+            </ul>
+            <p><em>记忆技巧：可以简记为“<strong>立断平一发自摸一杯口</strong>”，这是因为这些役种往往组合出现，后面还有一个“役牌”。</em></p>
+            <ul>
+            <li>二番役：&lt;三色同顺&gt;、三色同刻、<font color="red">三杠子</font>、<font color="green">三暗刻</font>、<font color="orange">小三元</font>、&lt;<u>混全带幺九</u>&gt;、对对和、【七对子】、<font color="purple">混老头</font>、&lt;一气通贯&gt;</li>
+            </ul>
+            <p><em>记忆技巧：几乎所有带“<strong>三</strong>”的役种都是二番役，还有和对子刻子有关的<strong>七对子</strong>，<strong>对对和</strong>。</em></p>
+            <ul>
+            <li>
+            <p>三番役：&lt;<u>纯全带幺九</u>&gt;、&lt;<u>混一色</u>&gt;、【二杯口】</p>
+            </li>
+            <li>
+            <p>六番役：&lt;<u>清一色</u>&gt;</p>
+            </li>
+            </ul>
+            <p>注：上述役种中带【】表示为<strong>门清役</strong>，即<strong>只有门清状态</strong>下才能成立；&lt;&gt;表示<strong>食下役</strong>，即<strong>副露下减一番</strong>。上述役种中带颜色的表示存在<strong>上位役满役种</strong></p>
+            <p><em>记忆技巧：可以将“混一色”和“清一色”统称为<strong>染手</strong>，即可以记忆“食下役”为“<strong>三色、一气、全带、染手</strong>”，其中<strong>全带</strong>包括“<strong>混全带幺九（二番）</strong>”和“<strong>纯全带幺九（三番）</strong>”；<strong>染手</strong>包括“<strong>混一色（三番）</strong>”和“<strong>清一色（六番）</strong>”</em></p>
+            <ul>
+            <li>
+            <p>常见的役满：<font color="red">四杠子</font>、<font color="green">四暗刻</font>、<font color="orange">大三元</font>、<font color="purple">清老头</font>、字一色、绿一色、<font color="gray">小四喜</font>、<font color="blue">国士无双</font>、<font color="darkred">九连宝灯</font></p>
+            </li>
+            <li>
+            <p>双倍役满（有些规则也记为役满）：<font color="green">四暗刻单骑</font>、<font color="gray">大四喜</font>、<font color="blue">国士无双十三面</font>、<font color="darkred">纯正九连宝灯</font></p>
+            </li>
+            </ul>
+            <p>偶然役（不一定能做成的役，只有<strong>一番</strong>和<strong>役满</strong>）</p>
+            <ul>
+            <li>一番：海底捞月（最后一张牌自摸）、河底摸鱼（最后一张牌荣和）、岭上开花（开杠后摸牌正好和牌）、抢杠（和别人加杠的牌，听国士无双时<strong>可以抢暗杠</strong>）</li>
+            <li>役满：天和（亲家配牌时直接和牌）、地和（子家在前面<strong>无吃、碰</strong>后第一张摸牌直接和牌）</li>
+            </ul>
+            <h3>役种详解</h3>
+            <p>基本和牌型：m*AAA+n*BCD+EE（共14张）</p>
+            <p>术语：</p>
+            <ul>
+            <li><strong>刻子</strong>：AAA（三个完全相同的牌），通常包含碰牌所成的“<strong>明刻</strong>”以及手牌中的“<strong>暗刻</strong>”</li>
+            <li><strong>顺子</strong>：BCD（三个花色相同、数字相连的数牌，例如234万、789索、123筒）</li>
+            <li><strong>面子</strong>：刻子+顺子</li>
+            <li><strong>对子</strong>：两个完全相同的牌</li>
+            <li><strong>雀头</strong>：EE（对子）</li>
+            <li><strong>两面</strong>：两个花色相同、数字相邻的数牌（不包括12、89），例如45万、34索、78筒</li>
+            </ul>
+            <h4>一番役</h4>
+            <ul>
+            <li>立直（门清役）：门清听牌</li>
+            <li>断幺九：<strong>所有牌</strong>均不含<strong>幺九牌</strong></li>
+            <li>役牌：包含有场风/自风/中/发/白<strong>刻子</strong>（/表示“或”）</li>
+            <li>平和（门清役）：四组面子均为<strong>顺子</strong>+雀头<strong>不是役牌</strong>（场风、自风、三元）+听牌为<strong>两面</strong>顺子听牌</li>
+            <li>一杯口（门清役）：两组<strong>完全一样的顺子</strong>（例如345万345万）</li>
+            <li>门前清自摸（门清役）：在门清条件下自摸和牌</li>
+            <li>一发（门清役/立直限定）：立直后在一巡内和牌（立直后一圈内和牌），且中间无吃牌、碰牌、杠牌</li>
+            </ul>
+            <h4>二番役</h4>
+            <ul>
+            <li>七对子（非基本型，门清役）：7组<strong>不相同</strong>的对子</li>
+            <li>三色同顺：三组<strong>花色不同、数字相同的顺子</strong>（例如345万345筒345索）</li>
+            <li>三色同刻：三组<strong>花色不同、数字相同的刻子</strong>（例如333万333筒333索）</li>
+            <li>混全带幺九（食下役）：<strong>五组</strong>面子和雀头均“<strong>带有</strong>”<strong>幺九牌</strong>（1、9和字牌）</li>
+            <li>一气通贯（食下役）：<strong>相同花色</strong>的<strong>123，456，789</strong>三组顺子</li>
+            <li>对对和：所有面子都是<strong>刻子</strong></li>
+            <li>三暗刻：三组暗刻</li>
+            <li>三杠子：三组杠子（明杠、暗杠、加杠均可）</li>
+            <li>混老头：<strong>五组</strong>面子和雀头均为<strong>幺九牌</strong>（1、9和字牌）</li>
+            <li>小三元：中、发、白任意<strong>两个刻子</strong>加<strong>另一个对子</strong></li>
+            </ul>
+            <h4>三番役</h4>
+            <ul>
+            <li>纯全带幺九（食下役）：<strong>五组</strong>面子和雀头均“<strong>带有</strong>”<strong>老头牌</strong>（1、9）（即“混全带幺九”<strong>无字牌</strong>）</li>
+            <li>混一色（食下役）：<strong>五组</strong>面子和雀头均为<strong>同一种花色</strong>的数牌和<strong>字牌</strong></li>
+            <li>二杯口（门清役）：两组“一杯口”（例如345万345万789索789索）</li>
+            </ul>
+            <h4>六番役</h4>
+            <ul>
+            <li>清一色（食下役）：<strong>五组</strong>面子和雀头均为<strong>同一种花色的数牌</strong>（“混一色”<strong>无字牌</strong>）</li>
+            </ul>
+            <h4>役满</h4>
+            <ul>
+            <li>四暗刻（门清役）：四组暗刻</li>
+            <li>四杠子：四组杠子（明杠、暗杠、加杠均可）</li>
+            <li>清老头：五组面子和雀头均为老头牌（1、9）</li>
+            <li>大三元：三组中、发、白的刻子</li>
+            <li>小四喜：风牌（东、南、西、北）任意三组刻子加另一个对子</li>
+            <li>国士无双（非基本型，门清役）：19万19索19筒+东南西北中发白，加其中任意一种的对子</li>
+            <li>字一色：所有牌都是字牌（风牌或三元牌）</li>
+            <li>绿一色：所有牌都是2、3、4、6、8索或发组成的</li>
+            <li>九连宝灯（门清役）：同种花色的1112345678999+同花色另外一张</li>
+            </ul>
+            <h4>双倍役满</h4>
+            <ul>
+            <li>四暗刻单骑（门清役）：四组暗刻+最后剩余单张听牌</li>
+            <li>大四喜：风牌（东、南、西、北）的四组刻子</li>
+            <li>国士无双十三面（非基本型，门清役）：手牌为19万19索19筒+东南西北中发白，听其中的任意一张</li>
+            <li>纯正九连宝灯（门清役）：手牌为同种花色的1112345678999，听同花色另外一张</li>
+            </ul>
+            <p>（下篇预告：介绍如何“简单”地计算点数）</p>
+        </div>
+
+        <div id="2025-2-20" class="chapter-content" style="display: none;">
+            <h2>Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</h2>
+            <p>时间：2025-02-20</p>
+            <p>分类：BanG Dream! </p>
+            <hr>
+            <p><img src="blog_fig/2025-2-20/1.jpg" alt="返图1" width="40%">
+            <img src="blog_fig/2025-2-20/2.png" alt="返图2" width="40%">
+            <img src="blog_fig/2025-2-20/3.png" alt="返图3" width="40%">
+            <img src="blog_fig/2025-2-20/4.jpg" alt="返图4" width="40%">
+            <img src="blog_fig/2025-2-20/5.jpg" alt="返图5" width="40%">
+            <img src="blog_fig/2025-2-20/6.jpg" alt="返图6" width="40%">
+            <img src="blog_fig/2025-2-20/7.jpg" alt="返图7" width="40%">
+            </p>
+            <img src="blog_fig/2025-2-20/8.png" alt="返图8" width="40%">
+            <img src="blog_fig/2025-2-20/9.jpg" alt="返图9" width="40%">
+            <img src="blog_fig/2025-2-20/10.jpg" alt="返图10" width="40%">
+        </div>
+
+        <div id="2025-2-16" class="chapter-content" style="display: none;">
+            <h2>Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</h2>
+            <p>时间：2025-02-16</p>
+            <p>分类：BanG Dream! </p>
+            <hr>
+            <p>这是“<em>老婆们</em>”的照片返图……嘿嘿……</p>
+            <img src="blog_fig/2025-2-16/1.jpg" alt="返图1" width="40%">
+            <img src="blog_fig/2025-2-16/3.jpg" alt="返图2" width="40%">
+            <img src="blog_fig/2025-2-16/4.jpg" alt="返图3" width="40%">
+            <img src="blog_fig/2025-2-16/5.jpg" alt="返图4" width="40%">
+            <img src="blog_fig/2025-2-16/7.jpg" alt="返图5" width="30%">
+            <img src="blog_fig/2025-2-16/2.jpg" alt="返图6" width="30%">
+            <img src="blog_fig/2025-2-16/6.jpg" alt="返图7" width="30%">
+            <img src="blog_fig/2025-2-16/8.jpg" alt="返图8" width="30%">
+            <img src="blog_fig/2025-2-16/9.jpg" alt="返图9" width="30%">
+            <img src="blog_fig/2025-2-16/10.jpg" alt="返图10" width="30%">
+            <img src="blog_fig/2025-2-16/11.jpg" alt="返图11" width="30%">
+            <img src="blog_fig/2025-2-16/12.jpg" alt="返图12" width="45%">
+
+        </div>
+        
+        <div id="2025-1-31-1" class="chapter-content" style="display: none;">
+            <h2>【快报】从刘谦魔术看排列组合与冒泡算法</h2>
+            <p>时间：2025-01-31 作者：小七Seven@<a href="https://mp.weixin.qq.com/s/sjIwolJ_dX5N9JQSdjwg6A?token=1716024577&lang=zh_CN">科普小白说</a></p>
+            <p>分类：科普</p>
+            <hr>
+            <p><strong>注：继去年讲解刘谦魔术之后，这又是一篇“快报”，用最短的方法给大家解释第一个魔术种关于排序问题所使用的——冒泡算法</strong></p>
+        <h2>回顾魔术效果</h2>
+        <p>让我们从头回顾一下第一个“举杯”的魔术过程：</p>
+        <blockquote>
+        <ol>
+        <li>把杯子、筷子和勺子随意按照顺序摆放</li>
+        <li>将<strong>筷子和左边互换</strong></li>
+        <li>将<strong>杯子和右边互换</strong></li>
+        <li>将<strong>勺子和左边互换</strong></li>
+        <li>左手举起最左边的东西，右手举起最右边的东西，放下左手的东西，右手一定是杯子</li>
+        </ol>
+        </blockquote>
+        <h2>关于“冒泡排序”</h2>
+        <p>在表演完这个魔术之后，网上有一些评论提到了“<strong>冒泡排序</strong>”。在某种程度上，它和这个算法是类似的，因此我们先用一些篇幅说明这个算法，在最后我们来解释一下——为什么这个魔术实际上<strong>不是</strong>冒泡排序。</p>
+        <blockquote>
+        <p>冒泡排序（Bubble Sort）是最简单和最通用的排序方法，其基本思想是：在待排序的一组数中，将相邻的两个数进行比较，若前面的数比后面的数大就交换两数，否则不交换；如此下去，直至最终完成排序。由此可得，在排序过程中，大的数据往下沉，小的数据往上浮，就像气泡一样，于是将这种排序算法形象地称为冒泡排序。
+        ——以上内容转自“百度百科”</p>
+        </blockquote>
+        <p>正如上面所解释的那样，冒泡排序实际上是计算机领域一个<strong>排序问题</strong>算法。</p>
+        <p><em>也许你会想问：为什么计算机需要排序算法？类比查字典这个过程，以《新华字典》为例，是按照拼音字母顺序排序的，也正因如此，对于知道读音的情况，熟悉字典的人可以不用查询前面的目录就可以定位到后面对应拼音的位置。对于英语词典更是如此。从计算机的角度看，有序数据更有利于后续的查找。</em></p>
+        <h2>排列与组合</h2>
+        <p><em>对于熟悉高中数学的人来说，这一部分可以跳过去</em></p>
+        <p>正如前面所引用的内容，冒泡排序需要对所有数字两两比较大小。于是涉及到一个问题——<strong>最多需要比较多少次</strong>？之所以选择“最多”的次数，是为了得到评估算法效率的<strong>时间复杂度</strong>。</p>
+        <p>让我们进一步抽象这个问题，就可以化简为：给定<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个数，需要需要选出2个数，最多有几种选法？或者再进一步推广一下，假设有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个数，需要选出<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个数，最多有几种选法？</p>
+        <h3>排列——考虑顺序的组合</h3>
+        <p>以这个魔术为例，有3个物体，首先考虑一个问题，有多少种排列方法？让我们把三个物体暂时抽象成123三个数字，在选择第一个物体时，可以有3种选法；对第二个物体，由于第一个物体已经选定，所以<strong>只有2种选法</strong>了；对于第三个物体，则只剩下1个物体。于是最终的排列方法就是<math xmlns="http://www.w3.org/1998/Math/MathML"><mn>3</mn><mo>×</mo><mn>2</mn><mo>×</mo><mn>1</mn><mo>=</mo><mn>6</mn></math></p>
+        <p>进一步，假设我们有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体，则第一个选择有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>种选法；第二个物体有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>−</mo><mn>1</mn></math>种选法；以此类推，最后一个只有1种选法，所以最终的排列方法就是<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>×</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>×</mo><mo>⋯</mo><mo>×</mo><mn>1</mn></math></p>
+        <p><em>上述运算我们也可以表示为“阶乘”，即<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>!</mo><mo>=</mo><mi>m</mi><mo>×</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>×</mo><mo>⋯</mo><mo>×</mo><mn>1</mn></math></em></p>
+        <p>再考虑一下，如果在<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体当中选<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个物体进行<strong>排列</strong>，将排列的个数记为<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>A</mi><mi>m</mi><mi>n</mi></msubsup></math>或者<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>P</mi><mi>m</mi><mi>n</mi></msubsup></math>，参考上面的方法，可以得到结果为</p>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>P</mi><mi>m</mi><mi>n</mi></msubsup><mo>=</mo><mi>m</mi><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo><mo>⋯</mo><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo>+</mo><mn>1</mn><mo stretchy="false">)</mo><mo>=</mo><mfrac><mrow><mi>m</mi><mo>!</mo></mrow><mrow><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo stretchy="false">)</mo><mo>!</mo></mrow></mfrac></math></p>
+        <h3>组合——再把同一组删掉</h3>
+        <p>正如标题所说的那样，所谓<strong>组合</strong>，就是<strong>在排列的基础上不考虑顺序</strong>，例如，对于排列而言，AB和BA是不同的，但组合中二者是相同的。因此，在计算<strong>组合</strong>时，我们只需要将之前排列的结果，除以每个组合中全排列的个数即可。</p>
+        <p><em>全排列：指的是将<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体中选出<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个进行排列，即开始时所考虑的<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi><mo>!</mo></math></em></p>
+        <p>根据上面的解释，将<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>m</mi></math>个物体选<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个进行组合，其结果记为<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mi>m</mi><mi>n</mi></msubsup></math>，表达式为</p>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>C</mi><mi>m</mi><mi>n</mi></msubsup><mo>=</mo><mfrac><mrow><mi>m</mi><mo>!</mo></mrow><mrow><mo stretchy="false">(</mo><mi>m</mi><mo>−</mo><mi>n</mi><mo stretchy="false">)</mo><mo>!</mo><mi>n</mi><mo>!</mo></mrow></mfrac></math></p>
+        <p>例如，将3个物体选2个，带入表达式可以计算出<math xmlns="http://www.w3.org/1998/Math/MathML"><msubsup><mi>C</mi><mn>3</mn><mn>2</mn></msubsup><mo>=</mo><mn>3</mn></math>，即共有3种选法。</p>
+        <h2>冒泡算法——一种“低效”的排序算法</h2>
+        <p>在前面，我们提到：<strong>冒泡排序需要对所有数字两两比较</strong>，对于比较结果较大的数字，向后排（假设按照升序，当然也可以定为“降序”，这不是算法关键）。让我们假定一个例子，假设有这个一组数字：5，2，3，1，6；按照冒泡排序算法，首先比较<strong>5和2</strong>，发现5较大，则往后排，变为<strong>2</strong>，<strong>5</strong>，3，1，6，进一步比较5和3，发现5较大，则将5继续向后排，变为2，3，<strong>5</strong>，1，6，以此类推，当排序变为2，3，1，<strong>5</strong>，6时，将5和6比较，发现6更大，则将6放在后面，结束排序。</p>
+        <p>进一步对2进行移动，依次为</p>
+        <ul>
+        <li>2，3，1，5，6（2和3比较后）</li>
+        <li>2，1，3，5，6（3和1比较后）</li>
+        <li>2，1，3，5，6（3和5比较后）</li>
+        </ul>
+        <p>再对2进行移动（<strong>始终移动最前面的数字</strong>），依次为</p>
+        <ul>
+        <li>1，2，3，5，6（2和1比较后）</li>
+        <li>1，2，3，5，6（2和3比较后）</li>
+        </ul>
+        <p>最后，对1进行移动，和2比较后发现2比1大，结果最终排序为“<strong>1，2，3，5，6</strong>”</p>
+        <p>让我们看看上面总共进行了多少次比较：<strong>10次</strong>！这看似是一个小数目，但这仅仅是5个数据的比较，如果是10个呢？20个呢？甚至100个1000个呢？利用前面的排列组合知识可以计算得到，假设有<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>个数据，选择2个进行比较，一共有</p>
+        <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msubsup><mi>C</mi><mi>n</mi><mn>2</mn></msubsup><mo>=</mo><mfrac><mrow><mi>n</mi><mo>!</mo></mrow><mrow><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>2</mn><mo stretchy="false">)</mo><mo>!</mo><mn>2</mn><mo>!</mo></mrow></mfrac><mo>=</mo><mfrac><mrow><mi>n</mi><mo stretchy="false">(</mo><mi>n</mi><mo>−</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><mn>2</mn></mfrac></math></p>
+        <p>可以发现，比较次数是与数据量成<strong>平方关系</strong>上升，这在数据结构中记为<strong>时间复杂度</strong>为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></math></p>
+        <p>这种平方数量级的时间复杂度实际上效率是很低的，尤其是随着数据量的提高。因此，在算法设计上，人们提出了更多高效率的算法例如归并排序算法（采用分治法），此时时间复杂度可以达到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>n</mi><mo stretchy="false">)</mo></math>。下面的图片展示了对于数据个数从1-10情况下两种时间复杂度的比较。可以看到，相比于<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></math>，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>n</mi><mo stretchy="false">)</mo></math>的增长速率更低</p>
+        <p><img src="https://files.mdnice.com/user/34923/0407eea2-09c3-435a-8fa0-c5975c598c37.png" alt="时间复杂度比较，其中蓝线表示$O(n^2)$，橙线表示$O(n\log n)$"></p>
+        <p>上图为时间复杂度比较，其中蓝线表示<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><msup><mi>n</mi><mn>2</mn></msup><mo stretchy="false">)</mo></math>，橙线表示<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>O</mi><mo stretchy="false">(</mo><mi>n</mi><mi>log</mi><mo data-mjx-texclass="NONE">⁡</mo><mi>n</mi><mo stretchy="false">)</mo></math></p>
+        <h2>最后的解释</h2>
+        <p>首先让我们定性说明一下——为什么这个魔术的原理不是<strong>冒泡算法</strong>。原因很简单，冒泡算法是需要<strong>比较</strong>的，同时我们可以很容易证明，对于3个物体，实际上比较3次应该是有固定顺序的。但显然事实不是如此。这是因为<strong>我们在交换时实际上没有进行比较</strong>。</p>
+        <p>那这个魔术是怎么变的呢？让我们再来看一下魔术步骤（我们省略掉开头的调整顺序和最后的“举杯”）：</p>
+        <blockquote>
+        <ol>
+        <li>将<strong>筷子和左边互换</strong></li>
+        <li>将<strong>杯子和右边互换</strong></li>
+        <li>将<strong>勺子和左边互换</strong></li>
+        </ol>
+        </blockquote>
+        <p>我们假设将筷子记为A、杯子记为B、勺子记为C，在一开始会有6种情况（全排列），经过第一步移动，只会出现4种情况：ACB、ABC、BAC和CAB，经过第二次移动，这四种情况会变为：ACB（前两种一样）、ABC和CAB；对于B在最后的情况，第三步移动<strong>是多余的</strong>（因为不会影响B的位置），而对于ABC，第三步会变为“ACB”。</p>
+        <p>简单来说，最后的顺序只有两种可能——<strong>筷子、勺子、杯子</strong>和<strong>勺子、筷子、杯子</strong>。无论哪种情况，<strong>最右边一定是杯子</strong>。</p>
+        <h2>一点题外话</h2>
+        <p>与去年相比，很多人认为魔术原理更简单了。正如去年所说的那样，<strong>魔术的精髓并不是这个原理，而是表演的过程</strong>。事实上，从这个原理出发，可以设计出来这个魔术，难道不是更厉害吗？</p>
+
+        </div>
+
+        <div id="2025-1-13-1" class="chapter-content" style="display: none;">
+            <h2>如何从零开始进行程序设计</h2>
+            <p>时间：2025-01-13  作者：Jiaqi Z.</p>
+            <p>分类：小教程-机器学习与人工智能</p>
+            <hr>
+            <p>这一篇虽说是放在机器学习分类下，主要是为课题组内的同学所准备的，但这篇文章所说的一些想法，可能也适用于大多数程序设计的过程（无论是在科研过程中需要写程序、或者是做程序设计课程的课程设计等）。</p>
+            <p><strong>本篇不会讲解具体的程序设计语言，例如Python、C语言等，而是一种通用的思考方法，可以帮助你更快上手进行一个较大的程序设计。</strong></p>
+            <h3>第一步：明确问题与需求</h3>
+            <p>永远不要一开始就敲代码，仔细思考一下：<strong>要解决什么问题</strong>。大多数编程活动都是<strong>任务驱动</strong>或者<strong>问题驱动</strong>。例如，对于在校大学生而言，写程序可能是为了解决课本上的一个问题，或者老师的一个任务需求，又或者是论文上需要的一部分；对于软件工程师而言，写程序可能是为了实现产品经理的一个特定的需求，或者修复用户提出的一个bug等。盲目开始写程序，总是不可取的。</p>
+            <p>同时，在明确问题与需求之后，需要考虑的是：这段代码应该使用什么程序语言设计？例如，如果你是希望做机器学习与神经网络相关的，显然Python是更适合的；而像物理专业的一些理论计算，比如解方程等任务，可能使用MATLAB或者Wolfram Mathematica更方便；如果你是做嵌入式单片机的，那几乎就是C语言设计的……总而言之，选择一个合适的程序语言可能会让你的程序设计过程事半功倍。</p>
+            <p><em>如果你确实不知道该用什么编程语言的话，试试Python吧</em></p>
+            <h3>第二步：拆分任务</h3>
+            <p>程序设计的思维一定是<strong>模块化</strong>的思维，如果一个程序很小，例如判断一个数字是不是质数、或者使用欧几里得算法判断两个数字的最大公因数
+            等，只需要完成这一个任务就足够了。但通常情况下，使用程序解决的问题往往会很复杂，可能需要多个模块相互配合。这就如同一个公司要进行经营，需要各个部门的配合，其中每个部门都负责自己的内容，最后将其整合起来成为一个完整的公司架构一样。写程序的时候，也应当将任务进行拆分，拆分成一系列的“小任务”（也可以看作<strong>模块</strong>）。这个模块的大小可以因人而异（或者在具体的软件开发中，可能开发组内又有另外的分工），对于初学者而言，可能程序算法不是太熟练，此时可以将模块尽可能的小。例如，现在希望制作一个值日表安排程序，将一个时间段按照日期，每隔一定天数安排一个人，一共有6个人，按照顺序依次分配。此时我们的程序可能会拆分成这样几个任务：</p>
+            <p><strong>生成日期-按照一定间隔取出日期-按照顺序安排6个人</strong></p>
+            <p>注意：这些任务的划分是取决于程序设计者本人的（或者取决于项目开发组的）。</p>
+            <h3>第三步：对每个任务进行拆分，设计步骤</h3>
+            <p>有了具体的任务之后，我们就可以“逐一攻破”了。在程序设计的过程中，我们需要对每个任务进行进一步划分，将其划分为<strong>有限次数</strong>的<strong>步骤</strong>（这就是<strong>算法</strong>），这些步骤应当是确定的。例如，在上面的例子中，我们可能需要做这样几个算法（这些算法的每一步并不一定是一行代码，可能是多行代码，甚至有些步骤本身可能足够复杂到成为一个“任务”了）</p>
+            <ol>
+            <li>读取起始日期和结束日期(yyyy1-mm1-dd1和yyyy2-mm2-dd2)</li>
+            <li>定义一个空的列表<code>dates</code>（这个列表是广义上的列表，它可能是C语言中的数组，也可能是MATLAB等程序中的向量，也可能是Python中的列表）</li>
+            <li>定义<code>i←0</code></li>
+            <li><code>dates[i]←yyyy1-mm1-dd1</code>（这里面的<code>←</code>是一个比较常见的算法符号，表示<em>将右面的值赋值给左边的变量</em>）</li>
+            <li><code>i←i+1</code></li>
+            <li>查看<code>yyyy1-mm1-dd1+1</code>（表示“下一天”）是否“小于等于”<code>yyyy2-mm2-dd2</code>，如果是，则进行第7步，否则进行第9步</li>
+            <li><code>yyyy1-mm1-dd1←yyyy1-mm1-dd1+1</code></li>
+            <li>返回第4步</li>
+            <li>输出<code>dates</code>列表</li>
+            </ol>
+            <p>可以注意到，以Python为例，像第2步，第3步这些都是可以用一行表达式如<code>dates=[]</code>和<code>i=0</code>进行表示；但类似于第6步，查看某一天的下一天并不是一件“易事”（因为它涉及到一个月的最后一天的判断，甚至可能包括平年闰年的判断等），同时判断一天是否“小于”另一天也不是单纯的比较大小（可能需要三个数的比较），因此，我们可能会把第6步作为一个<strong>函数</strong>处理（完全可以把“函数”也看作是一种“任务”，但为了与前面的任务区分，我们这里使用“函数”，从程序设计的角度看，<strong>函数里面调用函数本身就是合理的</strong>）</p>
+            <h3>第四步：从底层开始编写代码</h3>
+            <p>这一步难度应该是“最低”的，因为它实际上就是<strong>用计算机语言把你前面所想的步骤表示出来</strong>。但是，在写代码的时候，有一些小技巧可以注意：</p>
+            <ol>
+            <li><strong>善用测试</strong>：任何人都不敢说可以一次写出正确的程序，大多数时间应当是调试、修改代码。因此，发现程序报错并不可怕，重要的是如何找到错误的地方。如果是一次性写完再测试，那工作量太大，且错误的可能性太大，因此，我们可以<strong>每写完一个任务或者一个函数，就测试一下函数的准确性</strong>。在测试的时候，可以在程序中以变量赋值的方式给定一些测试数据，或者使用像Python的<code>input()</code>函数，以及C语言的<code>scanf()</code>等方式进行终端的输入（通常直接变量赋值是最方便的）。在输出时可以简单的终端输出，或者根据需要选择像文件输出等方式来判断输出格式的正确性。通常，在涉及底层算法时，其测试可以简单的终端输入输出；而涉及到交互时，可能会需要一些其他的方式（有时这可能需要前后端的配合，但从程序设计“哲学”的角度来看，<strong>前后端分离</strong>是必需的。）</li>
+            </ol>
+            <p>还是以上面的例子为例，假设我们现在完成了函数<code>addDate(date)</code>函数，给定<code>date</code>函数返回它的下一天。在测试时，我们可以仅仅调用这个函数，给定几个特殊的<code>date</code>（例如，2024年2月28日、2025年2月28日、2023年5月30日、2025年1月8日、2024年12月31日等，可以看到，这里面包含了一个月最后一天，一年最后一天，平年闰年2月的判断，以及常规的日期），通过这几个测试例，可以很容易判断这个函数是否实现的预期的功能。如果测试通过了，可以想见，它在后面的程序中<strong>大概率也是正确的</strong>，如果测试不通过，一个函数的代码量也是比较小的，容易发现其中的错误。</p>
+            <p>以我个人的习惯为例，在完成一个函数时，我喜欢对其进行一个小的测试，判断它的功能是否正确；在完成一个大的任务时，我喜欢对其进行一个测试，判断它是否可以正确完成这个任务；在整个程序完成后，再对其进行测试，通常这时候就是判断各个任务之间的“衔接”是否合理。一个需要记住的是：<strong>越在早期排查出错误，越能避免后期造成更大更隐蔽的错误</strong></p>
+            <ol start="2">
+            <li>
+            <p><strong>善用AI</strong>：现在的程序设计，几乎AI是不可避免的。我也不反对程序设计中使用AI来生成一些代码。但是，需要特别注意的是：<strong>最多使用AI生成一个函数</strong>，千万不要使用AI生成一个“任务”，甚至整个程序，AI还没有那么强大，大概率会失控。此时出现的错误，非常难以排查。使用AI生成一个函数，甚至10行左右的语句实现一个功能，如果出现错误，人为排查是很方便的（详见第1条的<strong>善用测试</strong>）</p>
+            </li>
+            <li>
+            <p><strong>平地起高楼，地基要打好</strong>：还是要本着<strong>底层设计的思路</strong>，千万不要想着“一口吃成个胖子”，再天才的程序员也做不到一次性写出上千行代码。慢慢来，一步一步来，从简单的开始像“搭积木”一样，最终实现复杂的功能不是难事。而且，不要羡慕别人能写几千、几万行代码，再复杂的代码也是由若干个功能实现的，可能每一个功能也就几十行代码。利用上面的方法，你也可以写出上千上万行代码。</p>
+            </li>
+            <li>
+            <p><strong>一定要写注释！</strong>：把每一个函数做了什么，每一部分干了什么记录下来，在后期进行整合时会很容易（要不然你一定会“眼花缭乱”的）</p>
+            </li>
+            </ol>
+        </div>
+
+        <div id="2025-1-8-1" class="chapter-content" style="display: none;">
+            <h2>双曲型、抛物型和椭圆型偏微分方程的区别</h2>
+            <p>时间：2025-01-08  作者：Jiaqi Z.</p>
+            <p>分类：小教程</p>
+            <hr>
+            <p>在数学物理方程（偏微分方程）中，我们了解了波动方程、热传导方程和泊松方程（或者拉普拉斯方程），并且也说，它们三个方程分别属于<strong>双曲型、抛物型和椭圆型</strong>。并且在“标准型”的讨论中，也了解了这些类型与<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math>存在直接相关的关系。</p>
+            <p>当听到“双曲”、“抛物”和“椭圆”时，免不了会联想到<strong>圆锥曲线</strong>，可以证明（或者其他教材中所说的那样），任何一个圆锥曲线，都可以写作下面的方程所表示的曲线</p>
+            <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>A</mi><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>B</mi><mi>x</mi><mi>y</mi><mo>+</mo><mi>C</mi><msup><mi>y</mi><mn>2</mn></msup><mo>+</mo><mi>D</mi><mi>x</mi><mo>+</mo><mi>E</mi><mi>y</mi><mo>+</mo><mi>F</mi><mo>=</mo><mn>0</mn></math></p>
+            <p>假设我们现在令<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>y</mi></math>分别表示<math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mi mathvariant="normal">∂</mi><mrow><mi mathvariant="normal">∂</mi><mi>x</mi></mrow></mfrac></math>和<math xmlns="http://www.w3.org/1998/Math/MathML"><mfrac><mi mathvariant="normal">∂</mi><mrow><mi mathvariant="normal">∂</mi><mi>y</mi></mrow></mfrac></math>，且等式两边同时作用于函数<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>u</mi></math>，则可以将上面的“圆锥曲线”写作下面的偏微分方程：</p>
+            <p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>A</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><mi>B</mi><msub><mi>u</mi><mrow><mi>x</mi><mi>y</mi></mrow></msub><mo>+</mo><mi>C</mi><msub><mi>u</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>+</mo><mi>D</mi><msub><mi>u</mi><mi>x</mi></msub><mo>+</mo><mi>E</mi><msub><mi>u</mi><mi>y</mi></msub><mo>+</mo><mi>F</mi><mi>u</mi><mo>=</mo><mn>0</mn></math></p>
+            <p>从而将这两个方程画上了“等号”。既然如此，我们就可以利用圆锥曲线的“形状”来定义微分方程的“类型”：</p>
+            <p><em>我们这里姑且不考虑参数<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>D,E</mi></math>，即只考虑最简单的<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mi>B</mi><mi>x</mi><mi>y</mi><mo>+</mo><mi>C</mi><msup><mi>y</mi><mn>2</mn></msup><mo>=</mo><mn>0</mn></math>这一“二次方程”。</em></p>
+            <ul>
+            <li>
+            <p>假设这是一个椭圆方程，则利用已知的椭圆方程定义
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><msup><mi>x</mi><mn>2</mn></msup><msup><mi>a</mi><mn>2</mn></msup></mfrac><mo>+</mo><mfrac><msup><mi>y</mi><mn>2</mn></msup><msup><mi>b</mi><mn>2</mn></msup></mfrac><mo>=</mo><mn>1</mn></math>
+            不难得到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>B</mi><mo>=</mo><mn>0</mn></math>，且<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&gt;</mo><mn>0</mn></math>，因此定义一个<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><msup><mi>B</mi><mn>2</mn></msup><mo>−</mo><mi>A</mi><mi>C</mi></math>，可以得到<strong>对椭圆而言，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>&gt;</mo><mn>0</mn></math></strong></p>
+            </li>
+            <li>
+            <p>对于抛物线而言，假设一个最简单的方程
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mi>y</mi><mo>=</mo><msup><mi>x</mi><mn>2</mn></msup></math>
+            可以很容易得到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>B</mi><mo>=</mo><mn>0</mn></math>且<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>C</mi><mo>=</mo><mn>0</mn></math>（若抛物线方程为<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>x</mi><mo>=</mo><msup><mi>y</mi><mn>2</mn></msup></math>，则<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>=</mo><mn>0</mn></math>），类似带入上面的<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi></math>定义，可以得到<strong>对抛物线而言，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><mn>0</mn></math></strong></p>
+            </li>
+            <li>
+            <p>对双曲线而言，其定义为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mfrac><msup><mi>x</mi><mn>2</mn></msup><msup><mi>a</mi><mn>2</mn></msup></mfrac><mo>−</mo><mfrac><msup><mi>y</mi><mn>2</mn></msup><msup><mi>b</mi><mn>2</mn></msup></mfrac><mo>=</mo><mn>1</mn></math>
+            可以得到<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&lt;</mo><mn>0</mn></math>，从而<strong>对双曲线而言，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>&gt;</mo><mn>0</mn></math></strong>。</p>
+            </li>
+            </ul>
+            <h3>代回微分方程</h3>
+            <p>类似的讨论方法，让我们依次对三种“基本方程”进行讨论（假设我们只考虑齐次方程，因为非齐次项不影响方程类型）。</p>
+            <ul>
+            <li>
+            <p>波动方程，其基本形式为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>u</mi><mrow><mi>t</mi><mi>t</mi></mrow></msub><mo>−</mo><msup><mi>a</mi><mn>2</mn></msup><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>=</mo><mn>0</mn></math>
+            很显然，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&lt;</mo><mn>0</mn></math>，利用圆锥曲线的讨论，这一判定式说明它是<strong>双曲型</strong>。</p>
+            </li>
+            <li>
+            <p>热传导方程，其形式为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msub><mi>U</mi><mi>t</mi></msub><mo>−</mo><msup><mi>a</mi><mn>2</mn></msup><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>=</mo><mn>0</mn></math>
+            其中，<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&lt;</mo><mn>0</mn></math>，从而<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>=</mo><mn>0</mn></math>，是<strong>抛物型</strong></p>
+            </li>
+            <li>
+            <p>Laplace方程，其形式为
+            <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><msup><mi mathvariant="normal">∇</mi><mn>2</mn></msup><mi>u</mi><mo>=</mo><mn>0</mn><mo stretchy="false">⇒</mo><msub><mi>u</mi><mrow><mi>x</mi><mi>x</mi></mrow></msub><mo>+</mo><msub><mi>u</mi><mrow><mi>y</mi><mi>y</mi></mrow></msub><mo>=</mo><mn>0</mn></math>
+            从而<math xmlns="http://www.w3.org/1998/Math/MathML"><mi>A</mi><mo>&gt;</mo><mn>0</mn><mo>,</mo><mi>B</mi><mo>=</mo><mn>0</mn><mo>,</mo><mi>C</mi><mo>&gt;</mo><mn>0</mn></math>，判断<math xmlns="http://www.w3.org/1998/Math/MathML"><mi mathvariant="normal">Δ</mi><mo>&lt;</mo><mn>0</mn></math>，是<strong>椭圆型</strong></p>
+            </li>
+            </ul>
+        </div>
+
+        <div id="2024-12-23-1" class="chapter-content" style="display: none;">
+            <h2>关于杂谈的内容</h2>
+            <p>时间：2024-12-23 作者：Jiaqi Z.</p>
+            <p>分类：杂谈</p>
+            <hr>
+            <p>对于这个个人网页来说，目前已经成一定样式了，但总感觉还差点东西。差一点我自己的东西（当然，这网页里面每一个都是我自己写的）想了想，感觉还是做一个这种类似于博客性质的网页。正因如此，这个网页诞生了。</p>
+            <h3>关于作者</h3>
+            <p>与我的个人网页类似，这里面的作者大多数都是我，包括但不限于</p>
+            <ul>
+            <li>Jiaqi Z.</li>
+            <li>“7小七Seven”以及其他类似如“小七Seven”、“小七”等名字</li>
+            <li>Nana_Chan</li>
+            <li>“Nana_L”或“Nana_R”</li>
+            <li>“なな”或者带有叠字符号的“なゝ”（目前还没有使用片假名“ナナ”作为笔名）</li>
+            <li>……</li>
+            </ul>
+            <p>但是，这里的作者也可能包括其他从别的网站转载的内容，或者课题组内其他人所写的内容，都会按部就班设置作者。</p>
+            <h3>关于文章类型</h3>
+            <p>目前共设置以下几种文章类型：</p>
+            <ul>
+            <li><strong>小教程</strong>：指的是一些单独的、或者目前还没有汇总在一起的教程，可能是课程的学习资料分享，也可能是一些小软件、小工具的使用方法等（注意：关于<strong>材料计算</strong>和<strong>机器学习</strong>两个分类，请在点开后打开对应内容查看）；</li>
+            <li><strong>科普</strong>：指的是一些给非相关专业的人看的文章，有些也可能是计划发在“科普小白说”公众号的草稿（相比于公众号里面的内容，这里的可能更加简单，随性）</li>
+            <li><strong>BanG Dream!</strong>：指的是一些关于BanG Dream!游戏的内容，一些玩游戏过程中的想法，一些音乐、图片分享，甚至可能包括游戏晒卡等都会在这里（当然也不排除有一些发电内容）</li>
+            <li><strong>桌游</strong>：关于一些桌游相关的文章，有些可能是桌游规则整理、或者是一些桌游的感悟等。当然，关于桌游评测与桌游照片等，请去相关网页查看</li>
+            <li><strong>音乐</strong>：一些关于音乐的相关内容，可能是分享一些歌曲，或者可能自己写了（或改了）一首歌也会发在上面，也有可能是关于音乐理论的文章</li>
+            <li><strong>游戏</strong>：一些关于游戏的内容（这里面的游戏主要指除BanG Dream!和桌游以外的那些游戏，主要是电子游戏）</li>
+            <li><strong>杂谈</strong>：一些目前还不知道该放在哪个分类下，或者确实不知道应该放在哪里的文章。</li>
+            </ul>
+            <p>你也可以在左侧通过“<strong>全部内容</strong>”查看所有文章。其中有些文章可能属于多个分类，例如，关于BanG Dream!的音乐改编，有可能同时放在BanG Dream!和音乐两个分类下；关于音乐乐理的介绍，有可能放在“科普”或者“小教程”和“音乐”分类下。</p>
+            <h3>更新频率</h3>
+            <p>这个……就不好催更了吧……（没必要要求我每天都写杂谈吧）</p>
+            <h3>联系方式</h3>
+            <ul>
+            <li>QQ:3585318203</li>
+            <li>邮箱：<a href="mailto:zhangjq_sd@163.com">zhangjq_sd@163.com</a></li>
+            <li>Bilibili：UID 123645189</li>
+            <li>Github：<a href="https://github.com/JackyZhang00">github.com/JackyZhang00</a></li>
+            <li>其他相关联系方式请通过主页对应分类查看</li>
+            </ul>
+        </div>
+
+        <div id="2024-12-23-2" class="chapter-content" style="display: none;">
+            <h2>Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</h2>
+            <p>时间：2024-12-23</p>
+            <p>分类：BanG Dream! </p>
+            <hr>
+            <img src="blog_fig/2024-12-23/1.jpg" alt="返图1" width="30%">
+            <img src="blog_fig/2024-12-23/2.jpg" alt="返图2" width="30%">
+            <img src="blog_fig/2024-12-23/3.jpg" alt="返图3" width="30%">
+            <img src="blog_fig/2024-12-23/4.jpg" alt="返图4" width="30%">
+            <img src="blog_fig/2024-12-23/5.jpg" alt="返图5" width="30%">
+            <img src="blog_fig/2024-12-23/6.jpg" alt="返图6" width="30%">
+            <img src="blog_fig/2024-12-23/7.jpg" alt="返图7" width="30%">
+            <img src="blog_fig/2024-12-23/9.jpg" alt="返图8" width="30%">
+            <img src="blog_fig/2024-12-23/12.jpg" alt="返图9" width="30%">
+            <img src="blog_fig/2024-12-23/11.jpg" alt="返图10" width="30%">
+            <img src="blog_fig/2024-12-23/14.jpg" alt="返图11" width="30%">
+            <img src="blog_fig/2024-12-23/15.jpg" alt="返图12" width="30%">
+            <img src="blog_fig/2024-12-23/16.jpg" alt="返图13" width="30%">
+            <img src="blog_fig/2024-12-23/13.jpg" alt="返图14" width="30%">
+            <img src="blog_fig/2024-12-23/8.jpg" alt="返图15" width="30%">
+            <img src="blog_fig/2024-12-23/10.jpg" alt="返图16" width="30%">
+            <img src="blog_fig/2024-12-23/17.jpg" alt="返图17" width="30%">
+        </div>
+
+        <div id="2024-12-25" class="chapter-content" style="display: none;">
+            <h2>Linux当中<code>for</code>与VASPKIT“联动”</h2>
+            <p>时间：2024-12-25  作者：Jiaqi Z.</p>
+            <p>分类：小教程-材料计算</p>
+            <hr>
+            <p>在对VASP计算结果进行批处理时，有时需要借助于VASPKIT生成的文件，或者使用VASPKIT对数据进行分析。此时需要使用for循环，或者在脚本语言中实现对VASPKIT菜单的调用。</p>
+            <p>简单来说，我们希望找到一种命令的调用方法，模拟用户输入选项。而这种方法就是借助于<code>echo</code>命令和管道运算符。</p>
+            <p><strong>注意：建议提前阅读<a href="material_tutorial.html">教程</a>内关于“高级Linux命令”一章的内容。</strong></p>
+            <h3>方法1</h3>
+            <p>使用<code>echo -e</code>选项输出<strong>带有转义字符的文本</strong>，并借助于管道运算符<code>|</code>将输出的内容传递到vaspkit当中。例如，如果希望一次性生成静态计算的INCAR文件，可以直接写作：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">[7Seven@localhost ~]$ echo -e "1\n101\nST" | vaspkit
+            </span></code></pre>
+            <p>运行后就可以看到vaspkit如同正常操作一般按照顺序执行对应的内容。其中，<code>\n</code>转义字符表示<strong>回车</strong>，即模拟用户进行回车操作（确认输入内容）</p>
+            <h3>方法2</h3>
+            <p>使用分号（<code>;</code>）依次表示所有的命令，并使用<code>echo</code>组合传递给vaspkit。例如，上述例子还可以写作：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">[7Seven@localhost ~]$ (echo 1; echo 10; echo ST) | vaspkit
+            </span></code></pre>
+            <p>其中使用括号表示<strong>将括号内所有内容传递给vaspkit</strong>。在这一基础上，可以进一步做更复杂的操作。</p>
+            <p>在上述方法的基础上，可以使用<code>for</code>循环组合进行批量处理，并进行更复杂操作。例如，将所有当前目录下所有子目录内生成带有D3校正的静态计算INCAR文件，可以写作：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">[7Seven@localhost ~]$ for i in *; do cd $i; echo -e "1\n101\nSTD3" | vaspkit; cd $OLDPWD; done
+            </span></code></pre>
+            <h3>注意事项</h3>
+            <ol>
+            <li><code>vaspkit</code>的调用方法取决于不同服务器，以所在服务器为准；</li>
+            <li>在使用时，建议首先进行测试，确认vaspkit的选项顺序，在确保正确后再进行批量处理；</li>
+            <li>VASPKIT参考文献：V. Wang, N. Xu, J.C. Liu, G. Tang, W.T. Geng, VASPKIT: A User-Friendly Interface Facilitating High-Throughput Computing and Analysis Using VASP Code, Computer Physics Communications 267, 108033 (2021). <a href="https://doi.org/10.1016/j.cpc.2021.108033">https://doi.org/10.1016/j.cpc.2021.108033<a class="easyScholarDOI" target="_blank" href="https://www.sci-hub.ee/10.1016/j.cpc.2021.108033"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0" href="data:image/png;base64,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"></image></svg></a></a></li>
+            </ol>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,137 @@
+
+    /* ---- 与给定样式保持一致 ---- */
+    body{
+      margin:0;
+      padding:0;
+      background-image:url('background.png');
+      background-repeat:no-repeat;
+      background-attachment:fixed;
+      background-size:cover;
+      background-blend-mode:multiply;
+      font-family:Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,Arial,sans-serif;
+    }
+    nav{
+      background-color:#DDDDFF00;
+      color:white;
+      padding:10px;
+      text-align:center;
+    }
+    a{
+      color:#3344AA;
+      text-decoration:none;
+      font-weight:bold;
+    }
+    .sidebar{
+      position:fixed;
+      left:0;
+      top:0;
+      width:11%;
+      height:100%;
+      background-color:#DDDDFF;
+      overflow:auto;
+      font-size:20px;
+      padding:20px 0 0 20px;
+      box-sizing:border-box;
+    }
+    .sidebar h2{margin:0 0 10px;font-size:24px;color:#881188;}
+    .sidebar ul{list-style:none;padding:0;margin:0;}
+    .sidebar li{margin:8px 0;cursor:pointer;color:#3344AA;}
+    .sidebar li ul{margin-left:15px;font-size:18px;}
+    .content{
+      margin-left:10%;
+      padding:20px 40px;
+      box-sizing:border-box;
+    }
+    .content h3{color:#3344AA;margin:0 0 10px;}
+    .content p{margin:0 0 20px;color:#555;}
+    hr{border:none;height:1px;background:#ccc;margin:15px 0;}
+
+    /* 移动端导航 */
+    .mobile-nav{display:none;width:100%;padding:12px;background:#3344AA;color:white;border:none;font-size:16px;}
+    @media (max-width:768px){
+      .sidebar{
+        background-color: #DDDDFF00;
+        width:100%;
+        height:auto;
+        position:static;
+        display:block;
+      }
+      .content{margin-left:0;padding:10px;}
+      /* .mobile-nav{display:block;} */
+      body{
+        background-image:url('background_mobile.png');
+        background-repeat:no-repeat;
+        background-attachment:fixed;
+        background-size:cover;
+        background-blend-mode:multiply;
+      }
+    }
+
+    /* 分页按钮区域 */
+    .pagination{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+      margin-top:30px;
+      flex-wrap:wrap;
+    }
+    .pagination button{
+      padding:8px 12px;
+      border:1px solid #ddd;
+      background:#fff;
+      border-radius:4px;
+      cursor:pointer;
+      transition:all .3s;
+      min-width:40px;
+    }
+    .pagination button:hover:not(:disabled){
+      background:#3344AA;
+      color:#fff;
+      border-color:#3344AA;
+    }
+    .pagination button:disabled{
+      cursor:not-allowed;
+      opacity:.5;
+      background:#ecf0f1;
+    }
+    .pagination button.active{
+      background:#3344AA;
+      color:#fff;
+      border-color:#3344AA;
+      font-weight:bold;
+    }
+    .page-numbers{display:flex;gap:5px;align-items:center;}
+    .ellipsis{padding:8px 4px;color:#7f8c8d;font-weight:bold;}
+    .stats{text-align:center;margin:20px 0;color:#7f8c8d;font-size:14px;}
+
+    /* 文章容器（无跳动核心） */
+    .article-container{
+      position:relative;
+      min-height:600px;
+      transition:height .3s ease;
+    }
+    .article-page{
+      position:absolute;
+      top:0;
+      left:0;
+      width:100%;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .3s ease;
+    }
+    .article-page.active{
+      position:relative;
+      opacity:1;
+      pointer-events:auto;
+    }
+    .article{
+      background:#ffffff90;
+      padding:20px;
+      margin-bottom:15px;
+      border-radius:8px;
+      box-shadow:0 2px 4px rgba(0,0,0,.1);
+    }
+    h3 code{
+        font-size: 20px;
+    }

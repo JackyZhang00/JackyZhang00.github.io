@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小七の杂谈</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../mobile_script.js" defer></script>
+    <style>
+        body {
+          background-image: url('../background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        /* background-color: #DDDDFFAA; */
+        }
+        nav {
+            background-color: #DDDDFF00;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        a{
+            color: #3344AA;
+            text-decoration:none;
+            font-weight:bold;
+        }
+        .content {
+            margin-left: 0%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html">返回主页</a>
+        <a href="../blog.html">查看其他杂谈</a>
+    </nav>
+    <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="10"><font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</font></marquee> -->
+    
+    <!-- <nav>
+        <a href="index.html">返回主页</a>
+    </nav> -->
+    <!-- <h1 align="center">小七の杂谈</h1> -->
+    
+    <div class="content">
+
+        <div id="2024-12-23-1" class="chapter-content" style="display: block;">
+            <h2>关于杂谈的内容</h2>
+            <p>时间：2024-12-23 作者：Jiaqi Z.</p>
+            <p>分类：<a href="../other_blogs.html">杂谈</a></p>
+            <hr>
+            <p>对于这个个人网页来说，目前已经成一定样式了，但总感觉还差点东西。差一点我自己的东西（当然，这网页里面每一个都是我自己写的）想了想，感觉还是做一个这种类似于博客性质的网页。正因如此，这个网页诞生了。</p>
+            <h3>关于作者</h3>
+            <p>与我的个人网页类似，这里面的作者大多数都是我，包括但不限于</p>
+            <ul>
+            <li>Jiaqi Z.</li>
+            <li>“7小七Seven”以及其他类似如“小七Seven”、“小七”等名字</li>
+            <li>Nana_Chan</li>
+            <li>“Nana_L”或“Nana_R”</li>
+            <li>“なな”或者带有叠字符号的“なゝ”（目前还没有使用片假名“ナナ”作为笔名）</li>
+            <li>……</li>
+            </ul>
+            <p>但是，这里的作者也可能包括其他从别的网站转载的内容，或者课题组内其他人所写的内容，都会按部就班设置作者。</p>
+            <h3>关于文章类型</h3>
+            <p>目前共设置以下几种文章类型：</p>
+            <ul>
+            <li><strong>小教程</strong>：指的是一些单独的、或者目前还没有汇总在一起的教程，可能是课程的学习资料分享，也可能是一些小软件、小工具的使用方法等（注意：关于<strong>材料计算</strong>和<strong>机器学习</strong>两个分类，请在点开后打开对应内容查看）；</li>
+            <li><strong>科普</strong>：指的是一些给非相关专业的人看的文章，有些也可能是计划发在“科普小白说”公众号的草稿（相比于公众号里面的内容，这里的可能更加简单，随性）</li>
+            <li><strong>BanG Dream!</strong>：指的是一些关于BanG Dream!游戏的内容，一些玩游戏过程中的想法，一些音乐、图片分享，甚至可能包括游戏晒卡等都会在这里（当然也不排除有一些发电内容）</li>
+            <li><strong>桌游</strong>：关于一些桌游相关的文章，有些可能是桌游规则整理、或者是一些桌游的感悟等。当然，关于桌游评测与桌游照片等，请去相关网页查看</li>
+            <li><strong>音乐</strong>：一些关于音乐的相关内容，可能是分享一些歌曲，或者可能自己写了（或改了）一首歌也会发在上面，也有可能是关于音乐理论的文章</li>
+            <li><strong>游戏</strong>：一些关于游戏的内容（这里面的游戏主要指除BanG Dream!和桌游以外的那些游戏，主要是电子游戏）</li>
+            <li><strong>杂谈</strong>：一些目前还不知道该放在哪个分类下，或者确实不知道应该放在哪里的文章。</li>
+            </ul>
+            <p>你也可以在左侧通过“<strong>全部内容</strong>”查看所有文章。其中有些文章可能属于多个分类，例如，关于BanG Dream!的音乐改编，有可能同时放在BanG Dream!和音乐两个分类下；关于音乐乐理的介绍，有可能放在“科普”或者“小教程”和“音乐”分类下。</p>
+            <h3>更新频率</h3>
+            <p>这个……就不好催更了吧……（没必要要求我每天都写杂谈吧）</p>
+            <h3>联系方式</h3>
+            <ul>
+            <li>QQ:3585318203</li>
+            <li>邮箱：<a href="mailto:zhangjq_sd@163.com">zhangjq_sd@163.com</a></li>
+            <li>Bilibili：UID 123645189</li>
+            <li>Github：<a href="https://github.com/JackyZhang00">github.com/JackyZhang00</a></li>
+            <li>其他相关联系方式请通过主页对应分类查看</li>
+            </ul>
+        </div>
+        <hr>
+        <p>上一篇：没有了<br>下一篇：<a href="2024-12-23-2.html">Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</a></p>
+        <p>同分类上一篇：没有了<br>
+            同分类下一篇：<a href="2025-11-05.html">这次杂谈部分改版了什么？</a></p>
+    </div>
+</body>
+</html>

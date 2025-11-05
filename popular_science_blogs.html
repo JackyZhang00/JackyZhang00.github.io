@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>小七の杂谈</title>
+<link rel="stylesheet" href="blog_index_style.css">
+  <script src="blog_page.js"></script>
+</head>
+<body>
+  <nav><a href="index.html">返回个人网站主页</a></nav>
+  <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="10">
+    <font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</strong></font>
+  </marquee> -->
+
+  <!-- 移动端下拉导航 -->
+
+  <h1 align="center">小七の杂谈——科普</h1>
+
+  <!-- 左侧分类栏 -->
+  <div class="sidebar">
+    <h2>分类</h2>
+    <ul>
+      <li><a href="blog.html">全部内容</a></li>
+      <li><a href="tutorial_blogs.html">小教程</a>
+        <ul>
+          <li><a href="materials_blogs.html">材料计算</a></li>
+          <li><a href="AI_blogs.html">机器学习与人工智能</a></li>
+        </ul>
+      </li>
+      <li><a href="popular_science_blogs.html">科普</a></li>
+      <li><a href="BangDream_blogs.html">BanG Dream!</a></li>
+      <li><a href="boardgame_blogs.html">桌游</a></li>
+      <li><a href="music_blogs.html">音乐</a></li>
+      <li><a href="game_blogs.html">游戏</a></li>
+      <li><a href="other_blogs.html">杂谈</a></li>
+    </ul>
+  </div>
+
+  <!-- 右侧内容区 -->
+  <div class="content">
+    <p>这一部分的内容大多是针对一些现象进行的科普介绍（以数理知识为主），其中部分内容出自我的公众号“科普小白说”（可能有一些公众号没有的是还没有更新）。
+    </p>
+    <p>有关公众号的详细介绍可以在<a href="wechat_index.html">这里</a>查看</p>
+    <div class="stats" id="stats"></div>
+    <!-- 原始文章（会被JS移走并分页） -->
+  <div id="articles">
+    <div class="article">
+        <a href="blog/2025-01-31.html"><h3>【快报】从刘谦魔术看排列组合与冒泡算法</h3></a>
+        <p>创建时间：2025-01-31<br>分类：<a href="popular_science_blogs.html">科普</a></p>
+    </div>
+  </div>
+    <div class="article-container" id="articleContainer"></div>
+
+    <!-- 分页控制 -->
+    <div class="pagination" id="pagination">
+      <button id="firstPage">首页</button>
+      <button id="prevPage">上一页</button>
+      <div class="page-numbers" id="pageNumbers"></div>
+      <button id="nextPage">下一页</button>
+      <button id="lastPage">末页</button>
+    </div>
+  </div>
+
+  <!-- 原始文章隐藏容器（勿删） -->
+  <div id="articles" style="display:none;"></div>
+</body>
+</html>

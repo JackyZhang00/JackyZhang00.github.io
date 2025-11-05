@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小七の杂谈</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../mobile_script.js" defer></script>
+    <style>
+        body {
+          background-image: url('../background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        /* background-color: #DDDDFFAA; */
+        }
+        nav {
+            background-color: #DDDDFF00;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        a{
+            color: #3344AA;
+            text-decoration:none;
+            font-weight:bold;
+        }
+        .content {
+            margin-left: 0%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html">返回主页</a>
+        <a href="../blog.html">查看其他杂谈</a>
+    </nav>
+    <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="10"><font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</font></marquee> -->
+    
+    <!-- <nav>
+        <a href="index.html">返回主页</a>
+    </nav> -->
+    <!-- <h1 align="center">小七の杂谈</h1> -->
+    
+    <div class="content">
+
+        <div id="2024-12-25" class="chapter-content" style="display: block;">
+            <h2>Linux当中<code>for</code>与VASPKIT“联动”</h2>
+            <p>时间：2024-12-25  作者：Jiaqi Z.</p>
+            <p>分类：<a href="../materials_blogs.html">材料计算</a></p>
+            <hr>
+            <p>在对VASP计算结果进行批处理时，有时需要借助于VASPKIT生成的文件，或者使用VASPKIT对数据进行分析。此时需要使用for循环，或者在脚本语言中实现对VASPKIT菜单的调用。</p>
+            <p>简单来说，我们希望找到一种命令的调用方法，模拟用户输入选项。而这种方法就是借助于<code>echo</code>命令和管道运算符。</p>
+            <p><strong>注意：建议提前阅读<a href="../material_tutorial.html">教程</a>内关于“高级Linux命令”一章的内容。</strong></p>
+            <h3>方法1</h3>
+            <p>使用<code>echo -e</code>选项输出<strong>带有转义字符的文本</strong>，并借助于管道运算符<code>|</code>将输出的内容传递到vaspkit当中。例如，如果希望一次性生成静态计算的INCAR文件，可以直接写作：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">[7Seven@localhost ~]$ echo -e "1\n101\nST" | vaspkit
+            </span></code></pre>
+            <p>运行后就可以看到vaspkit如同正常操作一般按照顺序执行对应的内容。其中，<code>\n</code>转义字符表示<strong>回车</strong>，即模拟用户进行回车操作（确认输入内容）</p>
+            <h3>方法2</h3>
+            <p>使用分号（<code>;</code>）依次表示所有的命令，并使用<code>echo</code>组合传递给vaspkit。例如，上述例子还可以写作：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">[7Seven@localhost ~]$ (echo 1; echo 10; echo ST) | vaspkit
+            </span></code></pre>
+            <p>其中使用括号表示<strong>将括号内所有内容传递给vaspkit</strong>。在这一基础上，可以进一步做更复杂的操作。</p>
+            <p>在上述方法的基础上，可以使用<code>for</code>循环组合进行批量处理，并进行更复杂操作。例如，将所有当前目录下所有子目录内生成带有D3校正的静态计算INCAR文件，可以写作：</p>
+            <pre><code class="code-highlight"><span class="code-line line-number" line="1">[7Seven@localhost ~]$ for i in *; do cd $i; echo -e "1\n101\nSTD3" | vaspkit; cd $OLDPWD; done
+            </span></code></pre>
+            <h3>注意事项</h3>
+            <ol>
+            <li><code>vaspkit</code>的调用方法取决于不同服务器，以所在服务器为准；</li>
+            <li>在使用时，建议首先进行测试，确认vaspkit的选项顺序，在确保正确后再进行批量处理；</li>
+            <li>VASPKIT参考文献：V. Wang, N. Xu, J.C. Liu, G. Tang, W.T. Geng, VASPKIT: A User-Friendly Interface Facilitating High-Throughput Computing and Analysis Using VASP Code, Computer Physics Communications 267, 108033 (2021). <a href="https://doi.org/10.1016/j.cpc.2021.108033">https://doi.org/10.1016/j.cpc.2021.108033<a class="easyScholarDOI" target="_blank" href="https://www.sci-hub.ee/10.1016/j.cpc.2021.108033"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22px" height="22px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">  <image id="image0" width="32" height="32" x="0" y="0" href="data:image/png;base64,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"></image></svg></a></a></li>
+            </ol>
+        </div>
+        <hr>
+        <p>上一篇：<a href="2024-12-23-2.html">Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</a><br>下一篇：<a href="2025-01-08.html">双曲型、抛物型和椭圆型偏微分方程的区别</a></p>
+        <p>同分类上一篇：没有了<br>同分类下一篇：<a href="2025-04-09.html">使用lobster进行COHP分析</a></p>
+        
+
+
+    </div>
+</body>
+</html>

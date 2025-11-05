@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小七の杂谈</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../mobile_script.js" defer></script>
+    <style>
+        body {
+          background-image: url('../background.png');
+          background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        background-blend-mode: multiply;
+        /* background-color: #DDDDFFAA; */
+        }
+        nav {
+            background-color: #DDDDFF00;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        a{
+            color: #3344AA;
+            text-decoration:none;
+            font-weight:bold;
+        }
+        .content {
+            margin-left: 0%;
+            padding: 20px;
+            font-size: 20px;
+        }
+        /* 新增移动端适配 */
+        .mobile-nav { display: none; }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                display: none;
+            }
+            .content {
+                margin-left: 0;
+                padding: 10px;
+            }
+            .mobile-nav {
+                display: block;
+                width: 100%;
+                padding: 12px;
+                background: #3344AA;
+                color: white;
+                border: none;
+                font-size: 16px;
+                z-index: 100;
+            }
+            .chapters {
+                background-color: #DDDDFF;
+            }
+            body {
+                background-image: url('background_mobile.png');
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                background-size: cover;
+                background-blend-mode: multiply;
+                /* background-color: #DDDDFFAA; */
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <a href="../index.html">返回主页</a>
+        <a href="../blog.html">查看其他杂谈</a>
+    </nav>
+    <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="10"><font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</font></marquee> -->
+    
+    <!-- <nav>
+        <a href="index.html">返回主页</a>
+    </nav> -->
+    <!-- <h1 align="center">小七の杂谈</h1> -->
+    
+    <div class="content">
+
+        <div id="2025-10-29" class="chapter-content" style="display: block;"> 
+            <h2>这次杂谈部分改版了什么？</h2>
+            <p>时间：2025-11-05  作者：Jiaqi Z.</p>
+            <p>分类：<a href="other_blogs.html">杂谈</a></p>
+            <hr>
+            <p>在2025年11月5日（也就是今天），更新了原网站中“杂谈”部分的架构（几乎相当于重写）。下面将详细说明更新内容和比较</p>
+            <p>为了比较方便，我们在这里保留了旧版的“杂谈”页面，你可以点击<a href="../blog_remove.html">这里</a>进入。但需要注意的是，旧版页面将不再更新（这篇就没有在旧版页面更新），如果你收藏了原地址，不必担心，原有路径将自动链接到新的界面。</p>
+            <h3>为什么要“大费周章”进行更新</h3>
+            <p>这一切都是因为之前的架构有问题！首先介绍一下之前的网站是什么样的（你可以去旧版页面再次确认一下）</p>
+            <ol>
+            <li>
+            <p><strong>所有文章都是放在一个路径下</strong>。这导致当我（或者你）希望分享某一篇文章时，不得不将整个网站分享给Ta，而你还需要额外说明这篇文章是哪一篇……，还需要Ta在网页里找到这一篇。虽然现在的文章并不多，找起来并不麻烦，但总归是需要额外解释一些东西。而且，当我在写其他教程希望定位到某一篇文章时，原先的架构对超链接的支持也不友好，需要额外说明是哪一篇，需要读者去找到这一篇。这对于我和读者来说都不方便。</p>
+            </li>
+            <li>
+            <p>也是因为上述原因，在加载网页的时候会<strong>异常的慢</strong>。这是因为原有网页在加载的时候需要把所有图片都加载（哪怕很多文章你并不看），而这也导致<strong>文章在看到中间突然关闭</strong>（这个bug在之前的某次小更新中已经修复了）。此外，在手机端使用<strong>进入看图模式</strong>浏览图片时，哪怕某一篇文章只有两张图，也会在图片浏览时看到70+（见下图）。</p>
+            <img src="https://img.remit.ee/api/file/BQACAgUAAyEGAASHRsPbAAEFP-xpC1bRZqnfCVnjpNQMyw_1_xKauQACbkUAAnPpWVQ4TmqHA5kuMzYE.jpg" alt="blog-2025-11-05-1.jpg" width="20%"/>
+            </li>
+            <li>
+            <p>原先的分类与目录并不直观，在跳转文章时需要额外选择对应文章（有时打开某一个分类点开文章后列表还会隐藏）</p>
+            </li>
+            </ol>
+            <h3>更新了什么</h3>
+            <p>基于上述问题，我们重改了原有网页。在改版过程中或多或少参考了sobereva老师的博客，但可以保证所有架构都是自己写的（可能也借助了AI），因此肯定不会涉及什么“抄袭”的问题（毕竟博客的设计都差不多）</p>
+            <p>具体来说，包括如下内容：</p>
+            <ol>
+            <li><strong>重写了分类与目录</strong>：在<a href="../blog.html">首页</a>你可以看到左侧有具体的分类，而右侧是文章列表。默认是所有分类都可以查看，当你点击左侧的分类（或者右侧的分类名字），可以只查看对应分类的文章列表。此外，在文章内，你也可以点击分类名字来查看对应分类下的所有文章。</li>
+            <li>文章列表<strong>支持翻页</strong>，可以更方便查看文章列表（不用从上一次性滑到底）</li>
+            <li><strong>每篇文章单独使用一个html页面</strong>，可以直接分享链接给好友（好友可以直接打开链接查看这一篇文章，而不需要再找）。例如，我可以直接使用超链接定位到上面的图片所对应的那篇文章：<a href="2025-07-26.html">non酱の照片1</a></li>
+            <li>也正是因为上面的修改，每次加载页面<strong>只加载当前页面的图片</strong>，从而提高了网页的加载速度。此外，使用移动端保存图片时也更方便了（只看这一篇文章的图）。例如，文章<a href="2025-07-26.html">non酱の照片1</a>在使用手机的看图模式时，只加载这一篇文章的图片</li>
+            <li>由于使用目录与文章列表，因此将原先的移动端适配进行了调整。现在<strong>移动端的体验与PC端的体验接近</strong>，分类目录在每个分类的上方（为了适配竖屏而做的调整，不是再用之前“老掉牙”的下拉选项了），文章页面与PC类似。</li>
+            </ol>
+            <p>此外，还有一些小更新：</p>
+            <ol>
+            <li>在每篇文章下面设置了“上一篇”和“下一篇”的链接，同时为了考虑到不同分类的浏览（例如，给喜欢BanG Dream!的朋友发链接时，他们可能并不在意材料计算相关的其他内容），在跳转链接时支持<strong>同类别的上下文章切换</strong>。</li>
+            <li>为提高阅读体验，删除了每篇文章开始的“大标题”（“小七の杂谈”），而只保留与该文章相关的内容。我们认为，使用这一方法可以让读者更容易关注到文章本身，实现更好的阅读体验。且为了保证阅读连续性，我们有意将“上一篇”和“下一篇”设置在文章末尾，从而不必每次阅读完之后再回到开头切换。</li>
+            <li>由于杂谈部分的改版更新已经完成，上方的滚动条已经删除（它暂时完成了“历史使命”）</li>
+            <li>在每个分类下介绍了分类的具体内容（之前是放在置顶文章里），<del><font color="red">且考虑到群里有一个朋友和我“抢老婆”，在本次更新中进一步强调<strong>志崎桦音（non酱）是我老婆</strong>，希望他不要再和我抢了……</font></del></li>
+            </ol>
+            <p>此外再强调一下：<strong>在本次更新之后，旧版杂谈网页将不再使用</strong>。事实上，如果你不是通过这个文章开始的链接，或者其他方式去到那个旧版网页的话，按理说应该不会去那里了（整个网站内所有的杂谈相关内容都直接链接到新版，你收藏的原来的地址也会直接跳转的新版首页）。后续的所有更新只会在新版网页发布。</p>
+            <p>希望本次更新改版可以给大家带来更加舒适的阅读体验。</p>
+        </div>
+
+        <hr>
+        <p>上一篇：<a href="2025-10-29.html">如何使用<code>find</code>查找文件并删除<code>WAVECAR</code></a><br>
+            下一篇：没有了</p>
+        <p>同分类上一篇：<a href="2024-12-23-1.html">关于杂谈的内容</a><br>
+            同分类下一篇：没有了</p>
+
+    </div>
+</body>
+</html>
