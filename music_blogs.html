@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>小七の杂谈</title>
 <link rel="stylesheet" href="blog_index_style.css">
-  <script src="blog_page.js"></script>
+  <script src="blog_search.js"></script>
 </head>
 <body>
   <nav><a href="index.html">返回个人网站主页</a></nav>
@@ -15,6 +15,12 @@
   <!-- 移动端下拉导航 -->
 
   <h1 align="center">小七の杂谈——音乐</h1>
+
+  <!-- 搜索框 -->
+  <div class="search-container">
+    <input type="text" class="search-box" id="searchInput" placeholder="输入关键词搜索文章标题...">
+    <div class="search-results" id="searchResults"></div>
+  </div>
 
   <!-- 左侧分类栏 -->
   <div class="sidebar">
@@ -47,6 +53,14 @@
         </ul>
     </p>
     <div class="stats" id="stats"></div>
+
+    <!-- 无搜索结果提示 -->
+    <div class="no-results" id="noResults">
+      没有找到包含"<span id="searchTerm"></span>"的文章
+    </div>
+    
+    <div class="article-container" id="articleContainer"></div>
+
     <!-- 原始文章（会被JS移走并分页） -->
   <div id="articles">
     

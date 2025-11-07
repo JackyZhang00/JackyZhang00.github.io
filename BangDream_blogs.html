@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>小七の杂谈</title>
-<link rel="stylesheet" href="blog_index_style.css">
-  <script src="blog_page.js"></script>
+  <link rel="stylesheet" href="blog_index_style.css">
+  <script src="blog_search.js"></script>
 </head>
 <body>
   <nav><a href="index.html">返回个人网站主页</a></nav>
@@ -15,6 +15,12 @@
   <!-- 移动端下拉导航 -->
 
   <h1 align="center">小七の杂谈——BanG Dream!</h1>
+
+  <!-- 搜索框 -->
+  <div class="search-container">
+    <input type="text" class="search-box" id="searchInput" placeholder="输入关键词搜索文章标题...">
+    <div class="search-results" id="searchResults"></div>
+  </div>
 
   <!-- 左侧分类栏 -->
   <div class="sidebar">
@@ -48,6 +54,14 @@
     <p>如无特殊说明：“邦邦”、“邦多利”、“バンドリ”均指该企划，而“力儿八”、“ガルパ”特指游戏</p>
     <p><strong>需要特别注意：志崎桦音（non酱）是我“老婆”！！不许和我抢！！</strong></p>
     <div class="stats" id="stats"></div>
+
+    <!-- 无搜索结果提示 -->
+    <div class="no-results" id="noResults">
+      没有找到包含"<span id="searchTerm"></span>"的文章
+    </div>
+    
+    <div class="article-container" id="articleContainer"></div>
+
     <!-- 原始文章（会被JS移走并分页） -->
   <div id="articles">
     <div class="article">
@@ -56,7 +70,7 @@
     </div>
     <div class="article">
       <a href="blog/2025-10-20.html"><h3>志崎桦音照片（2）</h3></a>
-      <p>创建时间：2025-10-20<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
+      <p>创建时间：2025-10-20<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a><br>其他关键词：<span class="keywords">non酱</span></p>
     </div>
     <div class="article">
       <a href="blog/2025-07-26.html"><h3>non酱の照片1</h3></a>

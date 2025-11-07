@@ -55,10 +55,10 @@
         height:auto;
         position:static;
         display:block;
-        font-size: 30px;
+        font-size: 2em;
       }
-      .sidebar li li{font-size:20px;}
-      .content{margin-left:0;padding:10px;font-size: 30px;}
+      .sidebar li li{font-size:1.5em;}
+      .content{margin-left:0;padding:10px;font-size: 2em;}
       /* .mobile-nav{display:block;} */
       body{
         background-image:url('background_mobile.png');
@@ -68,14 +68,18 @@
         background-blend-mode:multiply;
       }
       .content code {
-        font-size: 35px;
+        font-size: 2em;
+      }
+      .content .stats {
+        font-size: 2em;
+      }
+      .pagination button{
+        font-size: 1.2em;
       }
     }
 
     /* 分页按钮区域 */
-    .content .stats {
-      font-size: 30px;
-    }
+
     .pagination{
       display:flex;
       justify-content:center;
@@ -92,7 +96,6 @@
       cursor:pointer;
       transition:all .3s;
       min-width:40px;
-      font-size: 30px;
     }
     .pagination button:hover:not(:disabled){
       background:#3344AA;
@@ -143,4 +146,37 @@
     }
     h3 code{
         font-size: 20px;
+    }
+    .search-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .search-box {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    
+    .search-box:focus {
+      border-color: #4CAF50;
+    }
+    
+    .search-results {
+      text-align: center;
+      color: #666;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+    
+    .no-results {
+      text-align: center;
+      color: #999;
+      font-style: italic;
+      margin: 20px 0;
+      display: none;
     }

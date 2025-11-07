@@ -126,19 +126,19 @@ class SmoothPagination {
    ******************************************************************/
   class ArticleSearch {
     constructor(pagination) {
-      this.pg                = pagination;          // 分页实例
+      this.pg                = pagination;
       this.searchInput       = document.getElementById('searchInput');
       this.searchResultsInfo = document.getElementById('searchResults');
       this.noResultsBox      = document.getElementById('noResults');
       this.searchTermSpan    = document.getElementById('searchTerm');
-      this.allArticles       = [];                  // 原始文章节点副本
-      this.filteredArticles  = [];
+      this.allArticles       = [];   // 原始文章副本
+      this.filteredArticles  = [];   // 按标题过滤后的文章
+      this.keywordHits       = [];   // 新增：命中的关键词条目
       this.init();
     }
   
     init() {
-      // 保存初始文章副本
-      this.allArticles = this.pg.sourceArticles.map(article => article.cloneNode(true));
+      this.allArticles = this.pg.sourceArticles.map(a => a.cloneNode(true));
       this.bindEvents();
     }
   
@@ -146,53 +146,83 @@ class SmoothPagination {
       this.searchInput.addEventListener('input', () => this.performSearch());
     }
   
+    /* ---------- 核心搜索 ---------- */
     performSearch() {
-      const keyword = this.searchInput.value.trim().toLowerCase();
-      if (!keyword) {           // 空关键词 → 恢复全部
+      const kw = this.searchInput.value.trim().toLowerCase();
+      this.clearHighlight();                 // 清掉旧高亮
+  
+      if (!kw) {
+        // 空关键词 → 全部文章
         this.filteredArticles = this.allArticles;
-      } else {                  // 按标题过滤
+        this.keywordHits      = [];
+      } else {
+        // 一次性过滤：标题 或 任意关键词里出现即可
         this.filteredArticles = this.allArticles.filter(art => {
-          const title = art.querySelector('h3').textContent.toLowerCase();
-          return title.includes(keyword);
+          // 1. 标题匹配
+          const titleMatch = art.querySelector('h3')
+                                .textContent.toLowerCase()
+                                .includes(kw);
+          // 2. 关键词匹配
+          const kwMatch = [...art.querySelectorAll('span.keywords')]
+                            .some(span => span.textContent.toLowerCase().includes(kw));
+          return titleMatch || kwMatch;
         });
+  
+        // 如果还想记录“到底是哪些关键词命中了”，可以顺手再扫一遍
+        this.keywordHits = [];
+        this.filteredArticles.forEach(art =>
+          art.querySelectorAll('span.keywords').forEach(span => {
+            if (span.textContent.toLowerCase().includes(kw))
+              this.keywordHits.push({ articleNode: art, kwNode: span, kwText: span.textContent });
+          })
+        );
       }
   
-      this.updateUI(keyword);
-      this.rebuildPagination(); // 用新数据重建分页
+      this.updateUI(kw);
+      this.rebuildPagination();
+  
+      // 高亮并滚动到第一个关键词（如果有）
+      if (this.keywordHits.length)
+        this.highlightKeyword(this.keywordHits[0].kwNode);
     }
   
-    updateUI(keyword) {
-      // 显示/隐藏无结果提示
-      this.searchTermSpan.textContent = keyword;
+    /* ---------- UI 更新（保持原逻辑） ---------- */
+    updateUI(kw) {
+      this.searchTermSpan.textContent = kw;
       this.noResultsBox.style.display =
-        (keyword && this.filteredArticles.length === 0) ? 'block' : 'none';
+        (kw && this.filteredArticles.length === 0) ? 'block' : 'none';
   
-      // 顶部提示文字
-      if (!keyword) {
+      if (!kw) {
         this.searchResultsInfo.textContent = '';
       } else {
         this.searchResultsInfo.textContent =
-          `找到 ${this.filteredArticles.length} 篇包含"${keyword}"的文章`;
+          `找到 ${this.filteredArticles.length} 篇含“${kw}”的文章，`;
       }
     }
   
+    /* ---------- 分页重建（保持原逻辑） ---------- */
     rebuildPagination() {
-      // 1. 清空旧分页节点
       this.pg.pages.forEach(p => p.remove());
       this.pg.pages = [];
-  
-      // 2. 用新数组重新生成
       this.pg.sourceArticles = this.filteredArticles;
-      this.pg.totalPages      = Math.ceil(this.filteredArticles.length / this.pg.itemsPerPage);
-      this.pg.currentPage     = 1;                        // 重置到第一页
-      this.pg.createPages();                               // 复用原逻辑
-      this.pg.showPage(1);                                 // 展示第一页
+      this.pg.totalPages     = Math.ceil(this.filteredArticles.length / this.pg.itemsPerPage);
+      this.pg.currentPage    = 1;
+      this.pg.createPages();
+      this.pg.showPage(1);
+    }
+  
+    /* ---------- 高亮 & 清理 ---------- */
+    highlightKeyword(spanNode) {
+      spanNode.classList.add('kw-highlight');
+      spanNode.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    clearHighlight() {
+      document.querySelectorAll('span.keywords.kw-highlight')
+              .forEach(n => n.classList.remove('kw-highlight'));
     }
   }
   
-  /******************************************************************
-   *  3. 启动顺序：先分页 → 后搜索
-   ******************************************************************/
+  /* -------------- 启动 -------------- */
   document.addEventListener('DOMContentLoaded', () => {
     const pagination = new SmoothPagination();
     new ArticleSearch(pagination);
