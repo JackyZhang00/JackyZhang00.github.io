@@ -148,10 +148,11 @@ class SmoothPagination {
   
     /* ---------- 核心搜索 ---------- */
     performSearch() {
-      const kw = this.searchInput.value.trim().toLowerCase();
+      let kw = this.searchInput.value.trim().toLowerCase();
+      const realKeyword = kw === '老婆'? 'non酱': kw;
       this.clearHighlight();                 // 清掉旧高亮
   
-      if (!kw) {
+      if (!realKeyword) {
         // 空关键词 → 全部文章
         this.filteredArticles = this.allArticles;
         this.keywordHits      = [];
@@ -161,10 +162,10 @@ class SmoothPagination {
           // 1. 标题匹配
           const titleMatch = art.querySelector('h3')
                                 .textContent.toLowerCase()
-                                .includes(kw);
+                                .includes(realKeyword);
           // 2. 关键词匹配
           const kwMatch = [...art.querySelectorAll('span.keywords')]
-                            .some(span => span.textContent.toLowerCase().includes(kw));
+                            .some(span => span.textContent.toLowerCase().includes(realKeyword));
           return titleMatch || kwMatch;
         });
   
@@ -172,7 +173,7 @@ class SmoothPagination {
         this.keywordHits = [];
         this.filteredArticles.forEach(art =>
           art.querySelectorAll('span.keywords').forEach(span => {
-            if (span.textContent.toLowerCase().includes(kw))
+            if (span.textContent.toLowerCase().includes(realKeyword))
               this.keywordHits.push({ articleNode: art, kwNode: span, kwText: span.textContent });
           })
         );
@@ -197,6 +198,9 @@ class SmoothPagination {
       } else {
         this.searchResultsInfo.textContent =
           `找到 ${this.filteredArticles.length} 篇含“${kw}”的文章，`;
+          if (kw === '老婆') {
+            this.searchResultsInfo.textContent = `下面都是小七的${kw}相关文章……共 ${this.filteredArticles.length} 篇！不准抢老婆！`;
+          }
       }
     }
   

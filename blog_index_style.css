@@ -68,14 +68,38 @@
         background-blend-mode:multiply;
       }
       .content code {
-        font-size: 2em;
+        font-size: 1.5em;
       }
       .content .stats {
-        font-size: 2em;
+        font-size: 1.5em;
       }
       .pagination button{
         font-size: 1.2em;
       }
+      .search-results {
+        text-align: center;
+        color: #666;
+        margin: 10px 0;
+        font-size: 1.5em;
+      }
+      .no-results {
+        text-align: center;
+        color: #999;
+        font-style: italic;
+        margin: 20px 0;
+        display: none;
+        font-size: 1.5em;
+      }
+      .search-box {
+        width: 300px;
+        padding: 10px;
+        font-size: 1.5em;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+      
     }
 
     /* 分页按钮区域 */
