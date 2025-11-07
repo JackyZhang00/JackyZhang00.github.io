@@ -4,17 +4,18 @@
   <meta charset="UTF-8">
   <title>小七の杂谈</title>
   <link rel="stylesheet" href="blog_index_style.css">
-  <script src="blog_page.js"></script>
+  <script src="blog_search.js"></script>
 </head>
 <body>
   <nav><a href="index.html">返回个人网站主页</a></nav>
-  <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="10">
-    <font color="red" size="6"><strong>如首页所说，目前“杂谈”部分的网站正逐步更新至新架构下——届时可通过分享链接将单篇文章分享至好友。敬请期待！</strong></font>
-  </marquee> -->
-
-  <!-- 移动端下拉导航 -->
 
   <h1 align="center">小七の杂谈</h1>
+
+  <!-- 搜索框 -->
+  <div class="search-container">
+    <input type="text" class="search-box" id="searchInput" placeholder="输入关键词搜索文章标题...">
+    <div class="search-results" id="searchResults"></div>
+  </div>
 
   <!-- 左侧分类栏 -->
   <div class="sidebar">
@@ -39,89 +40,12 @@
   <!-- 右侧内容区 -->
   <div class="content">
     <div class="stats" id="stats"></div>
-    <!-- 原始文章（会被JS移走并分页） -->
-  <div id="articles">
-    <div class="article">
-      <a href="blog/2024-12-23-1.html"><h3>【置顶】关于杂谈的内容</h3></a>
-      <p>创建时间：2024-12-23<br>分类：<a href="other_blogs.html">杂谈</a></p>
+    
+    <!-- 无搜索结果提示 -->
+    <div class="no-results" id="noResults">
+      没有找到包含"<span id="searchTerm"></span>"的文章
     </div>
-    <div class="article">
-      <a href="blog/2025-11-07-1.html"><h3>non酱出道7周年！！</h3></a>
-      <p>创建时间：2025-11-07<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-11-05.html"><h3>这次杂谈部分改版了什么？</h3></a>
-      <p>创建时间：2025-11-05<br>分类：<a href="other_blogs.html">杂谈</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-10-29.html"><h3>如何使用 <code>find</code> 查找文件并删除 <code>WAVECAR</code></h3></a>
-      <p>创建时间：2025-10-29<br>分类：<a href="materials_blogs.html">材料计算</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-10-27-1.html"><h3>如何结合CP2K+Multiwfn做ELF拓扑分析</h3></a>
-      <p>创建时间：2025-10-27<br>分类：<a href="materials_blogs.html">材料计算</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2025-10-26.html"><h3><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></h3></a>
-      <p>创建时间：2025-10-26<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-10-20.html"><h3>志崎桦音照片（2）</h3></a>
-      <p>创建时间：2025-10-20<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-09-10.html"><h3>服务器终端程序MobaXterm安装包</h3></a>
-      <p>创建时间：2025-09-10<br>分类：<a href="materials_blogs.html">材料计算</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-07-26.html"><h3>non酱の照片1</h3></a>
-      <p>创建时间：2025-07-26<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-07-02.html"><h3>使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</h3></a>
-      <p>创建时间：2025-07-02<br>分类：<a href="materials_blogs.html">材料计算</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-06-16.html"><h3>Roselia Live 「Sei stark」返图</h3></a>
-      <p>创建时间：2025-06-16<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-    <div class="article">
-      <a href="blog/2025-04-09.html"><h3>使用lobster进行COHP分析</h3></a>
-      <p>创建时间：2025-04-09 最后一次更新：2025-04-10<br>分类：<a href="materials_blogs.html">材料计算</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2025-03-12.html"><h3>日麻系列教程1：日麻役种常见一览</h3></a>
-        <p>创建时间：2025-03-12<br>分类：<a href="boardgame_blogs.html">桌游</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2025-02-20.html"><h3>Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</h3></a>
-        <p>创建时间：2025-02-20<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2025-02-16.html"><h3>Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</h3></a>
-        <p>创建时间：2025-02-16<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2025-01-31.html"><h3>【快报】从刘谦魔术看排列组合与冒泡算法</h3></a>
-        <p>创建时间：2025-01-31<br>分类：<a href="popular_science_blogs.html">科普</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2025-01-13.html"><h3>如何从零开始进行程序设计</h3></a>
-        <p>创建时间：2025-01-13<br>分类：<a href="AI_blogs.html">机器学习与人工智能</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2025-01-08.html"><h3>双曲型、抛物型和椭圆型偏微分方程的区别</h3></a>
-        <p>创建时间：2025-01-08<br>分类：<a href="tutorial_blogs.html">小教程</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2024-12-25.html"><h3>Linux当中<code>for</code>与VASPKIT“联动”</h3></a>
-        <p>创建时间：2024-12-25<br>分类：<a href="materials_blogs.html">材料计算</a></p>
-    </div>
-    <div class="article">
-        <a href="blog/2024-12-23-2.html"><h3>Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</h3></a>
-        <p>创建时间：2024-12-23<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
-    </div>
-  </div>
+    
     <div class="article-container" id="articleContainer"></div>
 
     <!-- 分页控制 -->
@@ -135,6 +59,91 @@
   </div>
 
   <!-- 原始文章隐藏容器（勿删） -->
-  <div id="articles" style="display:none;"></div>
+  <div id="articles" style="display:none;">
+      <div class="article">
+        <a href="blog/2024-12-23-1.html"><h3>【置顶】关于杂谈的内容</h3></a>
+        <p>创建时间：2024-12-23<br>分类：<a href="other_blogs.html">杂谈</a></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-11-07-1.html"><h3>non酱出道7周年！！</h3></a>
+        <p>创建时间：2025-11-07<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a><br>其他关键词：<span class="keywords">志崎桦音 老婆</span></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-11-05.html"><h3>这次杂谈部分改版了什么？</h3></a>
+        <p>创建时间：2025-11-05<br>分类：<a href="other_blogs.html">杂谈</a></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-10-29.html"><h3>如何使用 <code>find</code> 查找文件并删除 <code>WAVECAR</code></h3></a>
+        <p>创建时间：2025-10-29<br>分类：<a href="materials_blogs.html">材料计算</a><br>其他关键词：<span class="keywords">linux vasp</span></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-10-27-1.html"><h3>如何结合CP2K+Multiwfn做ELF拓扑分析</h3></a>
+        <p>创建时间：2025-10-27<br>分类：<a href="materials_blogs.html">材料计算</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2025-10-26.html"><h3><font color="#881188">祝Roselia主唱凑友希那生日快乐！！</font></h3></a>
+        <p>创建时间：2025-10-26<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a><br>其他关键词：<span class="keywords">ykn yukina</span></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-10-20.html"><h3>志崎桦音照片（2）</h3></a>
+        <p>创建时间：2025-10-20<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a><br>其他关键词：<span class="keywords">non酱 老婆</span></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-09-10.html"><h3>服务器终端程序MobaXterm安装包</h3></a>
+        <p>创建时间：2025-09-10<br>分类：<a href="materials_blogs.html">材料计算</a></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-07-26.html"><h3>non酱の照片1</h3></a>
+        <p>创建时间：2025-07-26<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a><br>其他关键词：<span class="keywords">志崎桦音 老婆</span></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-07-02.html"><h3>使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</h3></a>
+        <p>创建时间：2025-07-02<br>分类：<a href="materials_blogs.html">材料计算</a><br>其他关键词：<span class="keywords">linux vasp</span></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-06-16.html"><h3>Roselia Live 「Sei stark」返图</h3></a>
+        <p>创建时间：2025-06-16<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
+      </div>
+      <div class="article">
+        <a href="blog/2025-04-09.html"><h3>使用lobster进行COHP分析</h3></a>
+        <p>创建时间：2025-04-09 最后一次更新：2025-04-10<br>分类：<a href="materials_blogs.html">材料计算</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2025-03-12.html"><h3>日麻系列教程1：日麻役种常见一览</h3></a>
+          <p>创建时间：2025-03-12<br>分类：<a href="boardgame_blogs.html">桌游</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2025-02-20.html"><h3>Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图（补充）</h3></a>
+          <p>创建时间：2025-02-20<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2025-02-16.html"><h3>Roselia Live 「Stille Nacht, Rosen Nacht」<em>上海</em>官方返图</h3></a>
+          <p>创建时间：2025-02-16<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2025-01-31.html"><h3>【快报】从刘谦魔术看排列组合与冒泡算法</h3></a>
+          <p>创建时间：2025-01-31<br>分类：<a href="popular_science_blogs.html">科普</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2025-01-13.html"><h3>如何从零开始进行程序设计</h3></a>
+          <p>创建时间：2025-01-13<br>分类：<a href="AI_blogs.html">机器学习与人工智能</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2025-01-08.html"><h3>双曲型、抛物型和椭圆型偏微分方程的区别</h3></a>
+          <p>创建时间：2025-01-08<br>分类：<a href="tutorial_blogs.html">小教程</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2024-12-25.html"><h3>Linux当中<code>for</code>与VASPKIT“联动”</h3></a>
+          <p>创建时间：2024-12-25<br>分类：<a href="materials_blogs.html">材料计算</a></p>
+      </div>
+      <div class="article">
+          <a href="blog/2024-12-23-2.html"><h3>Roselia Live 「Stille Nacht, Rosen Nacht」官方返图</h3></a>
+          <p>创建时间：2024-12-23<br>分类：<a href="BangDream_blogs.html">BanG Dream!</a></p>
+      </div>
+    <!-- 其余文章保持不变... -->
+  </div>
+
+
+
 </body>
 </html>
