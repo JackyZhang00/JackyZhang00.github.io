@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全自动博客生成器</title>
+    <style>
+        :root { --primary: #4a90e2; --bg: #f4f4f9; }
+        body { font-family: sans-serif; background: var(--bg); display: flex; height: 100vh; margin: 0; }
+        .container { display: flex; width: 100%; }
+        .panel { padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        .left { flex: 6; background: white; border-right: 1px solid #ddd; }
+        .right { flex: 4; background: #2d2d2d; color: #fff; padding: 20px; }
+        
+        input, select, textarea { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
+        textarea { height: 300px; font-family: monospace; }
+        label { font-weight: bold; font-size: 13px; color: #555; display: block; margin-top: 10px;}
+        
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; font-size: 16px; width: 100%; margin-top: 20px; }
+        .btn:hover { background: #357abd; }
+
+        .toolbar { background: #eee; padding: 5px; margin-bottom: 5px; display: flex; gap: 5px; }
+        .tool-btn { cursor: pointer; padding: 2px 8px; background: white; border: 1px solid #ccc; }
+        
+        .info-box { background: #e3f2fd; padding: 10px; border-radius: 4px; font-size: 13px; color: #0d47a1; margin-bottom: 15px;}
+        #logArea { font-family: monospace; color: #bbb; font-size: 12px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="panel left">
+        <h2>✨ 全自动博客文章生成</h2>
+        
+        <div class="info-box" id="autoInfo">正在读取数据库...</div>
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex:1">
+                <label>标题</label>
+                <input type="text" id="title" placeholder="输入标题">
+            </div>
+            <div style="flex:1">
+                <label>文件名 (例: 2025-11-06.html)</label>
+                <input type="text" id="filename">
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <div style="flex:1">
+                <label>日期</label>
+                <input type="date" id="date">
+            </div>
+            <div style="flex:1">
+                <label>分类</label>
+                <input type="text" id="category" value="杂谈" onblur="checkCatPrev()">
+            </div>
+            <div style="flex:1">
+                <label>作者</label>
+                <input type="text" id="author" value="Jiaqi Z.">
+            </div>
+        </div>
+
+        <label>正文内容 (快捷键: Ctrl+B 加粗, Ctrl+K 链接)</label>
+        <div class="toolbar">
+            <button class="tool-btn" onclick="fmt('b')">B</button>
+            <button class="tool-btn" onclick="fmt('i')">I</button>
+            <button class="tool-btn" onclick="fmt('p')">P</button>
+            <button class="tool-btn" onclick="fmt('img')">Img</button>
+        </div>
+        <textarea id="contentBody"></textarea>
+
+        <button class="btn" onclick="submitPost()">🚀 生成文件并自动更新上一篇</button>
+    </div>
+
+    <div class="panel right">
+        <h3>系统日志</h3>
+        <div id="logArea">等待操作...</div>
+    </div>
+</div>
+
+<script>
+    let globalPrev = null;
+    let catPrev = null;
+
+    // 初始化：加载数据库
+    window.onload = async () => {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').value = today;
+        document.getElementById('filename').value = today + '.html';
+
+        try {
+            const res = await fetch('/api/draft');
+            const data = await res.json();
+            globalPrev = data.globalPrev;
+            updateInfoDisplay();
+            // 默认检查一下分类上一篇
+            checkCatPrev();
+        } catch (e) {
+            log('无法连接服务器，请确认 server.js 已启动。');
+        }
+    }
+
+    // 检查分类的上一篇
+    async function checkCatPrev() {
+        const cat = document.getElementById('category').value;
+        const res = await fetch('/api/cat-prev', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ category: cat })
+        });
+        catPrev = await res.json();
+        updateInfoDisplay();
+    }
+
+    function updateInfoDisplay() {
+        let text = "";
+        if (globalPrev) text += `✅ 检测到上一篇：${globalPrev.title} (${globalPrev.filename})<br>`;
+        else text += `⚠️ 暂无上一篇记录（这将是第一篇）<br>`;
+
+        if (catPrev) text += `✅ 同分类上一篇：${catPrev.title} (${catPrev.filename})`;
+        else text += `⚠️ 此分类暂无上一篇`;
+        
+        document.getElementById('autoInfo').innerHTML = text;
+    }
+
+    async function submitPost() {
+        const payload = {
+            title: document.getElementById('title').value,
+            filename: document.getElementById('filename').value,
+            date: document.getElementById('date').value,
+            category: document.getElementById('category').value,
+            author: document.getElementById('author').value,
+            content: document.getElementById('contentBody').value,
+            prevInfo: globalPrev,
+            catPrevInfo: catPrev
+        };
+
+        if(!payload.title || !payload.content) return alert("标题和内容不能为空");
+
+        log("正在提交并处理文件...");
+        
+        try {
+            const res = await fetch('/api/create', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            if (result.success) {
+                log(`成功！\n${result.message}`);
+                alert("生成成功！");
+                // 刷新页面以加载最新状态
+                location.reload();
+            } else {
+                log("错误：" + JSON.stringify(result));
+            }
+        } catch (e) {
+            log("请求失败：" + e);
+        }
+    }
+
+    // 工具函数
+    function log(msg) { document.getElementById('logArea').innerText += '\n[' + new Date().toLocaleTimeString() + '] ' + msg; }
+    
+    // 快捷键格式化 (和上一版一样)
+    const contentArea = document.getElementById('contentBody');
+    contentArea.addEventListener('keydown', function(e) {
+        if (e.ctrlKey || e.metaKey) {
+            const map = {'b':'b', 'i':'i', 'p':'p', 'k':'a', 'm':'img'};
+            if (map[e.key.toLowerCase()]) { e.preventDefault(); fmt(map[e.key.toLowerCase()]); }
+        }
+    });
+    function fmt(type) {
+        const start = contentArea.selectionStart;
+        const end = contentArea.selectionEnd;
+        const text = contentArea.value.substring(start, end);
+        let replace = '';
+        if(type==='b') replace = `<b>${text}</b>`;
+        if(type==='i') replace = `<i>${text}</i>`;
+        if(type==='p') replace = `<p>${text}</p>`;
+        if(type==='a') replace = `<a href="#">${text||'链接'}</a>`;
+        if(type==='img') replace = `<img src="" width="100%"/>`;
+        contentArea.setRangeText(replace, start, end, 'select');
+    }
+</script>
+</body>
+</html>
