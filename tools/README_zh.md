@@ -50,7 +50,7 @@ python aspect_ratio.py <dictionary>
 
 为了运行这个工具，你需要安装`node.js`，具体的安装方法，可以在终端里（进入`blog_create`目录后按shift+鼠标右键）输入下面的命令：
 
-```
+```bash
 npm init -y
 npm install express body-parser cors
 ```
