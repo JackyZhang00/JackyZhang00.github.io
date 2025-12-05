@@ -1,0 +1,25 @@
+<!-- 固定播放器 -->
+<div class="embedded-player">
+    <div class="player-header">
+        <span class="music-icon">💿</span>
+        <div class="song-info-mask">
+            <!-- 修改这里：歌曲名称 -->
+            <div class="song-title">Roselia - FIRE BIRD</div>
+        </div>
+    </div>
+    <div class="player-controls">
+        <button id="play-btn">▶</button>
+        <input type="range" id="seek-bar" value="0" min="0" step="1">
+        <span id="time-display">0:00 / 0:00</span>
+        <!-- 新增：循环按钮 -->
+        <button id="loop-btn" title="循环播放">不循环</button>
+    </div>
+    <!-- 【新增】歌词显示区域 -->
+    <div class="lyrics-wrapper">
+        <ul id="lyrics-list">
+            <li>暂无歌词 / 请播放音乐</li>
+        </ul>
+    </div>
+    <!-- 修改这里：音频链接 autoplay 添加自动播放属性-->
+    <audio id="bgm-audio" src="../FIRE BIRD.mp3"  data-lrc="../lrc/FIRE BIRD - Roselia.lrc"></audio></audio>
+</div>

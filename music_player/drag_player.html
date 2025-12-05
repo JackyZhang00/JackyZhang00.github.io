@@ -1,0 +1,18 @@
+<!-- 音乐播放器 HTML -->
+<div id="draggable-player">
+    <div class="player-header" id="drag-handle">
+        <span class="drag-icon">🎵</span>
+        <div class="song-info-mask">
+            <!-- 修改这里：更改你的歌曲名称 -->
+            <div class="song-title">Roselia - FIRE BIRD</div>
+        </div>
+    </div>
+    <div class="player-controls">
+        <button id="play-btn">▶</button>
+        <input type="range" id="seek-bar" value="0" min="0" step="1">
+        <span id="time-display">0:00 / 0:00</span>
+        <button id="loop-btn" title="循环播放">不循环</button>
+    </div>
+    <!-- 修改这里：替换 src 为你的 mp3 文件链接 autoplay 添加自动播放属性 -->
+    <audio id="bgm-audio" src="../FIRE BIRD.mp3"></audio>
+</div>

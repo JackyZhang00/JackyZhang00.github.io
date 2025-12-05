@@ -73,19 +73,28 @@
                 }
         }
     </style>
+    <script src="music_player/drag_player.js" defer></script>
+    <link rel="stylesheet" href="music_player/drag_player.css">
 </head>
 <body>
-    <!-- <audio id="background-audio"> -->
-        <!-- <source src="background.mp3" type="audio/mpeg"> 替换为你的背景音乐路径 -->
-        <!-- Your browser does not support the audio element. -->
-    <!-- </audio> -->
-    <!-- <script> -->
-        <!-- var audio = document.getElementById('background-audio'); -->
-        <!-- audio.volume = 0.1; // 设置音量，避免过大 -->
-        <!-- document.addEventListener('click', function() { -->
-            <!-- audio.play(); -->
-        <!-- }); -->
-    <!-- </script> -->
+    <!-- 音乐播放器 HTML -->
+    <div id="draggable-player">
+        <div class="player-header" id="drag-handle">
+            <span class="drag-icon">🎵</span>
+            <div class="song-info-mask">
+                <!-- 修改这里：更改你的歌曲名称 -->
+                <div class="song-title">Roselia - FIRE BIRD</div>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button id="play-btn">⏸</button>
+            <input type="range" id="seek-bar" value="0" min="0" step="1">
+            <span id="time-display">0:00 / 0:00</span>
+            <button id="loop-btn" title="循环播放">不循环</button>
+        </div>
+        <!-- 修改这里：替换 src 为你的 mp3 文件链接 autoplay 为自动播放 -->
+        <audio id="bgm-audio" src="music/FIRE BIRD.mp3" autoplay></audio>
+    </div>
     <nav>
         <a href="tutorial.html">教程</a>
         <a href="B_index.html">B站up主</a>
@@ -97,7 +106,8 @@
     </nav>
     <div class="content">
         <h1>Welcome to 小七的个人网站</h1>
-            <marquee bgcolor="#DDDDFFEE" scrollamount="20"><font color="red"><strong>2025年10月28日网站更新预告</strong>：目前有关于网站图片与设计架构相关的大型更新，在更新过程中可能有部分功能受到影响，具体详见下方网站更新日志！</font></marquee>
+            <!-- <marquee bgcolor="#DDDDFFEE" scrollamount="20"><font color="red"><strong>2025年10月28日网站更新预告</strong>：目前有关于网站图片与设计架构相关的大型更新，在更新过程中可能有部分功能受到影响，具体详见下方网站更新日志！</font></marquee> -->
+            <marquee bgcolor="#DDDDFFEE" scrollamount="20"><font color="red"><strong>2025年12月05日网站更新</strong>：目前网站支持音乐播放器，可以播放音乐了！具体详见下方网站更新日志！</font></marquee>
         <!-- <div class="left"> -->
             <h2>个人介绍</h2>
             <ul>
@@ -119,7 +129,8 @@
             
             <li><font color="red" size="7">【网站大更新预告！】考虑到目前使用服务器对图片加载速度有限，正计划逐步将网站图片转移至图床使用。目前从2025年10月20日之后上传到网站的图片（包括杂谈和教程里的图片）均是使用图床上传，后续也将会将其他图片（如网站背景以及其他图片）上传到图床。届时可能出现图片无法正常加载的情况（文件转移过程），请谅解……</font></li>
             <!-- <li><font color="purple" size="6">【网站大更新预告2！】由于目前在杂谈和教程的网站上使用的架构有一些问题，导致无法直接分享链接与跳转链接等（这一点在教程里的超链接尤为明显）。目前正准备构建新的网页，将已有的内容（优先转移杂谈的内容）整理至新的网页，届时可以直接分享单篇文章至其他人。在修复教程的部分时，也会尽可能修改现有超链接的跳转问题。</font></li> -->
-            <li><font color="purple" size="6">2025-11-05 网站大更新！现已对<a href="blog.html">杂谈</a>部分进行重写。修改部分如下：
+            <li><font color="purple" size="6">2025-12-05更新：网站现在支持音乐播放器了！根据目前的设计，播放器分为两种：<strong>可拖动的简易播放器</strong>和<strong>嵌入在文本内的播放器</strong>。你可以在当前页面下方找到可拖动的播放器，也可以在专栏文章<a href="blog/2025-12-05.html">Roselia 歌曲推荐：ROZEN HORIZON</a>里体会固定的播放器，还可以播放歌词呢！快夸我(●'◡'●)另外，请务必听一下这两首歌！</font></li>
+            <li>2025-11-05 网站大更新！现已对<a href="blog.html">杂谈</a>部分进行重写。修改部分如下：
                 <ol>
                     <li>全新目录与分类页面，可直接跳转至对应分类</li>
                     <li>修改文件组织与架构逻辑，修复了在后台一次性加载所有图片的bug，加载速度提高</li>
@@ -127,7 +138,7 @@
                     <li>现在支持单个页面分享给好友了（直接复制地址栏即可）</li>
                     <li>2025年11月7日新增更新：支持关键词检索（可检索标题或关键词筛选文章）——<del title="搜索'老婆'有彩蛋哦~">看老婆更方便了</del></li>
                     <li><del>最重要的：进一步强调了“<strong>志崎桦音（non酱）是我老婆</strong>”这件事</del></li>
-                </ol></font>
+                </ol>
             </li>
             <li>2025-06-14 <a href="blog.html">杂谈</a>部分现已支持跳转至<a href="index.html">个人网页首页</a>，不用再想方设法在浏览器返回了。。</li>
             <li><del>2025-02-25 网页大更新！<a href="blog.html">杂谈</a>部分现已适配移动端设备！自此在手机上看杂谈时导航栏更自然了（目前移动端导航栏仅支持按时间顺序查看所有内容，不支持分类筛选，在菜单栏标题前面会标出所属分类）</del></li>
