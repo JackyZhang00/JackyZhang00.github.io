@@ -87,6 +87,21 @@ ${newPost.content.split('\n').map(line => '            ' + line).join('\n')}
             下一篇：没有了</p>
         <p>同分类上一篇：${catPrevLink}<br>
             同分类下一篇：没有了</p>
+            <div class="giscus"></div>
+            <script src="https://giscus.app/client.js"
+                data-repo="JackyZhang00/JackyZhang00.github.io"
+                data-repo-id="R_kgDOM3h1Dw"
+                data-category-id="DIC_kwDOM3h1D84C4F8t"
+                data-mapping="pathname"
+                data-strict="0"
+                data-reactions-enabled="1"
+                data-emit-metadata="0"
+                data-input-position="bottom"
+                data-theme="preferred_color_scheme"
+                data-lang="zh-CN"
+                crossorigin="anonymous"
+                async>
+        </script>
     </div>
 </body>
 </html>`;
