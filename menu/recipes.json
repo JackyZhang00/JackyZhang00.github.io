@@ -1,0 +1,603 @@
+{
+  "meta": {
+    "title": "家常菜谱",
+    "version": "1.0.0",
+    "updated": "2026-06-27",
+    "description": "菜谱菜单生成器的数据文件。新增分类时先在 categories 中添加分类，再在 recipes 中使用对应 categoryId。"
+  },
+  "categories": [
+    {
+      "id": "meat",
+      "name": "肉禽类荤菜",
+      "emoji": "🥩",
+      "description": "排骨、鸡肉、猪肉、火腿肠等肉禽类菜品"
+    },
+    {
+      "id": "seafood",
+      "name": "水产类荤菜",
+      "emoji": "🦐",
+      "description": "鱼、虾等水产类菜品"
+    },
+    {
+      "id": "egg",
+      "name": "蛋类菜",
+      "emoji": "🥚",
+      "description": "以鸡蛋为主要食材或搭配食材的菜品"
+    },
+    {
+      "id": "tofu",
+      "name": "豆制品类",
+      "emoji": "⬜",
+      "description": "豆腐、豆干等豆制品菜品"
+    },
+    {
+      "id": "vegetable",
+      "name": "素菜",
+      "emoji": "🥬",
+      "description": "以蔬菜为主要食材的菜品"
+    },
+    {
+      "id": "soup",
+      "name": "汤/炖/煲类",
+      "emoji": "🍲",
+      "description": "炖菜、煲菜和适合做汤煲的菜品"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "r001",
+      "name": "红烧排骨",
+      "categoryId": "meat",
+      "ingredients": [
+        "排骨",
+        "八角",
+        "香叶",
+        "桂皮"
+      ],
+      "tags": [
+        "红烧",
+        "家常"
+      ]
+    },
+    {
+      "id": "r002",
+      "name": "红烧鸡翅",
+      "categoryId": "meat",
+      "ingredients": [
+        "鸡翅"
+      ],
+      "tags": [
+        "红烧",
+        "家常"
+      ]
+    },
+    {
+      "id": "r003",
+      "name": "烤鸡翅",
+      "categoryId": "meat",
+      "ingredients": [
+        "鸡翅",
+        "烤翅料"
+      ],
+      "tags": [
+        "烤制",
+        "家常"
+      ]
+    },
+    {
+      "id": "r004",
+      "name": "辣椒炒肉",
+      "categoryId": "meat",
+      "ingredients": [
+        "螺丝椒","五花肉","小米辣"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r005",
+      "name": "西兰花炒鸡胸肉",
+      "categoryId": "meat",
+      "ingredients": [
+        "西兰花",
+        "鸡胸肉"
+      ],
+      "tags": [
+        "快炒",
+        "清淡"
+      ]
+    },
+    {
+      "id": "r006",
+      "name": "青椒土豆炒肉丝",
+      "categoryId": "meat",
+      "ingredients": [
+        "瘦肉",
+        "青椒",
+        "土豆",
+        "红辣椒"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r007",
+      "name": "鱼香肉丝",
+      "categoryId": "meat",
+      "ingredients": [
+        "瘦肉",
+        "木耳",
+        "胡萝卜",
+        "青椒",
+        "鱼香肉丝料"
+      ],
+      "tags": [
+        "川味",
+        "下饭"
+      ]
+    },
+    {
+      "id": "r008",
+      "name": "鸡胸肉炒口蘑",
+      "categoryId": "meat",
+      "ingredients": [
+        "鸡胸肉",
+        "口蘑",
+        "黑胡椒"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r009",
+      "name": "宫保鸡丁",
+      "categoryId": "meat",
+      "ingredients": [
+        "鸡胸肉","胡萝卜","炸花生","黄瓜","白胡椒粉","郫县豆瓣酱"
+      ],
+      "tags": [
+        "川味",
+        "下饭"
+      ]
+    },
+    {
+      "id": "r010",
+      "name": "香辣孜然土豆火腿肠",
+      "categoryId": "meat",
+      "ingredients": [
+        "土豆",
+        "火腿肠",
+        "孜然粉",
+        "辣椒粉",
+        "白芝麻"
+      ],
+      "tags": [
+        "香辣",
+        "孜然"
+      ]
+    },
+    {
+      "id": "r011",
+      "name": "香辣肉丝",
+      "categoryId": "meat",
+      "ingredients": [
+        "里脊肉",
+        "香菜",
+        "干辣椒"
+      ],
+      "tags": [
+        "香辣",
+        "下饭"
+      ]
+    },
+    {
+      "id": "r012",
+      "name": "西兰花胡萝卜炒虾仁",
+      "categoryId": "seafood",
+      "ingredients": [
+        "虾仁",
+        "西兰花",
+        "胡萝卜"
+      ],
+      "tags": [
+        "快炒",
+        "清淡"
+      ]
+    },
+    {
+      "id": "r013",
+      "name": "油闷大虾",
+      "categoryId": "seafood",
+      "ingredients": [
+        "大虾",
+        "番茄酱"
+      ],
+      "tags": [
+        "家常"
+      ]
+    },
+    {
+      "id": "r014",
+      "name": "红烧鱼",
+      "categoryId": "seafood",
+      "ingredients": [
+        "鱼",
+        "白糖","香菜"
+      ],
+      "tags": [
+        "红烧"
+      ]
+    },
+    {
+      "id": "r015",
+      "name": "干锅虾",
+      "categoryId": "seafood",
+      "ingredients": [
+        "虾",
+        "藕",
+        "洋葱",
+        "土豆",
+        "白芝麻","火锅底料","小米椒","黄瓜"
+      ],
+      "tags": [
+        "干锅",
+        "香辣"
+      ]
+    },
+    {
+      "id": "r016",
+      "name": "西红柿炒鸡蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "西红柿",
+        "鸡蛋"
+      ],
+      "tags": [
+        "家常",
+        "快炒"
+      ]
+    },
+    {
+      "id": "r017",
+      "name": "黄瓜炒鸡蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "黄瓜",
+        "鸡蛋"
+      ],
+      "tags": [
+        "清淡",
+        "快炒"
+      ]
+    },
+    {
+      "id": "r018",
+      "name": "菠菜炒鸡蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "菠菜",
+        "鸡蛋"
+      ],
+      "tags": [
+        "清淡",
+        "快炒"
+      ]
+    },
+    {
+      "id": "r019",
+      "name": "尖椒炒鸡蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "尖椒",
+        "鸡蛋"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r020",
+      "name": "清炒西葫芦鸡蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "茭瓜",
+        "鸡蛋"
+      ],
+      "tags": [
+        "清淡",
+        "快炒"
+      ]
+    },
+    {
+      "id": "r021",
+      "name": "粉丝包菜炒鸡蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "粉丝",
+        "大头菜",
+        "鸡蛋"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r022",
+      "name": "洋葱木耳胡萝卜辣椒炒蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "洋葱",
+        "木耳",
+        "胡萝卜",
+        "红辣椒",
+        "鸡蛋",
+        "尖椒"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r023",
+      "name": "杏鲍菇火腿炒蛋",
+      "categoryId": "egg",
+      "ingredients": [
+        "杏鲍菇",
+        "火腿",
+        "鸡蛋","尖椒"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r024",
+      "name": "麻婆豆腐",
+      "categoryId": "tofu",
+      "ingredients": [
+        "豆腐",
+        "麻婆豆腐料","香菜"
+      ],
+      "tags": [
+        "川味",
+        "下饭"
+      ]
+    },
+    {
+      "id": "r025",
+      "name": "家常豆腐",
+      "categoryId": "tofu",
+      "ingredients": [
+        "豆腐",
+        "青椒",
+        "洋葱",
+        "香菜"
+      ],
+      "tags": [
+        "家常"
+      ]
+    },
+    {
+      "id": "r026",
+      "name": "香煎豆腐",
+      "categoryId": "tofu",
+      "ingredients": [
+        "豆腐",
+        "辣椒"
+      ],
+      "tags": [
+        "煎制"
+      ]
+    },
+    {
+      "id": "r027",
+      "name": "芹菜炒豆干",
+      "categoryId": "tofu",
+      "ingredients": [
+        "芹菜",
+        "豆干"
+      ],
+      "tags": [
+        "快炒"
+      ]
+    },
+    {
+      "id": "r028",
+      "name": "川味家常豆干",
+      "categoryId": "tofu",
+      "ingredients": [
+        "卤豆干",
+        "青椒","肉",
+        "豆瓣酱"
+      ],
+      "tags": [
+        "川味",
+        "下饭"
+      ]
+    },
+    {
+      "id": "r029",
+      "name": "韭菜炒绿豆芽",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "韭菜",
+        "绿豆芽"
+      ],
+      "tags": [
+        "快炒",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r030",
+      "name": "炒土豆丝",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "土豆",
+        "辣椒"
+      ],
+      "tags": [
+        "快炒",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r031",
+      "name": "干煸大头菜",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "大头菜",
+        "辣椒"
+      ],
+      "tags": [
+        "干煸",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r032",
+      "name": "红烧茄子",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "茄子",
+        "香菜",
+        "五花肉"
+      ],
+      "tags": [
+        "红烧",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r033",
+      "name": "香菇油菜",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "香菇",
+        "油菜"
+      ],
+      "tags": [
+        "清淡",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r034",
+      "name": "蒜蓉茼蒿",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "茼蒿"
+      ],
+      "tags": [
+        "蒜蓉",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r035",
+      "name": "红烧冬瓜",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "冬瓜",
+        "鸡蛋",
+        "香菜"
+      ],
+      "tags": [
+        "红烧",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r036",
+      "name": "清炒荷兰豆",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "荷兰豆"
+      ],
+      "tags": [
+        "清淡",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r037",
+      "name": "干锅菜花",
+      "categoryId": "vegetable",
+      "ingredients": [
+        "菜花",
+        "五花肉","干辣椒","豆瓣酱","韭菜","孜然粉"
+      ],
+      "tags": [
+        "干锅",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r038",
+      "name": "土豆炖鸡块",
+      "categoryId": "soup",
+      "ingredients": [
+        "鸡腿块",
+        "土豆"
+      ],
+      "tags": [
+        "炖菜"
+      ]
+    },
+    {
+      "id": "r039",
+      "name": "板栗炖鸡翅",
+      "categoryId": "soup",
+      "ingredients": [
+        "鸡翅",
+        "板栗"
+      ],
+      "tags": [
+        "炖菜"
+      ]
+    },
+    {
+      "id": "r040",
+      "name": "土豆炖芸豆",
+      "categoryId": "soup",
+      "ingredients": [
+        "土豆",
+        "老来少芸豆",
+        "瘦肉"
+      ],
+      "tags": [
+        "炖菜",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r041",
+      "name": "土豆炖豆角",
+      "categoryId": "soup",
+      "ingredients": [
+        "土豆",
+        "豆角"
+      ],
+      "tags": [
+        "炖菜",
+        "素菜"
+      ]
+    },
+    {
+      "id": "r042",
+      "name": "白菜豆腐煲",
+      "categoryId": "soup",
+      "ingredients": [
+        "白菜",
+        "豆腐","木耳","小米辣","鹌鹑蛋","火腿肠"
+      ],
+      "tags": [
+        "煲菜",
+        "清淡"
+      ]
+    }
+  ]
+}
