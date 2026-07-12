@@ -74,4 +74,50 @@ a{
         background-blend-mode: multiply;
         /* background-color: #DDDDFFAA; */
         }
+    .share-link {
+        padding: 9px 16px;
+        font-size: 16px;
+    }
+
+    .share-message {
+        width: 100%;
+        font-size: 14px;
+    }
+}
+
+/* 博客分享链接 */
+.share-area {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0;
+}
+
+.share-link {
+    display: inline-block;
+    padding: 6px 14px;
+    border: 1px solid #3344AA;
+    border-radius: 6px;
+    background-color: rgba(221, 221, 255, 0.75);
+    color: #3344AA;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.5;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.share-link:hover,
+.share-link:focus {
+    background-color: #3344AA;
+    color: white;
+    outline: none;
+}
+
+.share-message {
+    color: #3344AA;
+    font-size: 15px;
 }

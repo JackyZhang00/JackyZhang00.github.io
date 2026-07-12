@@ -29,6 +29,10 @@
             <h2>使用<code>sed</code>与正则表达式修改<code>INCAR</code>参数</h2>
             <p>时间：2025-07-02  作者：Jiaqi Z.</p>
             <p>分类：<a href="../materials_blogs.html">材料计算</a></p>
+            <p class="share-area">
+                <a href="#" class="share-link">分享文章</a>
+                <span class="share-message" aria-live="polite"></span>
+            </p>
             <hr>
             <p>在材料计算的教程中，我们介绍了关于使用Linux的sed命令进行文本替换，其基本格式为<code>sed -i "s/[原字符串]/[替换字符串]/g" [文件路径名]</code>。利用这个方法，我们可以对<code>INCAR</code>文件中的参数进行替换。例如，我们希望将<code>EDIFF</code>从<code>1E-5</code>改成<code>1E-6</code>，可以使用命令<code>sed -i "s/1E-5/1E-6/g" INCAR</code>。</p>
             <p>当然，这种方式有一个缺陷：<strong>如果INCAR的参数有多个相同的值，如何让命令只修改对应的参数？</strong>例如，我们希望修改自旋极化开关<code>ISPIN</code>让其从1变成2，但这个过程可能会使得其他参数（如<code>ISTART</code>）也会发生变化，这显然不是我们想要的结果。</p>

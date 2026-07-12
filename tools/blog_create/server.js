@@ -79,6 +79,10 @@ app.post('/api/create', (req, res) => {
             <h2>${newPost.title}</h2>
             <p>时间：${newPost.date}  作者：${newPost.author}</p>
             <p>分类：<a href="../other_blogs.html">${newPost.category}</a></p>
+            <p class="share-area">
+                <a href="#" class="share-link">分享文章</a>
+                <span class="share-message" aria-live="polite"></span>
+            </p>
             <hr>
 ${newPost.content.split('\n').map(line => '            ' + line).join('\n')}
         </div>
