@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>小七の网站说说（碎碎念）</title>
+
+<style>
+body{
+    margin:0;
+    background:url("../background.png") fixed center/cover no-repeat;
+    font-family:Segoe UI,Arial,sans-serif;
+}
+
+nav{
+    text-align:center;
+    padding:10px;
+}
+
+a{
+    color:#3344AA;
+    text-decoration:none;
+}
+
+.timeline-nav{
+    position:fixed;
+    left:20px;
+    top:80px;
+    width:150px;
+    padding:20px;
+    background:#DDDDFFCC;
+    border-radius:12px;
+}
+
+.timeline-nav h2{
+    color:#881188;
+}
+
+.month{
+    padding:6px 10px;
+    margin:8px 0;
+    cursor:pointer;
+    border-radius:8px;
+}
+
+.month:hover{
+    background:#ffffff90;
+}
+
+.month.active{
+    background:#3344AA;
+    color:white;
+}
+
+.content{
+    margin-left:230px;
+    padding:20px 40px;
+}
+
+.month-title{
+    margin:40px 0 20px;
+    color:#881188;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.moment{
+    background:#ffffff90;
+    padding:25px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px #0003;
+}
+
+.pin{
+    color:#881188;
+    font-weight:bold;
+}
+
+.content-html{
+    font-size:20px;
+    line-height:1.8;
+}
+
+.content-html img{
+    max-width:100%;
+    border-radius:10px;
+}
+
+.time{
+    margin-top:15px;
+    color:#777;
+    font-size:18px;
+}
+
+.tags{
+    margin-top:8px;
+    color:#3344AA;
+}
+
+@media(max-width:800px){
+    .timeline-nav{
+        position:static;
+        width:auto;
+        display:flex;
+        overflow-x:auto;
+    }
+
+    .content{
+        margin-left:0;
+        padding:15x;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav>
+<a href="../index.html">返回个人网站主页</a>
+</nav>
+
+<h1 align="center">小七の网站说说（碎碎念）</h1>
+
+<div class="timeline-nav">
+<h2>时间</h2>
+<div id="timeline"></div>
+</div>
+
+<div class="content">
+<div id="momentContainer"></div>
+</div>
+
+
+<script>
+
+fetch("moments.json")
+.then(res=>res.json())
+.then(moments=>{
+
+    moments.sort((a,b)=>{
+        if(a.pinned!==b.pinned)
+            return b.pinned-a.pinned;
+        return new Date(b.date)-new Date(a.date);
+    });
+
+
+    let container=document.getElementById("momentContainer");
+    let timeline=document.getElementById("timeline");
+
+    let months=[];
+
+    moments.forEach(item=>{
+        let m=item.date.substring(0,7);
+        if(!months.includes(m))
+            months.push(m);
+    });
+
+
+    months.forEach(m=>{
+
+        let div=document.createElement("div");
+
+        div.className="month";
+        div.dataset.month=m;
+
+        div.innerHTML=
+        m.substring(0,4)+"年 "+
+        m.substring(5,7)+"月";
+
+        div.onclick=()=>{
+            document.getElementById("month-"+m)
+            .scrollIntoView({behavior:"smooth"});
+        };
+
+        timeline.appendChild(div);
+    });
+
+
+    let lastMonth="";
+
+
+    moments.forEach(item=>{
+
+        let month=item.date.substring(0,7);
+
+
+        if(month!==lastMonth){
+
+            let title=document.createElement("div");
+
+            title.className="month-title";
+            title.id="month-"+month;
+
+            title.innerHTML=
+            month.substring(0,4)+"年 "+
+            month.substring(5,7)+"月";
+
+            container.appendChild(title);
+
+            lastMonth=month;
+        }
+
+
+        let div=document.createElement("div");
+
+        div.className="moment";
+
+
+        div.innerHTML=
+        (item.pinned?
+        "<div class='pin'>📌 置顶</div>"
+        :"")
+        +
+        "<div class='content-html'>"+
+        item.content+
+        "</div>"+
+        "<div class='time'>"+
+        item.date+
+        "</div>"+
+        "<div class='tags'>"+
+        item.tags.map(t=>"#"+t).join(" ")
+        +"</div>";
+
+
+        container.appendChild(div);
+
+    });
+
+
+
+    let observer=new IntersectionObserver(entries=>{
+
+        entries.forEach(e=>{
+
+            if(e.isIntersecting){
+
+                let id=e.target.id.replace("month-","");
+
+                document.querySelectorAll(".month")
+                .forEach(x=>{
+                    x.classList.toggle(
+                        "active",
+                        x.dataset.month===id
+                    );
+                });
+
+            }
+
+        });
+
+    },{threshold:.3});
+
+
+    document.querySelectorAll(".month-title")
+    .forEach(x=>observer.observe(x));
+
+
+});
+
+</script>
+
+</body>
+</html>

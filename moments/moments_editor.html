@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <title>碎碎念编辑器</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f5f5ff;
+            padding: 30px;
+        }
+
+        #editor {
+            background: white;
+            min-height: 200px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+            outline: none;
+        }
+
+        #editor:focus {
+            border-color: #6677dd;
+            box-shadow: 0 0 0 3px rgba(102, 119, 221, 0.2);
+        }
+
+        #editor p {
+            margin: 0 0 0.5em 0;
+        }
+
+        #editor p:last-child {
+            margin-bottom: 0;
+        }
+
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #f9f9ff;
+            transition: 0.15s;
+        }
+
+        button:hover {
+            background: #e8e8ff;
+            border-color: #8888dd;
+        }
+
+        .box {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"],
+        input[type="date"] {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #6677dd;
+        }
+
+        .label-text {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .editor-wrapper {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .tag-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .tag-row label {
+            font-weight: 500;
+        }
+
+        .generate-btn {
+            background: #6677dd;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            font-weight: bold;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .generate-btn:hover {
+            background: #5566cc;
+        }
+
+        .hint {
+            color: #888;
+            font-size: 13px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>📝 碎碎念编辑器</h1>
+
+    <div class="box">
+        <span class="label-text">📅 日期：</span>
+        <input id="date" value="2026-07-25 22:35">   <!-- 初始值会被JS自动覆盖 -->
+
+        <span class="label-text">📌 置顶：</span>
+        <input id="pin" type="checkbox">
+    </div>
+
+    <div class="box">
+        <button onclick="cmd('bold')">🔲 粗体</button>
+        <button onclick="cmd('italic')">📐 斜体</button>
+        <button onclick="addLink()">🔗 插入链接</button>
+        <button onclick="addImage()">🖼️ 插入图片</button>
+        <span class="hint">✏️ 按 Enter 自动生成段落</span>
+    </div>
+
+    <div class="editor-wrapper">
+        <div id="editor" contenteditable="true">
+            今天完成了网站更新！
+        </div>
+    </div>
+
+    <div class="tag-row">
+        <label for="tags">🏷️ 标签：</label>
+        <input id="tags" value="网站,更新" style="flex:1; min-width:150px;">
+    </div>
+
+    <br>
+
+    <button class="generate-btn" onclick="generate()">⬇️ 生成 JSON</button>
+
+    <script>
+        // ============================================================
+        //  1. 工具：将日期输入框设置为当前时间
+        // ============================================================
+        function setCurrentDateToInput() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('date').value = `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+
+        // 页面加载时默认填充一次（方便用户看到初始时间）
+        setCurrentDateToInput();
+
+        // ============================================================
+        //  2. 编辑器核心逻辑（自动包裹 <p>）
+        // ============================================================
+        const editor = document.getElementById('editor');
+
+        try {
+            document.execCommand('defaultParagraphSeparator', false, 'p');
+        } catch (_) { /* 忽略 */ }
+
+        let formatRafId = null;
+
+        function formatCurrentBlockToP() {
+            if (formatRafId) {
+                cancelAnimationFrame(formatRafId);
+                formatRafId = null;
+            }
+            formatRafId = requestAnimationFrame(() => {
+                try {
+                    if (document.activeElement !== editor) {
+                        formatRafId = null;
+                        return;
+                    }
+                    document.execCommand('formatBlock', false, 'p');
+                } catch (_) { /* 忽略 */ }
+                formatRafId = null;
+            });
+        }
+
+        function normalizeTopLevelToP() {
+            const children = editor.childNodes;
+            if (children.length === 0) {
+                const p = document.createElement('p');
+                p.innerHTML = '<br>';
+                editor.appendChild(p);
+                return;
+            }
+
+            let needUpdate = false;
+            const fragment = document.createDocumentFragment();
+
+            for (let child of children) {
+                if (child.nodeType === Node.TEXT_NODE) {
+                    const text = child.textContent;
+                    if (text.trim() !== '') {
+                        const p = document.createElement('p');
+                        p.textContent = text;
+                        fragment.appendChild(p);
+                        needUpdate = true;
+                    } else {
+                        needUpdate = true;
+                    }
+                    continue;
+                }
+
+                if (child.nodeType === Node.ELEMENT_NODE) {
+                    const tag = child.tagName.toLowerCase();
+                    if (tag === 'p') {
+                        fragment.appendChild(child.cloneNode(true));
+                        continue;
+                    }
+                    if (tag === 'div') {
+                        const p = document.createElement('p');
+                        p.innerHTML = child.innerHTML;
+                        fragment.appendChild(p);
+                        needUpdate = true;
+                        continue;
+                    }
+                    const p = document.createElement('p');
+                    if (child.childNodes.length > 0) {
+                        p.innerHTML = child.innerHTML;
+                    } else {
+                        p.innerHTML = '<br>';
+                    }
+                    fragment.appendChild(p);
+                    needUpdate = true;
+                }
+            }
+
+            if (fragment.childNodes.length === 0) {
+                const p = document.createElement('p');
+                p.innerHTML = '<br>';
+                fragment.appendChild(p);
+                needUpdate = true;
+            }
+
+            if (needUpdate) {
+                editor.innerHTML = '';
+                editor.appendChild(fragment);
+                try {
+                    const range = document.createRange();
+                    const sel = window.getSelection();
+                    const lastChild = editor.lastChild;
+                    if (lastChild) {
+                        range.setStartAfter(lastChild);
+                        range.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                } catch (_) { /* 忽略 */ }
+            }
+        }
+
+        editor.addEventListener('input', function(e) {
+            if (editor.innerHTML.trim() === '' || editor.innerHTML === '<br>') {
+                editor.innerHTML = '<p><br></p>';
+                try {
+                    const p = editor.querySelector('p');
+                    if (p) {
+                        const range = document.createRange();
+                        range.selectNodeContents(p);
+                        range.collapse(false);
+                        const sel = window.getSelection();
+                        sel.removeAllRanges();
+                        sel.addRange(range);
+                    }
+                } catch (_) { /* 忽略 */ }
+                return;
+            }
+            formatCurrentBlockToP();
+        });
+
+        editor.addEventListener('compositionend', function() {
+            formatCurrentBlockToP();
+        });
+
+        editor.addEventListener('blur', function() {
+            if (formatRafId) {
+                cancelAnimationFrame(formatRafId);
+                formatRafId = null;
+            }
+            normalizeTopLevelToP();
+        });
+
+        editor.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                setTimeout(() => {
+                    if (document.activeElement === editor) {
+                        try {
+                            document.execCommand('formatBlock', false, 'p');
+                        } catch (_) { /* 忽略 */ }
+                    }
+                }, 0);
+            }
+        });
+
+        editor.addEventListener('paste', function() {
+            setTimeout(() => {
+                if (document.activeElement === editor) {
+                    try {
+                        document.execCommand('formatBlock', false, 'p');
+                    } catch (_) { /* 忽略 */ }
+                }
+            }, 10);
+        });
+
+        (function init() {
+            const hasP = editor.querySelector('p');
+            if (!hasP) {
+                const text = editor.innerHTML.trim();
+                if (text) {
+                    editor.innerHTML = '<p>' + text + '</p>';
+                } else {
+                    editor.innerHTML = '<p><br></p>';
+                }
+            } else {
+                normalizeTopLevelToP();
+            }
+        })();
+
+        // ============================================================
+        //  3. 原有的功能函数
+        // ============================================================
+        function cmd(type, value) {
+            const sel = window.getSelection();
+            if (!sel.rangeCount) return;
+            const range = sel.getRangeAt(0);
+            document.execCommand(type, false, value || null);
+            try {
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } catch (_) { /* 忽略 */ }
+        }
+
+        function addLink() {
+            const url = prompt("输入链接地址 (URL)");
+            if (url) {
+                document.execCommand('createLink', false, url);
+                setTimeout(() => {
+                    try {
+                        document.execCommand('formatBlock', false, 'p');
+                    } catch (_) { /* 忽略 */ }
+                }, 10);
+            }
+        }
+
+        function addImage() {
+            const url = prompt("输入图片地址 (URL)");
+            if (url) {
+                document.execCommand('insertImage', false, url);
+                setTimeout(() => {
+                    try {
+                        document.execCommand('formatBlock', false, 'p');
+                    } catch (_) { /* 忽略 */ }
+                }, 10);
+            }
+        }
+
+        // ============================================================
+        //  4. 生成 JSON —— 点击时自动刷新日期为当前时间
+        // ============================================================
+        function generate() {
+            // ★ 关键修改：生成时刷新日期输入框为当前时间
+            setCurrentDateToInput();
+
+            // 规范化编辑器内容（确保所有段落为 <p>）
+            normalizeTopLevelToP();
+
+            const data = [{
+                id: Date.now(),
+                pinned: document.getElementById('pin').checked,
+                date: document.getElementById('date').value,   // 使用刚刚刷新的时间
+                content: editor.innerHTML,
+                tags: document.getElementById('tags')
+                    .value.split(',')
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0)
+            }];
+
+            const blob = new Blob(
+                [JSON.stringify(data, null, 4)], {
+                    type: "application/json"
+                }
+            );
+
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "moments.json";
+            a.click();
+
+            console.log('✅ 已导出 JSON，日期更新为点击时刻：', data[0].date);
+        }
+
+        console.log('✅ 碎碎念编辑器已加载。点击“生成 JSON”时日期将自动更新为当前时间。');
+    </script>
+
+</body>
+
+</html>

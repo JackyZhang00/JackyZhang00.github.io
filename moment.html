@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>小七の碎碎念</title>
+
+<style>
+body{
+    margin:0;
+    background-image:url('background.png');
+    background-repeat:no-repeat;
+    background-attachment:fixed;
+    background-size:cover;
+    font-family:Segoe UI,Roboto,Arial,sans-serif;
+}
+
+nav{
+    padding:10px;
+    text-align:center;
+}
+
+a{
+    color:#3344AA;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+/* 时间导航 */
+.timeline-nav{
+    position:fixed;
+    left:20px;
+    top:80px;
+    width:150px;
+    background:#DDDDFFCC;
+    padding:20px;
+    border-radius:12px;
+}
+
+.timeline-nav h2{
+    color:#881188;
+    font-size:22px;
+}
+
+.month{
+    margin:8px 0;
+    padding:6px 10px;
+    border-radius:8px;
+    cursor:pointer;
+    color:#555;
+}
+
+.month:hover{
+    background:#ffffff90;
+}
+
+.month.active{
+    background:#3344AA;
+    color:white;
+    font-weight:bold;
+}
+
+/* 内容 */
+.content{
+    margin-left:230px;
+    padding:20px 40px;
+}
+
+h1{
+    color:#3344AA;
+}
+
+.month-title{
+    margin:40px 0 20px;
+    font-size:22px;
+    font-weight:bold;
+    color:#881188;
+}
+
+.moment{
+    background:#ffffff90;
+    padding:25px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.pin{
+    color:#881188;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+.text{
+    font-size:18px;
+    line-height:1.8;
+    white-space:pre-wrap;
+}
+
+.time{
+    margin-top:15px;
+    color:#777;
+    font-size:14px;
+}
+
+.tags{
+    margin-top:8px;
+    color:#3344AA;
+}
+
+img{
+    max-width:100%;
+    border-radius:10px;
+    margin-top:15px;
+}
+
+@media(max-width:800px){
+    .timeline-nav{
+        position:static;
+        width:auto;
+        margin:10px;
+        display:flex;
+        overflow-x:auto;
+        gap:10px;
+    }
+
+    .year{
+        display:none;
+    }
+
+    .month{
+        white-space:nowrap;
+    }
+
+    .content{
+        margin-left:0;
+        padding:15px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<nav>
+<a href="index.html">返回个人网站主页</a>
+</nav>
+
+<h1 align="center">小七の碎碎念</h1>
+
+<div class="timeline-nav">
+<h2>时间</h2>
+<div id="timeline"></div>
+</div>
+
+<div class="content">
+<div id="momentContainer"></div>
+</div>
+
+<script>
+const moments=[
+{
+    pinned:true,
+    date:"2026-07-25 22:35",
+    content:`📌 网站新增“碎碎念”功能！
+
+以后一些短想法都会记录在这里。`,
+    tags:["网站更新"]
+},
+{
+    pinned:false,
+    date:"2026-07-25 18:20",
+    content:`重新整理了一下个人网站结构。
+
+博客负责长文章，
+这里负责日常记录。`,
+    tags:["网站"]
+},
+{
+    pinned:false,
+    date:"2026-06-20 12:00",
+    content:`最近开始整理一些旧照片。`,
+    tags:["生活"]
+}
+];
+
+moments.sort((a,b)=>{
+    if(a.pinned!==b.pinned)
+        return b.pinned-a.pinned;
+    return new Date(b.date)-new Date(a.date);
+});
+
+const container=document.getElementById("momentContainer");
+const timeline=document.getElementById("timeline");
+
+let months=[];
+
+moments.forEach(m=>{
+    let key=m.date.substring(0,7);
+    if(!months.includes(key))
+        months.push(key);
+});
+
+months.forEach(m=>{
+    let div=document.createElement("div");
+    div.className="month";
+    div.dataset.month=m;
+    div.innerHTML=`${m.substring(0,4)}年 ${m.substring(5,7)}月`;
+
+    div.onclick=()=>{
+        document.getElementById("month-"+m)
+        .scrollIntoView({behavior:"smooth"});
+    };
+
+    timeline.appendChild(div);
+});
+
+let lastMonth="";
+
+moments.forEach(item=>{
+
+    let month=item.date.substring(0,7);
+
+    if(month!==lastMonth){
+        let title=document.createElement("div");
+        title.className="month-title";
+        title.id="month-"+month;
+        title.innerHTML=
+        `${month.substring(0,4)}年 ${month.substring(5,7)}月`;
+        container.appendChild(title);
+        lastMonth=month;
+    }
+
+    let div=document.createElement("div");
+    div.className="moment";
+
+    div.innerHTML=
+    (item.pinned?`<div class="pin">📌 置顶</div>`:"")
+    +
+    `
+    <div class="text">${item.content}</div>
+    <div class="time">${item.date}</div>
+    <div class="tags">${item.tags.map(t=>"#"+t).join(" ")}</div>
+    `;
+
+    container.appendChild(div);
+});
+
+
+const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+
+            let id=entry.target.id.replace("month-","");
+
+            document.querySelectorAll(".month")
+            .forEach(x=>{
+                x.classList.remove("active");
+
+                if(x.dataset.month===id)
+                    x.classList.add("active");
+            });
+        }
+    });
+},{threshold:0.3});
+
+
+document.querySelectorAll(".month-title")
+.forEach(x=>observer.observe(x));
+
+</script>
+
+</body>
+</html>
