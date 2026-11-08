@@ -3,185 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全自动博客生成器</title>
-    <style>
-        :root { --primary: #4a90e2; --bg: #f4f4f9; }
-        body { font-family: sans-serif; background: var(--bg); display: flex; height: 100vh; margin: 0; }
-        .container { display: flex; width: 100%; }
-        .panel { padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        .left { flex: 6; background: white; border-right: 1px solid #ddd; }
-        .right { flex: 4; background: #2d2d2d; color: #fff; padding: 20px; }
-        
-        input, select, textarea { width: 100%; margin-bottom: 10px; padding: 8px; box-sizing: border-box; }
-        textarea { height: 300px; font-family: monospace; }
-        label { font-weight: bold; font-size: 13px; color: #555; display: block; margin-top: 10px;}
-        
-        .btn { background: var(--primary); color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 4px; font-size: 16px; width: 100%; margin-top: 20px; }
-        .btn:hover { background: #357abd; }
-
-        .toolbar { background: #eee; padding: 5px; margin-bottom: 5px; display: flex; gap: 5px; }
-        .tool-btn { cursor: pointer; padding: 2px 8px; background: white; border: 1px solid #ccc; }
-        
-        .info-box { background: #e3f2fd; padding: 10px; border-radius: 4px; font-size: 13px; color: #0d47a1; margin-bottom: 15px;}
-        #logArea { font-family: monospace; color: #bbb; font-size: 12px; white-space: pre-wrap; }
-    </style>
+    <title>博客生成器 · 小七の杂谈</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
-    <div class="panel left">
-        <h2>✨ 全自动博客文章生成</h2>
-        
-        <div class="info-box" id="autoInfo">正在读取数据库...</div>
-
-        <div style="display: flex; gap: 10px;">
-            <div style="flex:1">
-                <label>标题</label>
-                <input type="text" id="title" placeholder="输入标题">
-            </div>
-            <div style="flex:1">
-                <label>文件名 (例: 2025-11-06.html)</label>
-                <input type="text" id="filename">
-            </div>
+<header class="topbar">
+    <div class="brand">
+        <span class="brand-dot"></span>
+        <div class="brand-text">
+            <strong>博客生成器</strong>
+            <small id="siteName">小七の杂谈</small>
         </div>
-
-        <div style="display: flex; gap: 10px;">
-            <div style="flex:1">
-                <label>日期</label>
-                <input type="date" id="date">
-            </div>
-            <div style="flex:1">
-                <label>分类</label>
-                <input type="text" id="category" value="杂谈" onblur="checkCatPrev()">
-            </div>
-            <div style="flex:1">
-                <label>作者</label>
-                <input type="text" id="author" value="Jiaqi Z.">
-            </div>
-        </div>
-
-        <label>正文内容 (快捷键: Ctrl+B 加粗, Ctrl+K 链接)</label>
-        <div class="toolbar">
-            <button class="tool-btn" onclick="fmt('b')">B</button>
-            <button class="tool-btn" onclick="fmt('i')">I</button>
-            <button class="tool-btn" onclick="fmt('p')">P</button>
-            <button class="tool-btn" onclick="fmt('img')">Img</button>
-        </div>
-        <textarea id="contentBody"></textarea>
-
-        <button class="btn" onclick="submitPost()">🚀 生成文件并自动更新上一篇</button>
     </div>
-
-    <div class="panel right">
-        <h3>系统日志</h3>
-        <div id="logArea">等待操作...</div>
+    <div class="topbar-actions">
+        <span class="status-dot" id="serverStatus" title="连接服务器中…"></span>
+        <button class="btn ghost sm" id="btnNew" title="清空编辑器，开始新文章">新建</button>
+        <button class="btn ghost sm" id="btnOpen" title="打开 blog/ 中已有的文章">打开文章</button>
+        <button class="btn ghost sm" id="btnDrafts" title="草稿箱">草稿</button>
+        <button class="btn ghost sm" id="btnHelp" title="快捷键与语法说明">帮助</button>
     </div>
+</header>
+
+<div class="banner draft-banner" id="draftBanner" hidden>
+    <span>发现上次未发布的本地草稿（<span id="draftTime"></span>）</span>
+    <span class="banner-actions">
+        <button class="btn tiny" id="btnRestore">恢复</button>
+        <button class="btn tiny ghost" id="btnDiscard">忽略</button>
+    </span>
 </div>
 
-<script>
-    let globalPrev = null;
-    let catPrev = null;
+<div class="banner result-banner" id="resultBanner" hidden>
+    <span id="resultText"></span>
+    <span class="banner-actions">
+        <a class="btn tiny" id="resultLink" target="_blank" rel="noopener">打开文章</a>
+        <button class="btn tiny ghost" id="btnCopyLink">复制链接</button>
+        <button class="btn tiny ghost" id="btnDismissResult">关闭</button>
+    </span>
+</div>
 
-    // 初始化：加载数据库
-    window.onload = async () => {
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('date').value = today;
-        document.getElementById('filename').value = today + '.html';
+<main class="workspace">
+    <section class="editor-pane">
+        <div class="meta-grid">
+            <label class="field span-2">
+                <span>标题</span>
+                <input id="fTitle" type="text" placeholder="文章标题，可以包含 <code> 等 HTML">
+            </label>
+            <label class="field">
+                <span>日期</span>
+                <input id="fDate" type="date">
+            </label>
+            <label class="field">
+                <span>文件名</span>
+                <input id="fFilename" type="text" spellcheck="false" placeholder="2026-11-06.html">
+            </label>
 
-        try {
-            const res = await fetch('/api/draft');
-            const data = await res.json();
-            globalPrev = data.globalPrev;
-            updateInfoDisplay();
-            // 默认检查一下分类上一篇
-            checkCatPrev();
-        } catch (e) {
-            log('无法连接服务器，请确认 server.js 已启动。');
-        }
-    }
+            <div class="field span-4">
+                <span>分类（点击多选，列表来自 blog.html 与 config.json）</span>
+                <div class="chip-row">
+                    <div class="chips" id="categoryChips"></div>
+                    <input class="category-custom" id="fCategoryCustom" type="text" autocomplete="off"
+                        placeholder="＋ 其他分类，回车添加">
+                </div>
+            </div>
 
-    // 检查分类的上一篇
-    async function checkCatPrev() {
-        const cat = document.getElementById('category').value;
-        const res = await fetch('/api/cat-prev', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ category: cat })
-        });
-        catPrev = await res.json();
-        updateInfoDisplay();
-    }
+            <label class="field">
+                <span>作者</span>
+                <input id="fAuthor" type="text">
+            </label>
+            <label class="field">
+                <span>最后更新（可选）</span>
+                <input id="fUpdated" type="date">
+            </label>
+            <label class="field span-2">
+                <span>关键词（可选，站内搜索用）</span>
+                <input id="fKeywords" type="text" placeholder="例如：linux vasp">
+            </label>
+        </div>
 
-    function updateInfoDisplay() {
-        let text = "";
-        if (globalPrev) text += `✅ 检测到上一篇：${globalPrev.title} (${globalPrev.filename})<br>`;
-        else text += `⚠️ 暂无上一篇记录（这将是第一篇）<br>`;
+        <div class="editor-toolbar" id="toolbar"></div>
 
-        if (catPrev) text += `✅ 同分类上一篇：${catPrev.title} (${catPrev.filename})`;
-        else text += `⚠️ 此分类暂无上一篇`;
-        
-        document.getElementById('autoInfo').innerHTML = text;
-    }
+        <div class="editor-body">
+            <textarea id="fContent" spellcheck="false" placeholder="在这里写正文……&#10;&#10;支持 Markdown：&#10;## 小节标题、**加粗**、*斜体*、`代码`&#10;- 列表 / 1. 有序列表&#10;> 引用&#10;``` 代码块 ```&#10;![图片](地址){50%}  ← 花括号里是宽度"></textarea>
+        </div>
 
-    async function submitPost() {
-        const payload = {
-            title: document.getElementById('title').value,
-            filename: document.getElementById('filename').value,
-            date: document.getElementById('date').value,
-            category: document.getElementById('category').value,
-            author: document.getElementById('author').value,
-            content: document.getElementById('contentBody').value,
-            prevInfo: globalPrev,
-            catPrevInfo: catPrev
-        };
+        <div class="editor-footer">
+            <div class="editor-stats">
+                <span id="statChars">0 字</span>
+                <span class="dot">·</span>
+                <span id="statImages">0 图</span>
+                <span class="dot">·</span>
+                <span id="statTime">约 1 分钟</span>
+                <label class="inline-field">格式
+                    <select id="fFormat">
+                        <option value="markdown">Markdown</option>
+                        <option value="html">原始 HTML</option>
+                    </select>
+                </label>
+                <label class="inline-field" title="“自动”：有连续空行时按标准 Markdown 分段，否则一行一段">分段
+                    <select id="fParagraph">
+                        <option value="auto">自动</option>
+                        <option value="blank">空行分段</option>
+                        <option value="line">单行分段</option>
+                    </select>
+                </label>
+                <label class="checkbox" title="把这篇同时写进 blog.html 和对应分类页的文章列表">
+                    <input type="checkbox" id="fUpdateIndex" checked> 更新站点列表
+                </label>
+            </div>
+            <div class="editor-actions">
+                <button class="btn ghost" id="btnCopy" title="复制渲染后的正文 HTML">复制正文</button>
+                <button class="btn ghost" id="btnDownload" title="导出完整 HTML 文件">导出 HTML</button>
+                <button class="btn ghost" id="btnSaveDraft" title="保存到 blog_draft/（Ctrl+S）">存草稿</button>
+                <button class="btn primary" id="btnPublish" title="写入 blog/ 并更新列表与上下篇（Ctrl+Enter）">
+                    发布到站点 <kbd>Ctrl+↵</kbd>
+                </button>
+            </div>
+        </div>
+    </section>
 
-        if(!payload.title || !payload.content) return alert("标题和内容不能为空");
+    <aside class="side-pane">
+        <div class="tabs" role="tablist">
+            <button class="tab active" data-tab="preview">预览</button>
+            <button class="tab" data-tab="outline">结构</button>
+            <button class="tab" data-tab="log">日志</button>
+            <div class="tab-tools">
+                <button class="icon-btn" id="btnDevice" title="切换手机 / 桌面预览">🖥</button>
+                <button class="icon-btn" id="btnRefresh" title="刷新预览">⟳</button>
+            </div>
+        </div>
+        <div class="tab-panel active" id="panel-preview">
+            <div class="preview-frame-wrap" id="previewWrap">
+                <iframe id="previewFrame" title="文章预览"></iframe>
+            </div>
+        </div>
+        <div class="tab-panel" id="panel-outline">
+            <div class="outline" id="outline"></div>
+            <div class="outline-tools">
+                <button class="btn tiny ghost" id="btnRepairNav" title="按 blog.html 的文章顺序重算所有文章的上一篇 / 下一篇">修复全站上下篇</button>
+            </div>
+        </div>
+        <div class="tab-panel" id="panel-log">
+            <pre class="log" id="log"></pre>
+        </div>
+    </aside>
+</main>
 
-        log("正在提交并处理文件...");
-        
-        try {
-            const res = await fetch('/api/create', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(payload)
-            });
-            const result = await res.json();
-            if (result.success) {
-                log(`成功！\n${result.message}`);
-                alert("生成成功！");
-                // 刷新页面以加载最新状态
-                location.reload();
-            } else {
-                log("错误：" + JSON.stringify(result));
-            }
-        } catch (e) {
-            log("请求失败：" + e);
-        }
-    }
+<dialog class="dialog" id="dlgOpen">
+    <header>
+        <h3>打开已有文章</h3>
+        <button class="icon-btn" data-close title="关闭">✕</button>
+    </header>
+    <div class="dialog-search">
+        <input type="search" id="openFilter" placeholder="搜索标题、文件名或分类…">
+    </div>
+    <div class="list" id="openList"></div>
+    <footer class="dialog-footer">
+        <span class="hint">载入后可修改并“发布到站点”，会覆盖原文件。</span>
+        <button class="btn ghost" data-close>取消</button>
+    </footer>
+</dialog>
 
-    // 工具函数
-    function log(msg) { document.getElementById('logArea').innerText += '\n[' + new Date().toLocaleTimeString() + '] ' + msg; }
-    
-    // 快捷键格式化 (和上一版一样)
-    const contentArea = document.getElementById('contentBody');
-    contentArea.addEventListener('keydown', function(e) {
-        if (e.ctrlKey || e.metaKey) {
-            const map = {'b':'b', 'i':'i', 'p':'p', 'k':'a', 'm':'img'};
-            if (map[e.key.toLowerCase()]) { e.preventDefault(); fmt(map[e.key.toLowerCase()]); }
-        }
-    });
-    function fmt(type) {
-        const start = contentArea.selectionStart;
-        const end = contentArea.selectionEnd;
-        const text = contentArea.value.substring(start, end);
-        let replace = '';
-        if(type==='b') replace = `<b>${text}</b>`;
-        if(type==='i') replace = `<i>${text}</i>`;
-        if(type==='p') replace = `<p>${text}</p>`;
-        if(type==='a') replace = `<a href="#">${text||'链接'}</a>`;
-        if(type==='img') replace = `<img src="" width="100%"/>`;
-        contentArea.setRangeText(replace, start, end, 'select');
-    }
-</script>
+<dialog class="dialog" id="dlgDrafts">
+    <header>
+        <h3>草稿</h3>
+        <button class="icon-btn" data-close title="关闭">✕</button>
+    </header>
+    <div class="list" id="draftList"></div>
+    <footer class="dialog-footer">
+        <span class="hint">草稿保存在 <code>blog_draft/</code>，可直接用 CLI 构建。</span>
+        <button class="btn ghost" data-close>关闭</button>
+    </footer>
+</dialog>
+
+<dialog class="dialog" id="dlgImage">
+    <header>
+        <h3>插入图片</h3>
+        <button class="icon-btn" data-close title="关闭">✕</button>
+    </header>
+    <div class="dialog-body">
+        <label class="field">
+            <span>图片地址</span>
+            <input id="imgUrl" type="text" spellcheck="false" placeholder="https://… 或 ../blog_fig/xxx.png">
+        </label>
+        <label class="field">
+            <span>替代文字（alt）</span>
+            <input id="imgAlt" type="text" placeholder="图片说明">
+        </label>
+        <label class="field">
+            <span>宽度</span>
+            <select id="imgWidth">
+                <option value="">默认</option>
+                <option value="100%">100%</option>
+                <option value="80%">80%</option>
+                <option value="50%" selected>50%</option>
+                <option value="30%">30%</option>
+                <option value="300">300px</option>
+                <option value="500">500px</option>
+            </select>
+        </label>
+        <label class="field">
+            <span>图注（可选，填了会自动用 figure 包起来）</span>
+            <input id="imgCaption" type="text" placeholder="例如：2025 年现场返图">
+        </label>
+    </div>
+    <footer class="dialog-footer">
+        <button class="btn ghost" data-close>取消</button>
+        <button class="btn primary" id="btnInsertImage">插入</button>
+    </footer>
+</dialog>
+
+<dialog class="dialog" id="dlgStyle">
+    <header>
+        <h3>字号 · 字体 · 颜色</h3>
+        <button class="icon-btn" data-close title="关闭">✕</button>
+    </header>
+    <div class="dialog-body">
+        <div class="field">
+            <span>效果预览</span>
+            <div class="style-sample" id="styleSample">小七の杂谈 · Sample 1234</div>
+        </div>
+
+        <div class="style-grid">
+            <label class="field">
+                <span>字号</span>
+                <select id="styleSize">
+                    <option value="">默认</option>
+                    <option value="0.85em">小（0.85em）</option>
+                    <option value="1.15em">大（1.15em）</option>
+                    <option value="1.35em">特大（1.35em）</option>
+                    <option value="1.6em">标题级（1.6em）</option>
+                    <option value="custom">自定义…</option>
+                </select>
+            </label>
+            <label class="field" id="styleSizeCustomWrap" hidden>
+                <span>自定义字号（px）</span>
+                <input id="styleSizeCustom" type="number" min="8" max="96" step="1" placeholder="18">
+            </label>
+            <label class="field">
+                <span>字体</span>
+                <select id="styleFont">
+                    <option value="">默认</option>
+                    <option value="'Songti SC', SimSun, serif">宋体 / 衬线</option>
+                    <option value="'Microsoft YaHei', 'PingFang SC', sans-serif">黑体 / 无衬线</option>
+                    <option value="KaiTi, STKaiti, serif">楷体</option>
+                    <option value="FangSong, STFangsong, serif">仿宋</option>
+                    <option value="ui-monospace, Consolas, monospace">等宽 / 代码</option>
+                </select>
+            </label>
+        </div>
+
+        <div class="field">
+            <span>文字颜色</span>
+            <div class="color-row">
+                <div class="swatches" id="textColorSwatches"></div>
+                <input type="color" id="styleColor" value="#cc0000" title="自定义文字颜色">
+                <button type="button" class="btn tiny ghost" id="styleColorClear">默认</button>
+            </div>
+        </div>
+
+        <div class="field">
+            <span>背景颜色（荧光笔效果）</span>
+            <div class="color-row">
+                <div class="swatches" id="bgColorSwatches"></div>
+                <input type="color" id="styleBg" value="#fff3b0" title="自定义背景颜色">
+                <button type="button" class="btn tiny ghost" id="styleBgClear">透明</button>
+            </div>
+        </div>
+
+        <div class="field">
+            <span>段落对齐（块级样式，会包一层 div）</span>
+            <div class="align-row">
+                <button type="button" class="btn tiny" data-align="left">左对齐</button>
+                <button type="button" class="btn tiny" data-align="center">居中</button>
+                <button type="button" class="btn tiny" data-align="right">右对齐</button>
+                <button type="button" class="btn tiny" data-align="justify">两端对齐</button>
+            </div>
+        </div>
+
+        <p class="hint">应用会在选区外包裹 <code>&lt;span style="…"&gt;</code>；没有选区时会插入示例文字。</p>
+    </div>
+    <footer class="dialog-footer">
+        <button class="btn ghost" id="btnClearFormat" title="去掉选区里的 HTML 标签，只留文字">清除格式</button>
+        <span style="flex:1"></span>
+        <button class="btn ghost" data-close>关闭</button>
+        <button class="btn primary" id="btnApplyStyle">应用</button>
+    </footer>
+</dialog>
+
+<dialog class="dialog wide" id="dlgFormats">
+    <header>
+        <h3>更多格式</h3>
+        <button class="icon-btn" data-close title="关闭">✕</button>
+    </header>
+    <div class="dialog-body">
+        <div class="format-groups" id="formatGroups"></div>
+        <p class="hint">插入的是 HTML 片段，Markdown 与原始 HTML 模式下都能用；样式已写进 <code>blog_article.css</code>。</p>
+    </div>
+    <footer class="dialog-footer">
+        <button class="btn ghost" data-close>关闭</button>
+    </footer>
+</dialog>
+
+<dialog class="dialog wide" id="dlgHelp">
+    <header>
+        <h3>语法与快捷键</h3>
+        <button class="icon-btn" data-close title="关闭">✕</button>
+    </header>
+    <div class="dialog-body help-body">
+        <h4>Markdown 速查</h4>
+        <table class="help-table">
+            <tr><td><code>## 小节</code></td><td>小节标题（渲染为 &lt;h3&gt;）</td></tr>
+            <tr><td><code>### 子小节</code></td><td>子标题（渲染为 &lt;h4&gt;）</td></tr>
+            <tr><td><code>**加粗**</code> / <code>*斜体*</code> / <code>~~删除~~</code></td><td>文字样式</td></tr>
+            <tr><td><code>==高亮==</code></td><td>荧光笔高亮</td></tr>
+            <tr><td><code>`代码`</code></td><td>行内代码</td></tr>
+            <tr><td><code>- 项目</code> / <code>1. 项目</code></td><td>无序 / 有序列表，缩进两格可嵌套</td></tr>
+            <tr><td><code>- [ ] 待办</code> / <code>- [x] 已办</code></td><td>任务清单</td></tr>
+            <tr><td><code>&gt; 引用</code></td><td>引用块</td></tr>
+            <tr><td><code>```bash</code> … <code>```</code></td><td>代码块（可标注语言）</td></tr>
+            <tr><td><code>![说明](地址){50%}</code></td><td>图片，花括号里可写宽度</td></tr>
+            <tr><td><code>[文字](地址)</code></td><td>链接</td></tr>
+            <tr><td><code>| 列 | 列 |</code></td><td>表格（第二行写 <code>| --- | --- |</code>）</td></tr>
+            <tr><td><code>---</code></td><td>分割线</td></tr>
+            <tr><td>工具栏「字号 / 字体 / 颜色」</td><td>字号（含自定义 px）、字体、文字颜色、背景色、段落对齐</td></tr>
+            <tr><td>工具栏「更多格式 ▾」</td><td>下划线、高亮、上/下标、键盘键、提示框、折叠块、两栏、图注、B 站视频、音频…</td></tr>
+            <tr><td>粘贴 / 拖入图片</td><td>自动保存到 <code>blog_fig/</code> 并插入正文（PNG / JPG / GIF / WebP）</td></tr>
+        </table>
+        <p class="hint">也可以直接粘贴原始 HTML，渲染时会原样保留。</p>
+        <h4>快捷键</h4>
+        <table class="help-table">
+            <tr><td><kbd>Ctrl</kbd> + <kbd>B</kbd> / <kbd>I</kbd></td><td>加粗 / 斜体</td></tr>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>K</kbd></td><td>插入链接</td></tr>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td>保存草稿</td></tr>
+            <tr><td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td>发布到站点</td></tr>
+            <tr><td><kbd>Tab</kbd></td><td>插入两个空格</td></tr>
+            <tr><td><kbd>Enter</kbd></td><td>列表 / 引用会自动续行</td></tr>
+        </table>
+        <h4>发布时会发生什么</h4>
+        <ul class="help-list">
+            <li>生成 <code>blog/&lt;文件名&gt;.html</code>，并登记到 <code>data.json</code>；</li>
+            <li>自动重算所有文章的“上一篇 / 下一篇”（含同分类），补发旧日期的文章也不会乱；</li>
+            <li>把条目插入 <code>blog.html</code> 与对应分类页的文章列表；</li>
+            <li>文件名重复时自动改用 <code>-1</code>、<code>-2</code> 后缀，不会覆盖旧文章；</li>
+            <li>发布前会体检：图片缺 alt、本地图片不存在、占位链接 <code>#</code> 都会在「结构」里提示。</li>
+        </ul>
+    </div>
+    <footer class="dialog-footer">
+        <button class="btn primary" data-close>知道了</button>
+    </footer>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<input type="file" id="imageFile" accept="image/*" multiple hidden>
+
+<script src="editor.js"></script>
 </body>
 </html>

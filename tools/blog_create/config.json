@@ -1,0 +1,73 @@
+{
+  "site": {
+    "name": "小七の杂谈",
+    "titlePrefix": "小七の杂谈：",
+    "lang": "zh-CN",
+    "homeLink": "../index.html",
+    "indexLink": "../blog.html"
+  },
+  "author": "Jiaqi Z.",
+  "defaultCategory": "杂谈",
+  "postsDir": "blog",
+  "indexPage": "blog.html",
+  "uploadsDir": "blog_fig",
+  "maxUploadMB": 8,
+  "categories": {
+    "杂谈": {
+      "page": "other_blogs.html"
+    },
+    "游戏": {
+      "page": "game_blogs.html"
+    },
+    "音乐": {
+      "page": "music_blogs.html"
+    },
+    "BanG Dream!": {
+      "page": "BangDream_blogs.html"
+    },
+    "桌游": {
+      "page": "boardgame_blogs.html"
+    },
+    "科普": {
+      "page": "popular_science_blogs.html"
+    },
+    "小教程": {
+      "page": "tutorial_blogs.html"
+    },
+    "材料计算": {
+      "page": "materials_blogs.html"
+    },
+    "机器学习与人工智能": {
+      "page": "AI_blogs.html"
+    }
+  },
+  "giscus": {
+    "enabled": true,
+    "repo": "JackyZhang00/JackyZhang00.github.io",
+    "repoId": "R_kgDOM3h1Dw",
+    "categoryId": "DIC_kwDOM3h1D84C4F8t",
+    "mapping": "pathname",
+    "strict": "0",
+    "reactionsEnabled": "1",
+    "emitMetadata": "0",
+    "inputPosition": "bottom",
+    "theme": "preferred_color_scheme",
+    "lang": "zh-CN"
+  },
+  "indexUpdate": {
+    "enabled": true,
+    "pinnedKeyword": "置顶"
+  },
+  "markdown": {
+    "format": "markdown",
+    "paragraphMode": "auto",
+    "mergeImages": true,
+    "autoLink": true,
+    "headingShift": 1
+  },
+  "server": {
+    "port": 3000,
+    "host": "127.0.0.1",
+    "open": false
+  }
+}
